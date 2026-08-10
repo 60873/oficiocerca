@@ -1,4 +1,4 @@
- "use client";
+use client";
 
 import { useMemo, useState } from "react";
 
@@ -124,9 +124,22 @@ export default function Home() {
     <main>
       <header className="topbar">
         <div className="container nav">
-          <button className="brand" onClick={() => setActive("Inicio")}>
-            <span className="brandMark">OC</span>
-            <span>Oficio<span>Cerca</span></span>
+          <button
+            className="brand"
+            onClick={() => setActive("Inicio")}
+            aria-label="Ir al inicio de OficioCerca"
+            style={{ padding: 0, background: "transparent" }}
+          >
+            <img
+              src="/logo-oficiocerca.png"
+              alt="OficioCerca"
+              style={{
+                width: 185,
+                height: 64,
+                objectFit: "contain",
+                objectPosition: "left center"
+              }}
+            />
           </button>
           <nav>
             {["Inicio", "Servicios", "Empleo", "Cursos", "Emprendé"].map(item => (
@@ -173,6 +186,17 @@ export default function Home() {
             </div>
           </div>
           <div className="heroCard">
+            <img
+              src="/logo-oficiocerca.png"
+              alt="Logo de OficioCerca"
+              style={{
+                width: "100%",
+                maxHeight: 170,
+                objectFit: "contain",
+                marginBottom: 16,
+                borderRadius: 18
+              }}
+            />
             <div className="aiBadge">🤖 OficioCerca AI</div>
             <h3>¿No sabés por dónde empezar?</h3>
             <p>Contanos qué querés aprender, trabajar o emprender y te ayudaremos a encontrar un camino.</p>
