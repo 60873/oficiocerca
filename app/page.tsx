@@ -35,6 +35,7 @@ export default function Home() {
   const [contactOpen, setContactOpen] = useState(false);
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
+  const [contactZone, setContactZone] = useState("");
   const [contactMessage, setContactMessage] = useState("");
 
   const filtered = useMemo(() => {
@@ -64,6 +65,7 @@ export default function Home() {
     setContactOpen(false);
     setContactName("");
     setContactPhone("");
+    setContactZone("");
     setContactMessage("");
   };
 
@@ -72,6 +74,7 @@ export default function Home() {
     setContactOpen(false);
     setContactName("");
     setContactPhone("");
+    setContactZone("");
     setContactMessage("");
   };
 
@@ -85,6 +88,7 @@ export default function Home() {
       service: selectedProfessional.job,
       name: contactName,
       phone: contactPhone,
+      zone: contactZone,
       message: contactMessage,
       createdAt: new Date().toISOString(),
     };
@@ -93,10 +97,26 @@ export default function Home() {
     current.push(request);
     localStorage.setItem("oficiocerca-contactos", JSON.stringify(current));
 
-    setNotice("Solicitud guardada correctamente en esta versión de prueba.");
+    const whatsappNumber = "543482315486";
+    const whatsappMessage = [
+      "Hola! Quiero solicitar un servicio desde OficioCerca.",
+      "",
+      `Servicio: ${selectedProfessional.job}`,
+      `Perfil: ${selectedProfessional.name}`,
+      `Nombre: ${contactName}`,
+      `Teléfono: ${contactPhone}`,
+      `Zona/Barrio: ${contactZone}`,
+      `Necesidad: ${contactMessage}`,
+    ].join("\n");
+
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+    window.open(whatsappUrl, "_blank");
+
+    setNotice("Solicitud preparada. Se abrió WhatsApp para enviarla.");
     setContactOpen(false);
     setContactName("");
     setContactPhone("");
+    setContactZone("");
     setContactMessage("");
   };
 
@@ -328,7 +348,7 @@ export default function Home() {
               >
                 <b>Enviar una consulta</b>
                 <p style={{ color: "#64748b", lineHeight: 1.6 }}>
-                  Completá tus datos y contá brevemente qué necesitás. En esta primera versión la solicitud se guarda en el navegador como prueba del circuito.
+                  Completá tus datos y contá brevemente qué necesitás. Al enviar, OficioCerca abrirá WhatsApp con la solicitud preparada para que la confirmes.
                 </p>
 
                 <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
@@ -354,6 +374,17 @@ export default function Home() {
                 />
 
                 <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                  Zona / Barrio
+                </label>
+                <input
+                  value={contactZone}
+                  onChange={e => setContactZone(e.target.value)}
+                  required
+                  placeholder="Ej.: Barrio Centro, Reconquista"
+                  style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+                />
+
+                <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
                   ¿Qué necesitás?
                 </label>
                 <textarea
@@ -366,7 +397,7 @@ export default function Home() {
                 />
 
                 <button className="primary wide" type="submit">
-                  Enviar solicitud
+                  Enviar por WhatsApp
                 </button>
 
                 <button
