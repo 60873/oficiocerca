@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { useMemo, useState } from "react";
 
@@ -15,9 +15,10 @@ const categories = [
 ];
 
 const professionals = [
-  { name: "Carlos Gómez", job: "Electricista", city: "Reconquista", rating: "4.9", icon: "⚡" },
-  { name: "María López", job: "Pintora", city: "Avellaneda", rating: "4.8", icon: "🎨" },
-  { name: "Juan Pérez", job: "Técnico en refrigeración", city: "Reconquista", rating: "5.0", icon: "❄️" },
+  { name: "Perfil Demo Electricidad", job: "Electricista", city: "Reconquista", rating: "4.9", icon: "⚡", description: "Perfil demostrativo para probar cómo se verá un profesional real dentro de OficioCerca.", availability: "Disponible hoy", rate: "Tarifa a consultar", services: ["Instalaciones eléctricas", "Reparaciones", "Mantenimiento"] },
+  { name: "Perfil Demo Pintura", job: "Pintora", city: "Avellaneda", rating: "4.8", icon: "🎨", description: "Perfil demostrativo para visualizar servicios de pintura, mantenimiento y mejoras del hogar.", availability: "Disponible esta semana", rate: "Presupuesto sin cargo", services: ["Pintura interior", "Pintura exterior", "Mantenimiento"] },
+  { name: "Perfil Demo Refrigeración", job: "Técnico en refrigeración", city: "Reconquista", rating: "5.0", icon: "❄️", description: "Perfil demostrativo para mostrar cómo funcionarán los servicios técnicos especializados.", availability: "Consultar disponibilidad", rate: "Tarifa a consultar", services: ["Aire acondicionado", "Refrigeración", "Mantenimiento preventivo"] },
+  { name: "Perfil Demo Plomería", job: "Plomero", city: "Reconquista", rating: "4.7", icon: "🚰", description: "Perfil demostrativo para servicios de plomería y mantenimiento domiciliario.", availability: "Disponible hoy", rate: "Presupuesto previo", services: ["Pérdidas de agua", "Instalaciones", "Destapes"] },
 ];
 
 const courses = [
@@ -30,18 +31,34 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState("Inicio");
   const [notice, setNotice] = useState("");
+  const [selectedProfessional, setSelectedProfessional] = useState<any | null>(null);
+  const [contactOpen, setContactOpen] = useState(false);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
     if (!q) return professionals;
     return professionals.filter(p =>
-      `${p.name} ${p.job} ${p.city}`.toLowerCase().includes(q)
+      `${p.name} ${p.job} ${p.city} ${p.services.join(" ")}`.toLowerCase().includes(q)
     );
   }, [query]);
 
   const action = (message: string) => {
     setNotice(message);
     window.setTimeout(() => setNotice(""), 3500);
+  };
+
+  const searchNow = () => {
+    document.getElementById("professionals")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const openProfile = (professional: any) => {
+    setSelectedProfessional(professional);
+    setContactOpen(false);
+  };
+
+  const closeProfile = () => {
+    setSelectedProfessional(null);
+    setContactOpen(false);
   };
 
   return (
@@ -82,16 +99,17 @@ export default function Home() {
               <input
                 value={query}
                 onChange={e => setQuery(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") searchNow(); }}
                 placeholder="¿Qué estás buscando? Ej.: electricista"
               />
-              <button className="primary" onClick={() => document.getElementById("results")?.scrollIntoView({ behavior: "smooth" })}>
+              <button className="primary" onClick={searchNow}>
                 Buscar
               </button>
             </div>
             <div className="quick">
               <span>Buscá:</span>
-              {["Electricista", "Plomero", "Cursos", "Empleo", "Productos regionales"].map(x => (
-                <button key={x} onClick={() => setQuery(x)}>{x}</button>
+              {["Electricista", "Plomero", "Pintura", "Refrigeración"].map(x => (
+                <button key={x} onClick={() => { setQuery(x); setTimeout(searchNow, 50); }}>{x}</button>
               ))}
             </div>
           </div>
@@ -127,24 +145,26 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section soft">
+      <section className="section soft" id="professionals">
         <div className="container">
           <div className="sectionHead">
-            <div><div className="eyebrow orange">CERCA TUYO</div><h2>Profesionales destacados</h2></div>
-            <button className="outline" onClick={() => action("La búsqueda avanzada con GPS será conectada en la siguiente etapa.")}>Ver todos →</button>
+            <div><div className="eyebrow orange">RESULTADOS</div><h2>{query.trim() ? `Resultados para “${query.trim()}”` : "Profesionales destacados"}</h2></div>
+            <button className="outline" onClick={() => setQuery("")}>Ver todos</button>
           </div>
           <div className="cards">
             {filtered.map(p => (
               <article className="proCard" key={p.name}>
                 <div className="avatar">{p.icon}</div>
-                <div className="proTop"><span className="verified">✓ Verificado</span><span>⭐ {p.rating}</span></div>
+                <div className="proTop"><span className="verified">✓ Perfil demo</span><span>⭐ {p.rating}</span></div>
                 <h3>{p.name}</h3><p>{p.job}</p>
                 <div className="location">📍 {p.city}</div>
-                <button className="outline wide" onClick={() => action(`Perfil de ${p.name}: próximamente podrás contactar y solicitar presupuesto.`)}>Ver perfil</button>
+                <div className="location">🟢 {p.availability}</div>
+                <div className="location">💰 {p.rate}</div>
+                <button className="outline wide" onClick={() => openProfile(p)}>Ver perfil</button>
               </article>
             ))}
           </div>
-          {filtered.length === 0 && <div className="empty">No encontramos resultados en esta demo. Probá con otro término.</div>}
+          {filtered.length === 0 && <div className="empty">No encontramos resultados para esta búsqueda. Probá con otro oficio o servicio.</div>}
         </div>
       </section>
 
@@ -224,7 +244,58 @@ export default function Home() {
         <div className="container copyright">© 2026 OficioCerca — MVP de demostración.</div>
       </footer>
 
+
+      {selectedProfessional && (
+        <div
+          style={{ position: "fixed", inset: 0, background: "rgba(8,20,34,.68)", zIndex: 100, display: "grid", placeItems: "center", padding: 20 }}
+          onClick={closeProfile}
+        >
+          <div
+            style={{ width: "min(560px, 100%)", background: "white", borderRadius: 24, padding: 28, boxShadow: "0 30px 90px rgba(0,0,0,.28)" }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 20 }}>
+              <div className="avatar">{selectedProfessional.icon}</div>
+              <button className="outline" onClick={closeProfile}>Cerrar</button>
+            </div>
+
+            <div className="proTop">
+              <span className="verified">✓ Perfil demostrativo</span>
+              <span>⭐ {selectedProfessional.rating}</span>
+            </div>
+
+            <h2 style={{ marginBottom: 4 }}>{selectedProfessional.name}</h2>
+            <p style={{ marginTop: 0, color: "#64748b" }}>{selectedProfessional.job} · 📍 {selectedProfessional.city}</p>
+            <p style={{ lineHeight: 1.7 }}>{selectedProfessional.description}</p>
+
+            <div style={{ background: "#f4f8f7", borderRadius: 16, padding: 16, marginTop: 18 }}>
+              <b>Servicios</b>
+              <ul style={{ marginBottom: 0 }}>
+                {selectedProfessional.services.map((service: string) => <li key={service}>{service}</li>)}
+              </ul>
+            </div>
+
+            <div style={{ marginTop: 18 }}>
+              <div>🟢 {selectedProfessional.availability}</div>
+              <div style={{ marginTop: 7 }}>💰 {selectedProfessional.rate}</div>
+            </div>
+
+            {!contactOpen ? (
+              <button className="primary wide" onClick={() => setContactOpen(true)}>Contactar</button>
+            ) : (
+              <div style={{ marginTop: 20, border: "1px solid #dfe9e6", borderRadius: 16, padding: 18 }}>
+                <b>Contacto de demostración</b>
+                <p style={{ color: "#64748b", lineHeight: 1.6 }}>
+                  En la próxima etapa este botón se conectará con los datos reales del profesional registrado. Por seguridad, estos perfiles de prueba no muestran números telefónicos inventados.
+                </p>
+                <button className="outline wide" onClick={() => action("Contacto probado correctamente. Próximo paso: usuarios reales.")}>
+                  Probar contacto
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {notice && <div className="toast">{notice}</div>}
     </main>
-  );
-}
