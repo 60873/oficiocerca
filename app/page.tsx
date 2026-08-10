@@ -1,4 +1,4 @@
-"use client";
+use client";
 
 import { useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -61,6 +61,7 @@ export default function Home() {
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
+  const [confirmEmailNotice, setConfirmEmailNotice] = useState(false);
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
@@ -185,7 +186,7 @@ export default function Home() {
           return;
         }
 
-        action("Cuenta creada. Revisá tu correo para confirmar el registro si Supabase lo solicita.");
+        setConfirmEmailNotice(true);
         setAuthOpen(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -597,6 +598,71 @@ export default function Home() {
                 </button>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {confirmEmailNotice && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(8,20,34,.68)",
+            zIndex: 140,
+            display: "grid",
+            placeItems: "center",
+            padding: 16
+          }}
+          onClick={() => setConfirmEmailNotice(false)}
+        >
+          <div
+            style={{
+              width: "min(500px, 100%)",
+              background: "white",
+              borderRadius: 22,
+              padding: 28,
+              boxShadow: "0 30px 90px rgba(0,0,0,.28)"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="eyebrow green">CUENTA CREADA</div>
+            <h2 style={{ marginTop: 6 }}>Confirmá tu correo electrónico</h2>
+            <p style={{ color: "#64748b", lineHeight: 1.7 }}>
+              Te enviamos un mensaje de confirmación al correo que registraste.
+              Abrí ese correo, confirmá tu dirección y después volvé a OficioCerca para iniciar sesión.
+            </p>
+
+            <div
+              style={{
+                background: "#f4f8f7",
+                borderRadius: 14,
+                padding: 16,
+                marginTop: 18,
+                color: "#334155",
+                lineHeight: 1.6
+              }}
+            >
+              <b>Importante:</b> no tenés que confirmar en 20 segundos.
+              El aviso anterior desaparecía rápido, pero el enlace de confirmación del correo sigue disponible durante su período de validez.
+            </div>
+
+            <button
+              className="primary wide"
+              onClick={() => {
+                setConfirmEmailNotice(false);
+                setAuthMode("login");
+                setAuthOpen(true);
+              }}
+            >
+              Ya confirmé mi correo → Ingresar
+            </button>
+
+            <button
+              className="outline wide"
+              onClick={() => setConfirmEmailNotice(false)}
+            >
+              Cerrar
+            </button>
           </div>
         </div>
       )}
