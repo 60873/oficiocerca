@@ -1,6 +1,7 @@
-use client";
+ "use client";
 
 import { useMemo, useState } from "react";
+import logoOficioCerca from "../c5ec2fc2-7957-4add-a75a-7319deca2cc3.png";
 
 const categories = [
   ["🛠️", "Profesionales", "Encontrá oficios y especialistas cerca."],
@@ -131,7 +132,7 @@ export default function Home() {
             style={{ padding: 0, background: "transparent" }}
           >
             <img
-              src="/logo-oficiocerca.png"
+              src={logoOficioCerca.src}
               alt="OficioCerca"
               style={{
                 width: 185,
@@ -187,7 +188,7 @@ export default function Home() {
           </div>
           <div className="heroCard">
             <img
-              src="/logo-oficiocerca.png"
+              src={logoOficioCerca.src}
               alt="Logo de OficioCerca"
               style={{
                 width: "100%",
