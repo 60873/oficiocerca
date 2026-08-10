@@ -1,5 +1,4 @@
-
-use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -74,14 +73,21 @@ export default function Home() {
   const [profileDescription, setProfileDescription] = useState("");
   const [profileWhatsapp, setProfileWhatsapp] = useState("");
   const [profileAvailability, setProfileAvailability] = useState("");
+  const [realProfessionals, setRealProfessionals] = useState<any[]>([]);
+  const [loadingProfessionals, setLoadingProfessionals] = useState(true);
 
   const filtered = useMemo(() => {
+    const allProfessionals = [...realProfessionals, ...professionals];
     const q = query.toLowerCase().trim();
-    if (!q) return professionals;
-    return professionals.filter(p =>
-      `${p.name} ${p.job} ${p.city} ${p.services.join(" ")}`.toLowerCase().includes(q)
+
+    if (!q) return allProfessionals;
+
+    return allProfessionals.filter((p) =>
+      `${p.name} ${p.job} ${p.city} ${p.services.join(" ")}`
+        .toLowerCase()
+        .includes(q)
     );
-  }, [query]);
+  }, [query, realProfessionals]);
 
   const action = (message: string) => {
     setNotice(message);
@@ -107,6 +113,44 @@ export default function Home() {
     return () => {
       listener.subscription.unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    const loadProfessionals = async () => {
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+        setLoadingProfessionals(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id,nombre,tipo_usuario,oficio,ciudad,zona,descripcion,whatsapp,disponibilidad")
+        .eq("tipo_usuario", "Profesional");
+
+      if (!error && data) {
+        const mapped = data.map((p) => ({
+          id: p.id,
+          name: p.nombre || "Profesional de OficioCerca",
+          job: p.oficio || "Profesional",
+          city: p.ciudad || "Zona no informada",
+          rating: "Nuevo",
+          icon: "🛠️",
+          description: p.descripcion || "Profesional registrado en OficioCerca.",
+          availability: p.disponibilidad || "Consultar disponibilidad",
+          rate: "Tarifa a consultar",
+          services: p.descripcion ? [p.descripcion] : ["Servicio profesional"],
+          whatsapp: p.whatsapp || "",
+          isReal: true,
+        }));
+
+        setRealProfessionals(mapped);
+      }
+
+      setLoadingProfessionals(false);
+    };
+
+    loadProfessionals();
   }, []);
 
   const searchNow = () => {
@@ -171,10 +215,19 @@ export default function Home() {
       `Necesidad: ${contactMessage}`,
     ].join("\n");
 
-    const whatsappUrl = `https://wa.me/${OFICIOCERCA_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`;
+    const professionalNumber = selectedProfessional.whatsapp
+      ? String(selectedProfessional.whatsapp).replace(/\D/g, "")
+      : "";
+
+    const destinationNumber = professionalNumber || OFICIOCERCA_WHATSAPP;
+    const whatsappUrl = `https://wa.me/${destinationNumber}?text=${encodeURIComponent(whatsappMessage)}`;
     window.open(whatsappUrl, "_blank");
 
-    setNotice("Solicitud preparada. Se abrió el WhatsApp institucional de OficioCerca.");
+    setNotice(
+      professionalNumber
+        ? "Solicitud preparada. Se abrió el WhatsApp del profesional."
+        : "Solicitud preparada. Se abrió el WhatsApp institucional de OficioCerca."
+    );
     setContactOpen(false);
     setContactName("");
     setContactPhone("");
@@ -423,11 +476,18 @@ export default function Home() {
             <div><div className="eyebrow orange">RESULTADOS DE BÚSQUEDA</div><h2>{query.trim() ? `Resultados para “${query.trim()}”` : "Profesionales destacados"}</h2></div>
             <button className="outline" onClick={() => setQuery("")}>Ver todos</button>
           </div>
+          {loadingProfessionals && (
+            <div className="empty">Cargando profesionales registrados...</div>
+          )}
+
           <div className="cards">
             {filtered.map(p => (
               <article className="proCard" key={p.name}>
                 <div className="avatar">{p.icon}</div>
-                <div className="proTop"><span className="verified">✓ Perfil demo</span><span>⭐ {p.rating}</span></div>
+                <div className="proTop">
+                  <span className="verified">{p.isReal ? "✓ Perfil registrado" : "✓ Perfil demo"}</span>
+                  <span>{p.rating === "Nuevo" ? "🆕 Nuevo" : `⭐ ${p.rating}`}</span>
+                </div>
                 <h3>{p.name}</h3><p>{p.job}</p>
                 <div className="location">📍 {p.city}</div>
                 <div className="location">🟢 {p.availability}</div>
@@ -625,8 +685,14 @@ export default function Home() {
             </div>
 
             <div className="proTop">
-              <span className="verified">✓ Perfil demostrativo</span>
-              <span>⭐ {selectedProfessional.rating}</span>
+              <span className="verified">
+                {selectedProfessional.isReal ? "✓ Perfil registrado" : "✓ Perfil demostrativo"}
+              </span>
+              <span>
+                {selectedProfessional.rating === "Nuevo"
+                  ? "🆕 Nuevo"
+                  : `⭐ ${selectedProfessional.rating}`}
+              </span>
             </div>
 
             <h2 style={{ marginBottom: 4 }}>{selectedProfessional.name}</h2>
