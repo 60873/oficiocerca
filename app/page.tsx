@@ -306,11 +306,29 @@ export default function Home() {
 
       {selectedProfessional && (
         <div
-          style={{ position: "fixed", inset: 0, background: "rgba(8,20,34,.68)", zIndex: 100, display: "grid", placeItems: "center", padding: 20 }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(8,20,34,.68)",
+            zIndex: 100,
+            display: "grid",
+            placeItems: "center",
+            padding: 12,
+            overflowY: "auto"
+          }}
           onClick={closeProfile}
         >
           <div
-            style={{ width: "min(560px, 100%)", background: "white", borderRadius: 24, padding: 28, boxShadow: "0 30px 90px rgba(0,0,0,.28)" }}
+            style={{
+              width: "min(560px, 100%)",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
+              background: "white",
+              borderRadius: 24,
+              padding: 28,
+              boxShadow: "0 30px 90px rgba(0,0,0,.28)"
+            }}
             onClick={e => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", gap: 20 }}>
