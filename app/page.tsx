@@ -1,6 +1,7 @@
+
 use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import logoOficioCerca from "../c5ec2fc2-7957-4add-a75a-7319deca2cc3.png";
 import qrOficioCerca from "../qr-oficiocerca-web.png";
@@ -62,6 +63,17 @@ export default function Home() {
   const [authPassword, setAuthPassword] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
   const [confirmEmailNotice, setConfirmEmailNotice] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState("");
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileName, setProfileName] = useState("");
+  const [profileType, setProfileType] = useState("Cliente");
+  const [profileJob, setProfileJob] = useState("");
+  const [profileCity, setProfileCity] = useState("");
+  const [profileZone, setProfileZone] = useState("");
+  const [profileDescription, setProfileDescription] = useState("");
+  const [profileWhatsapp, setProfileWhatsapp] = useState("");
+  const [profileAvailability, setProfileAvailability] = useState("");
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
@@ -75,6 +87,27 @@ export default function Home() {
     setNotice(message);
     window.setTimeout(() => setNotice(""), 3500);
   };
+
+  useEffect(() => {
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+
+    supabase.auth.getSession().then(({ data }) => {
+      const user = data.session?.user;
+      if (user) {
+        setCurrentUserId(user.id);
+      }
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user;
+      setCurrentUserId(user?.id || "");
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   const searchNow = () => {
     window.setTimeout(() => {
@@ -199,6 +232,31 @@ export default function Home() {
           return;
         }
 
+        const { data: userData } = await supabase.auth.getUser();
+        const userId = userData.user?.id || "";
+
+        if (userId) {
+          setCurrentUserId(userId);
+          const { data: existingProfile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", userId)
+            .maybeSingle();
+
+          if (existingProfile) {
+            setProfileName(existingProfile.nombre || "");
+            setProfileType(existingProfile.tipo_usuario || "Cliente");
+            setProfileJob(existingProfile.oficio || "");
+            setProfileCity(existingProfile.ciudad || "");
+            setProfileZone(existingProfile.zona || "");
+            setProfileDescription(existingProfile.descripcion || "");
+            setProfileWhatsapp(existingProfile.whatsapp || "");
+            setProfileAvailability(existingProfile.disponibilidad || "");
+          }
+
+          setProfileOpen(true);
+        }
+
         action("Sesión iniciada correctamente.");
         setAuthOpen(false);
       }
@@ -208,6 +266,56 @@ export default function Home() {
     } finally {
       setAuthLoading(false);
     }
+  };
+
+  const saveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const supabase = getSupabaseClient();
+    if (!supabase || !currentUserId) {
+      action("Primero iniciá sesión para guardar tu perfil.");
+      return;
+    }
+
+    setProfileLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .upsert(
+          {
+            id: currentUserId,
+            nombre: profileName,
+            tipo_usuario: profileType,
+            oficio: profileType === "Profesional" ? profileJob : null,
+            ciudad: profileCity,
+            zona: profileZone,
+            descripcion: profileDescription,
+            whatsapp: profileWhatsapp,
+            disponibilidad: profileType === "Profesional" ? profileAvailability : null,
+          },
+          { onConflict: "id" }
+        );
+
+      if (error) {
+        action(`No se pudo guardar el perfil: ${error.message}`);
+        return;
+      }
+
+      action("Perfil guardado correctamente en OficioCerca.");
+      setProfileOpen(false);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setCurrentUserId("");
+    setProfileOpen(false);
+    action("Sesión cerrada.");
   };
 
   return (
@@ -239,8 +347,17 @@ export default function Home() {
             ))}
           </nav>
           <div className="navActions">
-            <button className="login" onClick={openLogin}>Ingresar</button>
-            <button className="primary small" onClick={openRegister}>Crear cuenta</button>
+            {currentUserId ? (
+              <>
+                <button className="login" onClick={() => setProfileOpen(true)}>Mi perfil</button>
+                <button className="primary small" onClick={signOut}>Salir</button>
+              </>
+            ) : (
+              <>
+                <button className="login" onClick={openLogin}>Ingresar</button>
+                <button className="primary small" onClick={openRegister}>Crear cuenta</button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -598,6 +715,147 @@ export default function Home() {
                 </button>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {profileOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(8,20,34,.68)",
+            zIndex: 150,
+            display: "grid",
+            placeItems: "center",
+            padding: 12,
+            overflowY: "auto"
+          }}
+          onClick={() => setProfileOpen(false)}
+        >
+          <div
+            style={{
+              width: "min(620px, 100%)",
+              maxHeight: "92vh",
+              overflowY: "auto",
+              background: "white",
+              borderRadius: 22,
+              padding: 26,
+              boxShadow: "0 30px 90px rgba(0,0,0,.28)"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+              <div>
+                <div className="eyebrow green">MI PERFIL</div>
+                <h2 style={{ margin: 0 }}>Completá tus datos</h2>
+              </div>
+              <button className="outline" onClick={() => setProfileOpen(false)}>Cerrar</button>
+            </div>
+
+            <p style={{ color: "#64748b", lineHeight: 1.6 }}>
+              Elegí si ingresás como cliente o profesional. Después podremos sumar los demás tipos de perfiles de OficioCerca.
+            </p>
+
+            <form onSubmit={saveProfile}>
+              <label style={{ display: "block", marginTop: 12, fontWeight: 800, fontSize: 13 }}>
+                Tipo de usuario
+              </label>
+              <select
+                value={profileType}
+                onChange={(e) => setProfileType(e.target.value)}
+                style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+              >
+                <option>Cliente</option>
+                <option>Profesional</option>
+              </select>
+
+              <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                Nombre y apellido
+              </label>
+              <input
+                value={profileName}
+                onChange={(e) => setProfileName(e.target.value)}
+                required
+                placeholder="Tu nombre"
+                style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+              />
+
+              {profileType === "Profesional" && (
+                <>
+                  <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                    Oficio / profesión
+                  </label>
+                  <input
+                    value={profileJob}
+                    onChange={(e) => setProfileJob(e.target.value)}
+                    required
+                    placeholder="Ej.: Electricista"
+                    style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+                  />
+                </>
+              )}
+
+              <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                Ciudad
+              </label>
+              <input
+                value={profileCity}
+                onChange={(e) => setProfileCity(e.target.value)}
+                required
+                placeholder="Ej.: Reconquista"
+                style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+              />
+
+              <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                Zona / barrio
+              </label>
+              <input
+                value={profileZone}
+                onChange={(e) => setProfileZone(e.target.value)}
+                placeholder="Ej.: Barrio Centro"
+                style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+              />
+
+              <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                Descripción
+              </label>
+              <textarea
+                value={profileDescription}
+                onChange={(e) => setProfileDescription(e.target.value)}
+                rows={4}
+                placeholder={profileType === "Profesional" ? "Contá qué servicios ofrecés y tu experiencia." : "Contanos qué tipo de servicios u oportunidades buscás."}
+                style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10, resize: "vertical" }}
+              />
+
+              <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                WhatsApp
+              </label>
+              <input
+                value={profileWhatsapp}
+                onChange={(e) => setProfileWhatsapp(e.target.value)}
+                placeholder="Ej.: 543482..."
+                style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+              />
+
+              {profileType === "Profesional" && (
+                <>
+                  <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                    Disponibilidad
+                  </label>
+                  <input
+                    value={profileAvailability}
+                    onChange={(e) => setProfileAvailability(e.target.value)}
+                    placeholder="Ej.: Disponible hoy / Lunes a viernes"
+                    style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+                  />
+                </>
+              )}
+
+              <button className="primary wide" type="submit" disabled={profileLoading}>
+                {profileLoading ? "Guardando..." : "Guardar mi perfil"}
+              </button>
+            </form>
           </div>
         </div>
       )}
