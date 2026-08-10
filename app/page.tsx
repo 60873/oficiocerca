@@ -1,7 +1,16 @@
- "use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import logoOficioCerca from "../c5ec2fc2-7957-4add-a75a-7319deca2cc3.png";
+import qrOficioCerca from "../qr-oficiocerca-web.png";
+
+// Contacto institucional de OficioCerca.
+// Cuando tengas el número y el correo definitivos, solo hay que completar estos dos valores.
+const OFICIOCERCA_WHATSAPP = "543482640585";
+const OFICIOCERCA_EMAIL = "oficiocerca@oficiocerca.com";
+const OFICIOCERCA_INSTAGRAM = "oficiocerca";
+const OFICIOCERCA_WEB = "https://oficiocerca-web.vercel.app/";
+
 
 const categories = [
   ["🛠️", "Profesionales", "Encontrá oficios y especialistas cerca."],
@@ -98,7 +107,11 @@ export default function Home() {
     current.push(request);
     localStorage.setItem("oficiocerca-contactos", JSON.stringify(current));
 
-    const whatsappNumber = "543482315486";
+    if (!OFICIOCERCA_WHATSAPP) {
+      setNotice("La solicitud quedó guardada. El WhatsApp institucional de OficioCerca se incorporará antes del lanzamiento.");
+      return;
+    }
+
     const whatsappMessage = [
       "Hola! Quiero solicitar un servicio desde OficioCerca.",
       "",
@@ -110,10 +123,10 @@ export default function Home() {
       `Necesidad: ${contactMessage}`,
     ].join("\n");
 
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappUrl = `https://wa.me/${OFICIOCERCA_WHATSAPP}?text=${encodeURIComponent(whatsappMessage)}`;
     window.open(whatsappUrl, "_blank");
 
-    setNotice("Solicitud preparada. Se abrió WhatsApp para enviarla.");
+    setNotice("Solicitud preparada. Se abrió el WhatsApp institucional de OficioCerca.");
     setContactOpen(false);
     setContactName("");
     setContactPhone("");
@@ -325,6 +338,63 @@ export default function Home() {
           <div><b>Comunidad</b><a>Productores</a><a>Artesanos</a><a>Comercios</a><a>Inclusión</a></div>
           <div><b>OficioCerca</b><a>Sobre nosotros</a><a>Ayuda</a><a>Contacto</a><a>Privacidad</a></div>
         </div>
+        <div className="container" style={{ marginTop: 28, paddingTop: 22, borderTop: "1px solid #223548" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) auto",
+              gap: 24,
+              alignItems: "center"
+            }}
+          >
+            <div>
+              <b style={{ color: "white", fontSize: 18 }}>Contacto institucional</b>
+              <div style={{ marginTop: 12, display: "grid", gap: 10, color: "#cbd5e1", fontSize: 14 }}>
+                <a
+                  href={`https://wa.me/${OFICIOCERCA_WHATSAPP}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#cbd5e1", textDecoration: "none" }}
+                >
+                  📱 WhatsApp: +54 3482 640585
+                </a>
+                <a
+                  href={`mailto:${OFICIOCERCA_EMAIL}`}
+                  style={{ color: "#cbd5e1", textDecoration: "none" }}
+                >
+                  ✉️ {OFICIOCERCA_EMAIL}
+                </a>
+                <a
+                  href={`https://www.instagram.com/${OFICIOCERCA_INSTAGRAM}/`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#cbd5e1", textDecoration: "none" }}
+                >
+                  📸 Instagram: @{OFICIOCERCA_INSTAGRAM}
+                </a>
+                <a
+                  href={OFICIOCERCA_WEB}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#cbd5e1", textDecoration: "none" }}
+                >
+                  🌐 OficioCerca Web
+                </a>
+              </div>
+            </div>
+
+            <div style={{ background: "white", borderRadius: 16, padding: 10, textAlign: "center" }}>
+              <img
+                src={qrOficioCerca.src}
+                alt="Código QR de OficioCerca"
+                style={{ width: 120, height: 120, display: "block" }}
+              />
+              <div style={{ color: "#0b1f33", fontWeight: 800, fontSize: 11, marginTop: 6 }}>
+                Escaneá y entrá
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="container copyright">© 2026 OficioCerca — MVP de demostración.</div>
       </footer>
 
@@ -391,7 +461,7 @@ export default function Home() {
               >
                 <b>Enviar una consulta</b>
                 <p style={{ color: "#64748b", lineHeight: 1.6 }}>
-                  Completá tus datos y contá brevemente qué necesitás. Al enviar, OficioCerca abrirá WhatsApp con la solicitud preparada para que la confirmes.
+                  Completá tus datos y contá brevemente qué necesitás. Completá tus datos y contá brevemente qué necesitás. Al enviar, OficioCerca abrirá el WhatsApp oficial con la solicitud preparada.
                 </p>
 
                 <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
