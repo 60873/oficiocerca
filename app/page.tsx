@@ -395,7 +395,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="container copyright">© 2026 OficioCerca — MVP de demostración.</div>
+        <div className="container copyright">© 2026 OficioCerca — Plataforma de servicios, oportunidades y desarrollo regional.</div>
       </footer>
 
 
