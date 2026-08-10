@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useMemo, useState } from "react";
 
@@ -33,6 +33,9 @@ export default function Home() {
   const [notice, setNotice] = useState("");
   const [selectedProfessional, setSelectedProfessional] = useState<any | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
+  const [contactName, setContactName] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
@@ -59,11 +62,42 @@ export default function Home() {
   const openProfile = (professional: any) => {
     setSelectedProfessional(professional);
     setContactOpen(false);
+    setContactName("");
+    setContactPhone("");
+    setContactMessage("");
   };
 
   const closeProfile = () => {
     setSelectedProfessional(null);
     setContactOpen(false);
+    setContactName("");
+    setContactPhone("");
+    setContactMessage("");
+  };
+
+  const sendContactRequest = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedProfessional) return;
+
+    const request = {
+      professional: selectedProfessional.name,
+      service: selectedProfessional.job,
+      name: contactName,
+      phone: contactPhone,
+      message: contactMessage,
+      createdAt: new Date().toISOString(),
+    };
+
+    const current = JSON.parse(localStorage.getItem("oficiocerca-contactos") || "[]");
+    current.push(request);
+    localStorage.setItem("oficiocerca-contactos", JSON.stringify(current));
+
+    setNotice("Solicitud guardada correctamente en esta versión de prueba.");
+    setContactOpen(false);
+    setContactName("");
+    setContactPhone("");
+    setContactMessage("");
   };
 
   return (
@@ -288,15 +322,61 @@ export default function Home() {
             {!contactOpen ? (
               <button className="primary wide" onClick={() => setContactOpen(true)}>Contactar</button>
             ) : (
-              <div style={{ marginTop: 20, border: "1px solid #dfe9e6", borderRadius: 16, padding: 18 }}>
-                <b>Contacto de demostración</b>
+              <form
+                onSubmit={sendContactRequest}
+                style={{ marginTop: 20, border: "1px solid #dfe9e6", borderRadius: 16, padding: 18 }}
+              >
+                <b>Enviar una consulta</b>
                 <p style={{ color: "#64748b", lineHeight: 1.6 }}>
-                  En la próxima etapa este botón se conectará con los datos reales del profesional registrado. Por seguridad, estos perfiles de prueba no muestran números telefónicos inventados.
+                  Completá tus datos y contá brevemente qué necesitás. En esta primera versión la solicitud se guarda en el navegador como prueba del circuito.
                 </p>
-                <button className="outline wide" onClick={() => action("Contacto probado correctamente. Próximo paso: usuarios reales.")}>
-                  Probar contacto
+
+                <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                  Nombre
+                </label>
+                <input
+                  value={contactName}
+                  onChange={e => setContactName(e.target.value)}
+                  required
+                  placeholder="Tu nombre"
+                  style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+                />
+
+                <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                  Teléfono
+                </label>
+                <input
+                  value={contactPhone}
+                  onChange={e => setContactPhone(e.target.value)}
+                  required
+                  placeholder="Tu teléfono"
+                  style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
+                />
+
+                <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
+                  ¿Qué necesitás?
+                </label>
+                <textarea
+                  value={contactMessage}
+                  onChange={e => setContactMessage(e.target.value)}
+                  required
+                  rows={4}
+                  placeholder="Ej.: necesito revisar una instalación eléctrica..."
+                  style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10, resize: "vertical" }}
+                />
+
+                <button className="primary wide" type="submit">
+                  Enviar solicitud
                 </button>
-              </div>
+
+                <button
+                  type="button"
+                  className="outline wide"
+                  onClick={() => setContactOpen(false)}
+                >
+                  Cancelar
+                </button>
+              </form>
             )}
           </div>
         </div>
