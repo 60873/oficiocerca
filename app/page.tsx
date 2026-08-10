@@ -14,7 +14,11 @@ const OFICIOCERCA_WEB = "https://oficiocerca-web.vercel.app/";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseKey);
+
+function getSupabaseClient() {
+  if (!supabaseUrl || !supabaseKey) return null;
+  return createClient(supabaseUrl, supabaseKey);
+}
 
 
 const categories = [
@@ -157,8 +161,10 @@ export default function Home() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!supabaseUrl || !supabaseKey) {
-      action("Falta completar la conexión con Supabase.");
+    const supabase = getSupabaseClient();
+
+    if (!supabase) {
+      action("Falta completar la conexión con Supabase en Vercel.");
       return;
     }
 
