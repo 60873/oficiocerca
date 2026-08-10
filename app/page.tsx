@@ -48,7 +48,12 @@ export default function Home() {
   };
 
   const searchNow = () => {
-    document.getElementById("professionals")?.scrollIntoView({ behavior: "smooth" });
+    window.setTimeout(() => {
+      const section = document.getElementById("professionals");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 80);
   };
 
   const openProfile = (professional: any) => {
@@ -127,28 +132,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section" id="results">
-        <div className="container">
-          <div className="sectionHead">
-            <div><div className="eyebrow blue">EXPLORÁ</div><h2>Todo el ecosistema en un solo lugar</h2></div>
-            <p>Una puerta de entrada para descubrir servicios, trabajo, formación y producción local.</p>
-          </div>
-          <div className="categoryGrid">
-            {categories.map(([icon, title, desc]) => (
-              <button className="category" key={title} onClick={() => action(`${title}: módulo preparado para la próxima etapa.`)}>
-                <span className="categoryIcon">{icon}</span>
-                <span><b>{title}</b><small>{desc}</small></span>
-                <span className="arrow">→</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="section soft" id="professionals">
         <div className="container">
           <div className="sectionHead">
-            <div><div className="eyebrow orange">RESULTADOS</div><h2>{query.trim() ? `Resultados para “${query.trim()}”` : "Profesionales destacados"}</h2></div>
+            <div><div className="eyebrow orange">RESULTADOS DE BÚSQUEDA</div><h2>{query.trim() ? `Resultados para “${query.trim()}”` : "Profesionales destacados"}</h2></div>
             <button className="outline" onClick={() => setQuery("")}>Ver todos</button>
           </div>
           <div className="cards">
@@ -165,6 +152,24 @@ export default function Home() {
             ))}
           </div>
           {filtered.length === 0 && <div className="empty">No encontramos resultados para esta búsqueda. Probá con otro oficio o servicio.</div>}
+        </div>
+      </section>
+
+      <section className="section" id="results">
+        <div className="container">
+          <div className="sectionHead">
+            <div><div className="eyebrow blue">EXPLORÁ</div><h2>Todo el ecosistema en un solo lugar</h2></div>
+            <p>Una puerta de entrada para descubrir servicios, trabajo, formación y producción local.</p>
+          </div>
+          <div className="categoryGrid">
+            {categories.map(([icon, title, desc]) => (
+              <button className="category" key={title} onClick={() => action(`${title}: módulo preparado para la próxima etapa.`)}>
+                <span className="categoryIcon">{icon}</span>
+                <span><b>{title}</b><small>{desc}</small></span>
+                <span className="arrow">→</span>
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -299,3 +304,5 @@ export default function Home() {
 
       {notice && <div className="toast">{notice}</div>}
     </main>
+  );
+}
