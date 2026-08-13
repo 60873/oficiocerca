@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import logoOficioCerca from "../c5ec2fc2-7957-4add-a75a-7319deca2cc3.png";
+import logoWorkCerca from "../b9132c5a-18cd-4603-a022-cd3efd09857f.png";
 import qrOficioCerca from "../qr-oficiocerca-web.png";
 
 // Contacto institucional de OficioCerca.
@@ -447,7 +447,7 @@ export default function Home() {
           </div>
           <div className="heroCard">
             <img
-              src={logoOficioCerca.src}
+              src={logoWorkCerca.src}
               alt="Logo de OficioCerca"
               style={{
                 width: "100%",
