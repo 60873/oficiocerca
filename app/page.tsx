@@ -388,7 +388,7 @@ export default function Home() {
           </button>
 
           <nav className="mainNav" aria-label="Navegación principal">
-            {["Inicio", "Buscar", "Categorías", "Empresas", "Emprendedores"].map((item) => (
+            {["Inicio", "Buscar", "Categorías", "Empresas", "Emprendedores", "Mi Perfil"].map((item) => (
               <button
                 key={item}
                 className={active === item ? "navActive" : ""}
@@ -396,6 +396,10 @@ export default function Home() {
                   setActive(item);
                   if (item === "Buscar") searchNow();
                   if (item === "Categorías") document.getElementById("ecosistema")?.scrollIntoView({ behavior: "smooth" });
+                  if (item === "Mi Perfil") {
+                    if (currentUserId) setProfileOpen(true);
+                    else openLogin();
+                  }
                 }}
               >
                 {item}
@@ -404,14 +408,15 @@ export default function Home() {
           </nav>
 
           <div className="navActions">
+            <button className="bellBtn" onClick={() => action("Notificaciones: módulo en preparación.")}>♧</button>
             {currentUserId ? (
               <>
-                <button className="login" onClick={() => setProfileOpen(true)}>Mi perfil</button>
+                <button className="login" onClick={() => setProfileOpen(true)}>Mi Perfil</button>
                 <button className="primary small" onClick={signOut}>Salir</button>
               </>
             ) : (
               <>
-                <button className="login" onClick={openLogin}>Iniciar sesión</button>
+                <button className="primary small" onClick={openLogin}>Iniciar sesión</button>
                 <button className="outline small" onClick={openRegister}>Registrate</button>
               </>
             )}
@@ -421,42 +426,30 @@ export default function Home() {
 
       <section className="heroPremium">
         <div className="heroPhotoGrid" aria-hidden="true">
-          <img
-            src="https://images.pexels.com/photos/3184374/pexels-photo-3184374.jpeg?auto=compress&cs=tinysrgb&w=1000"
-            alt=""
-          />
-          <img
-            src="https://images.pexels.com/photos/29288253/pexels-photo-29288253.jpeg?auto=compress&cs=tinysrgb&w=1000"
-            alt=""
-          />
-          <img
-            src="https://images.pexels.com/photos/27928762/pexels-photo-27928762.jpeg?auto=compress&cs=tinysrgb&w=1000"
-            alt=""
-          />
+          <img src="https://images.pexels.com/photos/29288253/pexels-photo-29288253.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" />
+          <img src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" />
+          <img src="https://images.pexels.com/photos/3184374/pexels-photo-3184374.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" />
+          <img src="https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" />
+          <img src="https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=900" alt="" />
           <div className="heroPhotoShade" />
         </div>
 
         <div className="container heroPremiumInner">
-          <div className="heroCopy">
+          <div className="heroCopy centeredHero">
             <div className="heroBrandName">WORKCERCA</div>
-            <div className="eyebrow light">CONECTA · ENCUENTRA · CRECE</div>
-            <h1>Personas, trabajo y oportunidades. <span>Todo más cerca.</span></h1>
-            <p>
-              WorkCerca conecta personas, profesionales, empleo, formación,
-              emprendimientos, empresas, instituciones y municipios en un solo ecosistema.
-            </p>
+            <h1>CONECTA <span>•</span> ENCUENTRA <span>•</span> CRECE</h1>
+            <p>Personas, profesionales, empresas y servicios en un solo lugar.</p>
           </div>
 
-          <div className="searchPanel">
+          <div className="searchPanel mockSearchPanel">
             <div className="searchField">
-              <span className="searchIcon">⌕</span>
               <div>
                 <label>¿Qué necesitás?</label>
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => { if (e.key === "Enter") searchNow(); }}
-                  placeholder="Ej.: Electricista, plomero, diseño, catering..."
+                  placeholder="Ej.: Electricista, Plomero, Diseño, Repostería..."
                 />
               </div>
             </div>
@@ -465,32 +458,26 @@ export default function Home() {
               <span className="pinIcon">⌖</span>
               <div>
                 <label>Tu ubicación</label>
-                <button
-                  type="button"
-                  onClick={() => action("El GPS real se activará en la etapa de geolocalización.")}
-                >
+                <button type="button" onClick={() => action("El GPS real se activará en la etapa de geolocalización.")}>
                   Usar mi ubicación
                 </button>
               </div>
             </div>
 
-            <button className="primary searchButton" onClick={searchNow}>Buscar</button>
+            <button className="primary searchButton" onClick={searchNow}>Buscar ⌕</button>
           </div>
 
-          <div className="heroPaths">
+          <div className="heroPaths mockHeroPaths">
             {[
               ["💼", "Mi Primer Empleo"],
               ["🛠️", "Oficios y Servicios"],
               ["🏪", "Comercios y Emprendedores"],
-              ["🏭", "Empresas e Industria"],
-              ["📐", "Profesionales y Proyectos"],
+              ["⛑️", "Empresas e Industria"],
+              ["🎓", "Profesionales y Proyectos"],
               ["📣", "Publicidad y Promociones"],
               ["🤝", "Comunidad y Conexiones"],
             ].map(([icon, title]) => (
-              <button
-                key={title}
-                onClick={() => action(`${title}: esta sección se activará por etapas.`)}
-              >
+              <button key={title} onClick={() => action(`${title}: esta sección se activará por etapas.`)}>
                 <span>{icon}</span>
                 <b>{title}</b>
               </button>
@@ -502,16 +489,13 @@ export default function Home() {
       <section className="section cleanSection" id="ecosistema">
         <div className="container">
           <div className="sectionHead compactHead">
-            <div>
-              <div className="eyebrow blue">EXPLORÁ</div>
-              <h2>Encontrá tu lugar en WorkCerca</h2>
-            </div>
+            <div><h2>Explorá por sectores</h2></div>
             <button className="textBtn" onClick={() => action("Próximamente: catálogo completo de categorías.")}>
               Ver todas las categorías →
             </button>
           </div>
 
-          <div className="sectorGrid">
+          <div className="sectorGrid mockSectorGrid">
             {[
               ["Construcción", "https://images.pexels.com/photos/29288253/pexels-photo-29288253.jpeg?auto=compress&cs=tinysrgb&w=900"],
               ["Electricidad", "https://images.pexels.com/photos/27928762/pexels-photo-27928762.jpeg?auto=compress&cs=tinysrgb&w=900"],
@@ -522,13 +506,9 @@ export default function Home() {
               ["Mi Primer Empleo", "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=900"],
               ["Profesionales", "https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=900"],
               ["Empresas", "https://images.pexels.com/photos/3184306/pexels-photo-3184306.jpeg?auto=compress&cs=tinysrgb&w=900"],
-              ["Productores y rurales", "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Productores y Rurales", "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&w=900"],
             ].map(([title, image]) => (
-              <button
-                className="sectorCard"
-                key={title}
-                onClick={() => action(`${title}: módulo preparado para la próxima etapa.`)}
-              >
+              <button className="sectorCard" key={title} onClick={() => action(`${title}: módulo preparado para la próxima etapa.`)}>
                 <img src={image} alt={title} />
                 <span className="sectorShade" />
                 <b>{title}</b>
@@ -538,11 +518,81 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="featureSection mockFeatureSection">
+        <div className="container featureGrid mockFeatureGrid">
+          <article className="featurePanel gpsPanel mockGpsPanel">
+            <div className="featureText">
+              <h2>Servicios cerca tuyo con GPS</h2>
+              <p>Encontrá profesionales y comercios cerca de tu ubicación en tiempo real.</p>
+              <button className="primary" onClick={() => action("GPS: integración real planificada para la próxima etapa.")}>
+                Ver en el mapa
+              </button>
+            </div>
+            <img
+              src="https://images.pexels.com/photos/30403062/pexels-photo-30403062.jpeg?auto=compress&cs=tinysrgb&w=900"
+              alt="Teléfono mostrando un mapa con GPS"
+            />
+          </article>
+
+          <article className="featurePanel networkPanel mockNetworkPanel">
+            <h2>Conectá, colaborá, crecé</h2>
+            <p>Formá parte de una red que impulsa oportunidades, negocios y proyectos.</p>
+            <div className="networkVisual" aria-hidden="true">
+              <span className="node n1">●</span><span className="node n2">●</span><span className="node n3">●</span><span className="node n4">●</span><span className="node n5">●</span>
+              <i className="line l1" /><i className="line l2" /><i className="line l3" /><i className="line l4" />
+            </div>
+          </article>
+
+          <article className="featurePanel adPanel mockAdPanel">
+            <span className="sponsored">Patrocinado</span>
+            <div className="featureText">
+              <h2>Dale visibilidad a tu negocio</h2>
+              <p>Promocioná tus productos y servicios a miles de personas todos los días.</p>
+              <button className="primary" onClick={() => action("Publicidad WorkCerca: módulo comercial en preparación.")}>
+                Publicitar ahora
+              </button>
+            </div>
+            <img
+              src="https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=900"
+              alt="Comercio preparado para recibir clientes"
+            />
+          </article>
+        </div>
+      </section>
+
+      <section className="section adsSection mockAdsSection">
+        <div className="container">
+          <div className="sectionHead compactHead">
+            <div><h2>Publicidad y ofertas destacadas</h2></div>
+            <button className="textBtn" onClick={() => action("Publicidad: catálogo en preparación.")}>Ver todas →</button>
+          </div>
+
+          <div className="adCards mockAdCards">
+            {[
+              ["Ferretería Soluciones", "Todo para tu proyecto en segura", "Córdoba", "https://images.pexels.com/photos/209235/pexels-photo-209235.jpeg?auto=compress&cs=tinysrgb&w=700"],
+              ["Panadería Artesanal", "Productos frescos cada día", "Rosario", "https://images.pexels.com/photos/1775053/pexels-photo-1775053.jpeg?auto=compress&cs=tinysrgb&w=700"],
+              ["Diseño de Interiores", "Transformamos tus espacios", "Buenos Aires", "https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=700"],
+              ["Taller Mecánico RPM", "Mantenimiento y reparación", "Mendoza", "https://images.pexels.com/photos/4489702/pexels-photo-4489702.jpeg?auto=compress&cs=tinysrgb&w=700"],
+            ].map(([title, text, city, image]) => (
+              <article className="adCard imageAdCard" key={title}>
+                <img src={image} alt={title} />
+                <div>
+                  <span>Patrocinado</span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                  <small>⌖ {city}</small>
+                  <button onClick={() => action(`${title}: anuncio de demostración.`)}>Ver más</button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="section soft" id="professionals">
         <div className="container">
           <div className="sectionHead compactHead">
             <div>
-              <div className="eyebrow blue">CERCA TUYO</div>
               <h2>{query.trim() ? `Resultados para “${query.trim()}”` : "Profesionales disponibles"}</h2>
               <p>Perfiles reales registrados en WorkCerca y perfiles de demostración mientras ampliamos la comunidad.</p>
             </div>
@@ -572,113 +622,31 @@ export default function Home() {
             ))}
           </div>
 
-          {filtered.length === 0 && (
-            <div className="empty">No encontramos resultados. Probá con otro oficio, servicio o ciudad.</div>
-          )}
-        </div>
-      </section>
-
-      <section className="section featureSection">
-        <div className="container featureGrid">
-          <article className="featurePanel gpsPanel">
-            <div className="featureText">
-              <div className="eyebrow blue">GPS WORKCERCA</div>
-              <h2>Servicios cerca tuyo</h2>
-              <p>Encontrá profesionales y comercios de tu zona y, más adelante, consultá disponibilidad en tiempo real.</p>
-              <button className="primary" onClick={() => action("GPS: integración real planificada para la próxima etapa.")}>
-                Ver en el mapa
-              </button>
-            </div>
-            <img
-              src="https://images.pexels.com/photos/30403062/pexels-photo-30403062.jpeg?auto=compress&cs=tinysrgb&w=900"
-              alt="Teléfono mostrando un mapa con GPS"
-            />
-          </article>
-
-          <article className="featurePanel networkPanel">
-            <div className="eyebrow blue">RED WORKCERCA</div>
-            <h2>Conectá, colaborá, crecé</h2>
-            <p>Personas, empresas, instituciones y municipios conectados para generar oportunidades y proyectos.</p>
-            <div className="networkVisual" aria-hidden="true">
-              <span className="node n1">●</span>
-              <span className="node n2">●</span>
-              <span className="node n3">●</span>
-              <span className="node n4">●</span>
-              <span className="node n5">●</span>
-              <i className="line l1" /><i className="line l2" /><i className="line l3" /><i className="line l4" />
-            </div>
-          </article>
-
-          <article className="featurePanel adPanel">
-            <span className="sponsored">PATROCINADO</span>
-            <div className="featureText">
-              <div className="eyebrow orange">PUBLICIDAD</div>
-              <h2>Dale visibilidad a tu negocio</h2>
-              <p>Espacios preparados para comercios, empresas, profesionales, instituciones y promociones locales.</p>
-              <button className="primary" onClick={() => action("Publicidad WorkCerca: módulo comercial en preparación.")}>
-                Publicitar ahora
-              </button>
-            </div>
-            <img
-              src="https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=900"
-              alt="Comercio preparado para recibir clientes"
-            />
-          </article>
-        </div>
-      </section>
-
-      <section className="section adsSection">
-        <div className="container">
-          <div className="sectionHead compactHead">
-            <div>
-              <div className="eyebrow orange">OPORTUNIDADES DESTACADAS</div>
-              <h2>Publicidad y promociones</h2>
-            </div>
-            <span className="adDisclosure">Los contenidos pagos siempre se mostrarán como patrocinados.</span>
-          </div>
-
-          <div className="adCards">
-            {[
-              ["Ferretería y materiales", "Todo para tu proyecto, cerca de vos."],
-              ["Panadería y gastronomía", "Promociones y productos del día."],
-              ["Servicios profesionales", "Mostrá tu trabajo a nuevos clientes."],
-              ["Capacitación y empleo", "Cursos, búsquedas y oportunidades."],
-            ].map(([title, text]) => (
-              <article className="adCard" key={title}>
-                <span>Patrocinado</span>
-                <h3>{title}</h3>
-                <p>{text}</p>
-                <button onClick={() => action(`${title}: espacio publicitario de demostración.`)}>Ver más</button>
-              </article>
-            ))}
-          </div>
+          {filtered.length === 0 && <div className="empty">No encontramos resultados. Probá con otro oficio, servicio o ciudad.</div>}
         </div>
       </section>
 
       <section className="trustStrip">
         <div className="container trustGrid">
-          <div><b>✓</b><span>Perfiles y reputación</span></div>
-          <div><b>↔</b><span>Comunicación directa</span></div>
-          <div><b>⌖</b><span>Cercanía y ubicación</span></div>
-          <div><b>?</b><span>Soporte y ayuda</span></div>
+          <div><b>✓</b><span>Perfiles verificados<br/>y calificaciones</span></div>
+          <div><b>◌</b><span>Comunicación directa<br/>y segura</span></div>
+          <div><b>▢</b><span>Pagos seguros<br/>en la plataforma</span></div>
+          <div><b>⌂</b><span>Soporte y ayuda<br/>siempre disponibles</span></div>
         </div>
       </section>
 
-      <footer className="premiumFooter">
+      <footer className="premiumFooter mockFooter">
         <div className="container footerGrid">
           <div className="footerAbout">
             <img src={logoWorkCerca.src} alt="WorkCerca" />
-            <p>Conectamos personas, impulsamos trabajo, negocios, formación y oportunidades.</p>
+            <p>Conectamos personas, impulsamos negocios, generamos oportunidades.</p>
           </div>
-          <div><b>Explorar</b><a>Servicios</a><a>Profesionales</a><a>Empleo</a><a>Formación</a></div>
-          <div><b>WorkCerca</b><a>Empresas</a><a>Emprendedores</a><a>Municipios</a><a>Inclusión</a></div>
+          <div><b>Navegación</b><a>Inicio</a><a>Buscar</a><a>Categorías</a><a>Empresas</a></div>
+          <div><b>Recursos</b><a>Centro de ayuda</a><a>Cómo funciona</a><a>Consejos de seguridad</a><a>Blog</a></div>
+          <div><b>WorkCerca</b><a>Quiénes somos</a><a>Términos y condiciones</a><a>Política de privacidad</a><a>Contacto</a></div>
           <div>
-            <b>Contacto</b>
-            <a href={`mailto:${WORKCERCA_EMAIL}`}>{WORKCERCA_EMAIL}</a>
-            <a href={`https://www.instagram.com/${WORKCERCA_INSTAGRAM}/`} target="_blank" rel="noreferrer">
-              @{WORKCERCA_INSTAGRAM}
-            </a>
-            <a href={`https://wa.me/${WORKCERCA_WHATSAPP}`} target="_blank" rel="noreferrer">WhatsApp</a>
+            <b>Seguinos en</b>
+            <div className="socialRow"><span>f</span><span>◎</span><span>▶</span><span>in</span></div>
           </div>
         </div>
         <div className="container copyright">© 2026 WorkCerca — CONECTA · ENCUENTRA · CRECE</div>
