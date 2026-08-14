@@ -111,295 +111,37 @@ export default function Home() {
       setCurrentUserId(user?.id || "");
     });
 
-    return () => {
-      listener.subscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    const loadProfessionals = async () => {
-      const supabase = getSupabaseClient();
-      if (!supabase) {
-        setLoadingProfessionals(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id,nombre,tipo_usuario,oficio,ciudad,zona,descripcion,whatsapp,disponibilidad")
-        .eq("tipo_usuario", "Profesional");
-
-      if (!error && data) {
-        const mapped = data.map((p) => ({
-          id: p.id,
-          name: p.nombre || "Profesional de WorkCerca",
-          job: p.oficio || "Profesional",
-          city: p.ciudad || "Zona no informada",
-          rating: "Nuevo",
-          icon: "🛠️",
-          description: p.descripcion || "Profesional registrado en WorkCerca.",
-          availability: p.disponibilidad || "Consultar disponibilidad",
-          rate: "Tarifa a consultar",
-          services: p.descripcion ? [p.descripcion] : ["Servicio profesional"],
-          whatsapp: p.whatsapp || "",
-          isReal: true,
-        }));
-
-        setRealProfessionals(mapped);
-      }
-
-      setLoadingProfessionals(false);
-    };
-
-    loadProfessionals();
-  }, []);
-
-  const searchNow = () => {
-    window.setTimeout(() => {
-      const section = document.getElementById("professionals");
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 80);
-  };
-
-  const openProfile = (professional: any) => {
-    setSelectedProfessional(professional);
-    setContactOpen(false);
-    setContactName("");
-    setContactPhone("");
-    setContactZone("");
-    setContactMessage("");
-  };
-
-  const closeProfile = () => {
-    setSelectedProfessional(null);
-    setContactOpen(false);
-    setContactName("");
-    setContactPhone("");
-    setContactZone("");
-    setContactMessage("");
-  };
-
-  const sendContactRequest = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!selectedProfessional) return;
-
-    const request = {
-      professional: selectedProfessional.name,
-      service: selectedProfessional.job,
-      name: contactName,
-      phone: contactPhone,
-      zone: contactZone,
-      message: contactMessage,
-      createdAt: new Date().toISOString(),
-    };
-
-    const current = JSON.parse(localStorage.getItem("workcerca-contactos") || "[]");
-    current.push(request);
-    localStorage.setItem("workcerca-contactos", JSON.stringify(current));
-
-    if (!WORKCERCA_WHATSAPP) {
-      setNotice("La solicitud quedó guardada. El WhatsApp institucional de WorkCerca se incorporará antes del lanzamiento.");
-      return;
-    }
-
-    const whatsappMessage = [
-      "Hola! Quiero solicitar un servicio desde workcerca.",
-      "",
-      `Servicio: ${selectedProfessional.job}`,
-      `Perfil: ${selectedProfessional.name}`,
-      `Nombre: ${contactName}`,
-      `Teléfono: ${contactPhone}`,
-      `Zona/Barrio: ${contactZone}`,
-      `Necesidad: ${contactMessage}`,
-    ].join("\n");
-
-    const professionalNumber = selectedProfessional.whatsapp
-      ? String(selectedProfessional.whatsapp).replace(/\D/g, "")
-      : "";
-
-    const destinationNumber = professionalNumber || WORKCERCA_WHATSAPP;
-    const whatsappUrl = `https://wa.me/${destinationNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-    window.open(whatsappUrl, "_blank");
-
-    setNotice(
-      professionalNumber
-        ? "Solicitud preparada. Se abrió el WhatsApp del profesional."
-        : "Solicitud preparada. Se abrió el WhatsApp institucional de workcerca."
-    );
-    setContactOpen(false);
-    setContactName("");
-    setContactPhone("");
-    setContactZone("");
-    setContactMessage("");
-  };
-
-  const openRegister = () => {
-    setAuthMode("register");
-    setAuthOpen(true);
-  };
-
-  const openLogin = () => {
-    setAuthMode("login");
-    setAuthOpen(true);
-  };
-
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const supabase = getSupabaseClient();
-
-    if (!supabase) {
-      action("Falta completar la conexión con Supabase en Vercel.");
-      return;
-    }
-
-    setAuthLoading(true);
-
-    try {
-      if (authMode === "register") {
-        const { error } = await supabase.auth.signUp({
-          email: authEmail,
-          password: authPassword,
-          options: {
-            emailRedirectTo: WORKCERCA_WEB || window.location.origin,
-          },
-        });
-
-        if (error) {
-          action(`No se pudo crear la cuenta: ${error.message}`);
-          return;
-        }
-
-        setConfirmEmailNotice(true);
-        setAuthOpen(false);
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: authEmail,
-          password: authPassword,
-        });
-
-        if (error) {
-          action(`No se pudo iniciar sesión: ${error.message}`);
-          return;
-        }
-
-        const { data: userData } = await supabase.auth.getUser();
-        const userId = userData.user?.id || "";
-
-        if (userId) {
-          setCurrentUserId(userId);
-          const { data: existingProfile } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", userId)
-            .maybeSingle();
-
-          if (existingProfile) {
-            setProfileName(existingProfile.nombre || "");
-            setProfileType(existingProfile.tipo_usuario || "Cliente");
-            setProfileJob(existingProfile.oficio || "");
-            setProfileCity(existingProfile.ciudad || "");
-            setProfileZone(existingProfile.zona || "");
-            setProfileDescription(existingProfile.descripcion || "");
-            setProfileWhatsapp(existingProfile.whatsapp || "");
-            setProfileAvailability(existingProfile.disponibilidad || "");
-          }
-
-          setProfileOpen(true);
-        }
-
-        action("Sesión iniciada correctamente.");
-        setAuthOpen(false);
-      }
-
-      setAuthEmail("");
-      setAuthPassword("");
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
-  const saveProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const supabase = getSupabaseClient();
-    if (!supabase || !currentUserId) {
-      action("Primero iniciá sesión para guardar tu perfil.");
-      return;
-    }
-
-    setProfileLoading(true);
-
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .upsert(
-          {
-            id: currentUserId,
-            nombre: profileName,
-            tipo_usuario: profileType,
-            oficio: profileType === "Profesional" ? profileJob : null,
-            ciudad: profileCity,
-            zona: profileZone,
-            descripcion: profileDescription,
-            whatsapp: profileWhatsapp,
-            disponibilidad: profileType === "Profesional" ? profileAvailability : null,
-          },
-          { onConflict: "id" }
-        );
-
-      if (error) {
-        action(`No se pudo guardar el perfil: ${error.message}`);
-        return;
-      }
-
-      action("Perfil guardado correctamente en WorkCerca.");
-      setProfileOpen(false);
-    } finally {
-      setProfileLoading(false);
-    }
-  };
-
-  const signOut = async () => {
-    const supabase = getSupabaseClient();
-    if (!supabase) return;
-    await supabase.auth.signOut();
-    setCurrentUserId("");
-    setProfileOpen(false);
-    action("Sesión cerrada.");
-  };
-
-  return (
-    <main>
+    return (
+    <main className="workcercaSite">
       <header className="topbar">
         <div className="container nav">
           <button
             className="brand"
-            onClick={() => setActive("Inicio")}
-            aria-label="Ir al inicio de workcerca"
-            style={{ padding: 0, background: "transparent" }}
+            onClick={() => {
+              setActive("Inicio");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            aria-label="Ir al inicio de WorkCerca"
           >
-            <img
-              src={logoWorkCerca.src}
-              alt="WorkCerca"
-              style={{
-                width: 185,
-                height: 64,
-                objectFit: "contain",
-                objectPosition: "left center"
-              }}
-            />
+            <img src={logoWorkCerca.src} alt="WorkCerca" />
           </button>
-          <nav>
-            {["Inicio", "Servicios", "Empleo", "Cursos", "Emprendé"].map(item => (
-              <button key={item} className={active === item ? "navActive" : ""} onClick={() => setActive(item)}>
+
+          <nav className="mainNav" aria-label="Navegación principal">
+            {["Inicio", "Buscar", "Categorías", "Empresas", "Emprendedores"].map((item) => (
+              <button
+                key={item}
+                className={active === item ? "navActive" : ""}
+                onClick={() => {
+                  setActive(item);
+                  if (item === "Buscar") searchNow();
+                  if (item === "Categorías") document.getElementById("ecosistema")?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
                 {item}
               </button>
             ))}
           </nav>
+
           <div className="navActions">
             {currentUserId ? (
               <>
@@ -408,256 +150,277 @@ export default function Home() {
               </>
             ) : (
               <>
-                <button className="login" onClick={openLogin}>Ingresar</button>
-                <button className="primary small" onClick={openRegister}>Crear cuenta</button>
+                <button className="login" onClick={openLogin}>Iniciar sesión</button>
+                <button className="outline small" onClick={openRegister}>Registrate</button>
               </>
             )}
           </div>
         </div>
       </header>
 
-      <section className="hero">
-        <div className="heroGlow glowA" />
-        <div className="heroGlow glowB" />
-        <div className="container heroGrid">
-          <div>
-            <div className="eyebrow">CONECTA · ENCUENTRA · CRECE</div>
-            <h1>Personas, trabajo y oportunidades.<br /><span>Todo más cerca.</span></h1>
-            <p className="heroText">
-              WorkCerca conecta personas, profesionales, empleo, formación, emprendimientos, empresas, instituciones y municipios en un solo ecosistema.
+      <section className="heroPremium">
+        <div className="heroPhotoGrid" aria-hidden="true">
+          <img
+            src="https://images.pexels.com/photos/3184374/pexels-photo-3184374.jpeg?auto=compress&cs=tinysrgb&w=1000"
+            alt=""
+          />
+          <img
+            src="https://images.pexels.com/photos/29288253/pexels-photo-29288253.jpeg?auto=compress&cs=tinysrgb&w=1000"
+            alt=""
+          />
+          <img
+            src="https://images.pexels.com/photos/27928762/pexels-photo-27928762.jpeg?auto=compress&cs=tinysrgb&w=1000"
+            alt=""
+          />
+          <div className="heroPhotoShade" />
+        </div>
+
+        <div className="container heroPremiumInner">
+          <div className="heroCopy">
+            <div className="eyebrow light">CONECTA · ENCUENTRA · CRECE</div>
+            <h1>Personas, trabajo y oportunidades. <span>Todo más cerca.</span></h1>
+            <p>
+              WorkCerca conecta personas, profesionales, empleo, formación,
+              emprendimientos, empresas, instituciones y municipios en un solo ecosistema.
             </p>
-            <div className="searchBox">
-              <span>🔎</span>
-              <input
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter") searchNow(); }}
-                placeholder="¿Qué estás buscando? Ej.: electricista"
-              />
-              <button className="primary" onClick={searchNow}>
-                Buscar
-              </button>
-            </div>
-            <div className="quick">
-              <span>Buscá:</span>
-              {["Electricista", "Plomero", "Pintura", "Refrigeración"].map(x => (
-                <button key={x} onClick={() => { setQuery(x); setTimeout(searchNow, 50); }}>{x}</button>
-              ))}
-            </div>
           </div>
-          <div className="heroCard">
-            <img
-              src={logoWorkCerca.src}
-              alt="Logo de WorkCerca"
-              style={{
-                width: "100%",
-                maxHeight: 170,
-                objectFit: "contain",
-                marginBottom: 16,
-                borderRadius: 18
-              }}
-            />
-            <div className="aiBadge">🤖 WorkCerca AI</div>
-            <h3>¿No sabés por dónde empezar?</h3>
-            <p>Contanos qué querés aprender, trabajar o emprender y te ayudaremos a encontrar un camino.</p>
-            <button className="primary wide" onClick={() => action("WorkCerca AI: próximamente podrás recibir recomendaciones personalizadas.")}>Explorar mi oportunidad →</button>
-            <div className="miniStats">
-              <div><b>9+</b><span>áreas</span></div>
-              <div><b>∞</b><span>posibilidades</span></div>
-              <div><b>1</b><span>ecosistema</span></div>
+
+          <div className="searchPanel">
+            <div className="searchField">
+              <span className="searchIcon">⌕</span>
+              <div>
+                <label>¿Qué necesitás?</label>
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") searchNow(); }}
+                  placeholder="Ej.: Electricista, plomero, diseño, catering..."
+                />
+              </div>
             </div>
+
+            <div className="locationField">
+              <span className="pinIcon">⌖</span>
+              <div>
+                <label>Tu ubicación</label>
+                <button
+                  type="button"
+                  onClick={() => action("El GPS real se activará en la etapa de geolocalización.")}
+                >
+                  Usar mi ubicación
+                </button>
+              </div>
+            </div>
+
+            <button className="primary searchButton" onClick={searchNow}>Buscar</button>
+          </div>
+
+          <div className="heroPaths">
+            {[
+              ["💼", "Mi Primer Empleo"],
+              ["🛠️", "Oficios y Servicios"],
+              ["🏪", "Comercios y Emprendedores"],
+              ["🏭", "Empresas e Industria"],
+              ["📐", "Profesionales y Proyectos"],
+              ["📣", "Publicidad y Promociones"],
+              ["🤝", "Comunidad y Conexiones"],
+            ].map(([icon, title]) => (
+              <button
+                key={title}
+                onClick={() => action(`${title}: esta sección se activará por etapas.`)}
+              >
+                <span>{icon}</span>
+                <b>{title}</b>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section cleanSection" id="ecosistema">
+        <div className="container">
+          <div className="sectionHead compactHead">
+            <div>
+              <div className="eyebrow blue">EXPLORÁ</div>
+              <h2>Encontrá tu lugar en WorkCerca</h2>
+            </div>
+            <button className="textBtn" onClick={() => action("Próximamente: catálogo completo de categorías.")}>
+              Ver todas las categorías →
+            </button>
+          </div>
+
+          <div className="sectorGrid">
+            {[
+              ["Construcción", "https://images.pexels.com/photos/29288253/pexels-photo-29288253.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Electricidad", "https://images.pexels.com/photos/27928762/pexels-photo-27928762.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Gastronomía", "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Comercios", "https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Emprendimientos", "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Industria", "https://images.pexels.com/photos/3862627/pexels-photo-3862627.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Mi Primer Empleo", "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Profesionales", "https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Empresas", "https://images.pexels.com/photos/3184306/pexels-photo-3184306.jpeg?auto=compress&cs=tinysrgb&w=900"],
+              ["Productores y rurales", "https://images.pexels.com/photos/2132250/pexels-photo-2132250.jpeg?auto=compress&cs=tinysrgb&w=900"],
+            ].map(([title, image]) => (
+              <button
+                className="sectorCard"
+                key={title}
+                onClick={() => action(`${title}: módulo preparado para la próxima etapa.`)}
+              >
+                <img src={image} alt={title} />
+                <span className="sectorShade" />
+                <b>{title}</b>
+              </button>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="section soft" id="professionals">
         <div className="container">
-          <div className="sectionHead">
-            <div><div className="eyebrow orange">RESULTADOS DE BÚSQUEDA</div><h2>{query.trim() ? `Resultados para “${query.trim()}”` : "Profesionales destacados"}</h2></div>
+          <div className="sectionHead compactHead">
+            <div>
+              <div className="eyebrow blue">CERCA TUYO</div>
+              <h2>{query.trim() ? `Resultados para “${query.trim()}”` : "Profesionales disponibles"}</h2>
+              <p>Perfiles reales registrados en WorkCerca y perfiles de demostración mientras ampliamos la comunidad.</p>
+            </div>
             <button className="outline" onClick={() => setQuery("")}>Ver todos</button>
           </div>
-          {loadingProfessionals && (
-            <div className="empty">Cargando profesionales registrados...</div>
-          )}
 
-          <div className="cards">
-            {filtered.map(p => (
-              <article className="proCard" key={p.name}>
-                <div className="avatar">{p.icon}</div>
-                <div className="proTop">
-                  <span className="verified">{p.isReal ? "✓ Perfil registrado" : "✓ Perfil demo"}</span>
-                  <span>{p.rating === "Nuevo" ? "🆕 Nuevo" : `⭐ ${p.rating}`}</span>
+          {loadingProfessionals && <div className="empty">Cargando profesionales registrados...</div>}
+
+          <div className="cards professionalCards">
+            {filtered.slice(0, 6).map((p) => (
+              <article className="proCard formalCard" key={`${p.name}-${p.job}`}>
+                <div className="professionalHeader">
+                  <div className="avatar formalAvatar">{p.icon}</div>
+                  <div>
+                    <span className="verified">{p.isReal ? "Perfil registrado" : "Perfil demo"}</span>
+                    <h3>{p.name}</h3>
+                    <p>{p.job}</p>
+                  </div>
                 </div>
-                <h3>{p.name}</h3><p>{p.job}</p>
-                <div className="location">📍 {p.city}</div>
-                <div className="location">🟢 {p.availability}</div>
-                <div className="location">💰 {p.rate}</div>
+                <div className="profileMeta">
+                  <span>📍 {p.city}</span>
+                  <span>● {p.availability}</span>
+                  <span>💬 {p.rating === "Nuevo" ? "Nuevo" : p.rating}</span>
+                </div>
                 <button className="outline wide" onClick={() => openProfile(p)}>Ver perfil</button>
               </article>
             ))}
           </div>
-          {filtered.length === 0 && <div className="empty">No encontramos resultados para esta búsqueda. Probá con otro oficio o servicio.</div>}
+
+          {filtered.length === 0 && (
+            <div className="empty">No encontramos resultados. Probá con otro oficio, servicio o ciudad.</div>
+          )}
         </div>
       </section>
 
-      <section className="section" id="results">
-        <div className="container">
-          <div className="sectionHead">
-            <div><div className="eyebrow blue">EXPLORÁ</div><h2>Todo el ecosistema en un solo lugar</h2></div>
-            <p>Servicios, empleo, formación, empresas, municipios y desarrollo regional. Los nuevos módulos se irán activando por etapas.</p>
-          </div>
-          <div className="categoryGrid">
-            {categories.map(([icon, title, desc]) => (
-              <button className="category" key={title} onClick={() => action(`${title}: módulo preparado para la próxima etapa.`)}>
-                <span className="categoryIcon">{icon}</span>
-                <span><b>{title}</b><small>{desc}</small></span>
-                <span className="arrow">→</span>
+      <section className="section featureSection">
+        <div className="container featureGrid">
+          <article className="featurePanel gpsPanel">
+            <div className="featureText">
+              <div className="eyebrow blue">GPS WORKCERCA</div>
+              <h2>Servicios cerca tuyo</h2>
+              <p>Encontrá profesionales y comercios de tu zona y, más adelante, consultá disponibilidad en tiempo real.</p>
+              <button className="primary" onClick={() => action("GPS: integración real planificada para la próxima etapa.")}>
+                Ver en el mapa
               </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="aiSection">
-        <div className="container aiGrid">
-          <div>
-            <div className="eyebrow">INTELIGENCIA PARA CRECER</div>
-            <h2>WorkCerca AI puede ayudarte a encontrar tu camino.</h2>
-            <p>Para quien busca su primer empleo, quiere aprender un oficio, ya tiene una profesión o necesita hacer crecer un emprendimiento.</p>
-            <div className="aiList">
-              <div>✓ Recomendar capacitaciones según tus intereses</div>
-              <div>✓ Detectar oportunidades laborales</div>
-              <div>✓ Ayudar a mejorar tu perfil profesional</div>
-              <div>✓ Conectar empresas con talento capacitado</div>
             </div>
-            <button className="primary" onClick={() => action("Asistente AI: módulo en preparación.")}>Conocer WorkCerca AI</button>
-          </div>
-          <div className="journey">
-            {["No tengo experiencia", "Me capacito", "Desarrollo mi oficio", "Encuentro oportunidades", "Crezco"].map((x, i) => (
-              <div className="journeyItem" key={x}><span>{i + 1}</span><b>{x}</b>{i < 4 && <i>↓</i>}</div>
-            ))}
-          </div>
+            <img
+              src="https://images.pexels.com/photos/30403062/pexels-photo-30403062.jpeg?auto=compress&cs=tinysrgb&w=900"
+              alt="Teléfono mostrando un mapa con GPS"
+            />
+          </article>
+
+          <article className="featurePanel networkPanel">
+            <div className="eyebrow blue">RED WORKCERCA</div>
+            <h2>Conectá, colaborá, crecé</h2>
+            <p>Personas, empresas, instituciones y municipios conectados para generar oportunidades y proyectos.</p>
+            <div className="networkVisual" aria-hidden="true">
+              <span className="node n1">●</span>
+              <span className="node n2">●</span>
+              <span className="node n3">●</span>
+              <span className="node n4">●</span>
+              <span className="node n5">●</span>
+              <i className="line l1" /><i className="line l2" /><i className="line l3" /><i className="line l4" />
+            </div>
+          </article>
+
+          <article className="featurePanel adPanel">
+            <span className="sponsored">PATROCINADO</span>
+            <div className="featureText">
+              <div className="eyebrow orange">PUBLICIDAD</div>
+              <h2>Dale visibilidad a tu negocio</h2>
+              <p>Espacios preparados para comercios, empresas, profesionales, instituciones y promociones locales.</p>
+              <button className="primary" onClick={() => action("Publicidad WorkCerca: módulo comercial en preparación.")}>
+                Publicitar ahora
+              </button>
+            </div>
+            <img
+              src="https://images.pexels.com/photos/264636/pexels-photo-264636.jpeg?auto=compress&cs=tinysrgb&w=900"
+              alt="Comercio preparado para recibir clientes"
+            />
+          </article>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section adsSection">
         <div className="container">
-          <div className="sectionHead">
-            <div><div className="eyebrow green">WORKCERCA FORMACIÓN</div><h2>Aprendé para crecer</h2></div>
-            <button className="outline" onClick={() => action("Academy: catálogo completo en preparación.")}>Ver cursos →</button>
+          <div className="sectionHead compactHead">
+            <div>
+              <div className="eyebrow orange">OPORTUNIDADES DESTACADAS</div>
+              <h2>Publicidad y promociones</h2>
+            </div>
+            <span className="adDisclosure">Los contenidos pagos siempre se mostrarán como patrocinados.</span>
           </div>
-          <div className="courseGrid">
-            {courses.map(c => (
-              <article className="course" key={c.title}>
-                <div className="courseIcon">🎓</div>
-                <span className="pill">{c.level}</span>
-                <h3>{c.title}</h3><p>{c.place}</p>
-                <button className="textBtn" onClick={() => action(`Curso seleccionado: ${c.title}.`)}>Más información →</button>
+
+          <div className="adCards">
+            {[
+              ["Ferretería y materiales", "Todo para tu proyecto, cerca de vos."],
+              ["Panadería y gastronomía", "Promociones y productos del día."],
+              ["Servicios profesionales", "Mostrá tu trabajo a nuevos clientes."],
+              ["Capacitación y empleo", "Cursos, búsquedas y oportunidades."],
+            ].map(([title, text]) => (
+              <article className="adCard" key={title}>
+                <span>Patrocinado</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+                <button onClick={() => action(`${title}: espacio publicitario de demostración.`)}>Ver más</button>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="regional">
-        <div className="container regionalGrid">
-          <div>
-            <div className="eyebrow orange">ECONOMÍA REGIONAL</div>
-            <h2>Visibilizamos lo que produce nuestra comunidad.</h2>
-            <p>Pequeños productores, artesanos, comercios y emprendedores también forman parte de WorkCerca.</p>
-            <button className="primary" onClick={() => action("Mapa económico regional: módulo preparado para integrar mapas y datos reales.")}>Explorar la región →</button>
-          </div>
-          <div className="mapMock">
-            <div className="mapPin p1">🛠️</div><div className="mapPin p2">🌱</div><div className="mapPin p3">🏪</div><div className="mapPin p4">🎨</div>
-            <div className="mapLabel">MAPA ECONÓMICO REGIONAL</div>
-          </div>
+      <section className="trustStrip">
+        <div className="container trustGrid">
+          <div><b>✓</b><span>Perfiles y reputación</span></div>
+          <div><b>↔</b><span>Comunicación directa</span></div>
+          <div><b>⌖</b><span>Cercanía y ubicación</span></div>
+          <div><b>?</b><span>Soporte y ayuda</span></div>
         </div>
       </section>
 
-      <section className="cta">
-        <div className="container ctaInner">
-          <div><div className="eyebrow">EL PRÓXIMO PASO</div><h2>Tu oportunidad puede estar más cerca de lo que pensás.</h2></div>
-          <div className="ctaBtns">
-            <button className="primary" onClick={openRegister}>Quiero registrarme</button>
-            <button className="whiteBtn" onClick={openRegister}>Soy profesional</button>
-          </div>
-        </div>
-      </section>
-
-      <footer>
+      <footer className="premiumFooter">
         <div className="container footerGrid">
-          <div><div className="footerBrand"><span className="brandMark">OC</span> WorkCerca</div><p>Servicios, trabajo, capacitación, producción y oportunidades en un solo ecosistema.</p></div>
-          <div><b>Explorar</b><a>Profesionales</a><a>Empleo</a><a>Cursos</a><a>Emprendedores</a></div>
-          <div><b>Comunidad</b><a>Productores</a><a>Artesanos</a><a>Comercios</a><a>Inclusión</a></div>
-          <div><b>WorkCerca</b><a>Sobre nosotros</a><a>Ayuda</a><a>Contacto</a><a>Privacidad</a></div>
-        </div>
-        <div className="container" style={{ marginTop: 28, paddingTop: 22, borderTop: "1px solid #223548" }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "minmax(0, 1fr) auto",
-              gap: 24,
-              alignItems: "center"
-            }}
-          >
-            <div>
-              <b style={{ color: "white", fontSize: 18 }}>Contacto institucional</b>
-              <div style={{ marginTop: 12, display: "grid", gap: 10, color: "#cbd5e1", fontSize: 14 }}>
-                <a
-                  href={`https://wa.me/${WORKCERCA_WHATSAPP}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "#cbd5e1", textDecoration: "none" }}
-                >
-                  📱 WhatsApp: +54 3482 640585
-                </a>
-                <a
-                  href={`mailto:${WORKCERCA_EMAIL}`}
-                  style={{ color: "#cbd5e1", textDecoration: "none" }}
-                >
-                  ✉️ {WORKCERCA_EMAIL}
-                </a>
-                <a
-                  href={`https://www.instagram.com/${WORKCERCA_INSTAGRAM}/`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "#cbd5e1", textDecoration: "none" }}
-                >
-                  📸 Instagram: @{WORKCERCA_INSTAGRAM}
-                </a>
-                <a
-                  href={WORKCERCA_WEB || "/"}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: "#cbd5e1", textDecoration: "none" }}
-                >
-                  🌐 WorkCerca Web
-                </a>
-              </div>
-            </div>
-
-            <div
-              style={{
-                background: "white",
-                borderRadius: 16,
-                padding: 18,
-                textAlign: "center",
-                width: 150
-              }}
-            >
-              <div style={{ fontSize: 30, marginBottom: 8 }}>▦</div>
-              <div style={{ color: "#0b1f33", fontWeight: 900, fontSize: 13 }}>
-                QR WorkCerca
-              </div>
-              <div style={{ color: "#64748b", fontSize: 11, lineHeight: 1.5, marginTop: 6 }}>
-                Lo generamos cuando confirmemos la URL definitiva.
-              </div>
-            </div>
+          <div className="footerAbout">
+            <img src={logoWorkCerca.src} alt="WorkCerca" />
+            <p>Conectamos personas, impulsamos trabajo, negocios, formación y oportunidades.</p>
+          </div>
+          <div><b>Explorar</b><a>Servicios</a><a>Profesionales</a><a>Empleo</a><a>Formación</a></div>
+          <div><b>WorkCerca</b><a>Empresas</a><a>Emprendedores</a><a>Municipios</a><a>Inclusión</a></div>
+          <div>
+            <b>Contacto</b>
+            <a href={`mailto:${WORKCERCA_EMAIL}`}>{WORKCERCA_EMAIL}</a>
+            <a href={`https://www.instagram.com/${WORKCERCA_INSTAGRAM}/`} target="_blank" rel="noreferrer">
+              @{WORKCERCA_INSTAGRAM}
+            </a>
+            <a href={`https://wa.me/${WORKCERCA_WHATSAPP}`} target="_blank" rel="noreferrer">WhatsApp</a>
           </div>
         </div>
-        <div className="container copyright">© 2026 WorkCerca — Plataforma de servicios, oportunidades y desarrollo regional.</div>
+        <div className="container copyright">© 2026 WorkCerca — CONECTA · ENCUENTRA · CRECE</div>
       </footer>
-
 
       {selectedProfessional && (
         <div
