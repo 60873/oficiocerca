@@ -1,16 +1,14 @@
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import logoWorkCerca from "../b9132c5a-18cd-4603-a022-cd3efd09857f.png";
-import qrOficioCerca from "../qr-oficiocerca-web.png";
 // Contacto institucional de WorkCerca.
 // Cuando tengas el número y el correo definitivos, solo hay que completar estos dos valores.
 const WORKCERCA_WHATSAPP = "543482640585";
 const WORKCERCA_EMAIL = "workcerca@gmail.com";
 const WORKCERCA_INSTAGRAM = "workcerca";
-const WORKCERCA_WEB = "https://oficiocerca-web.vercel.app/";
+const WORKCERCA_WEB = process.env.NEXT_PUBLIC_SITE_URL || "";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
@@ -22,28 +20,31 @@ function getSupabaseClient() {
 
 
 const categories = [
-  ["🛠️", "Profesionales", "Encontrá oficios y especialistas cerca."],
-  ["💼", "Primer empleo", "Capacitate y encontrá tu primera oportunidad."],
-  ["🎓", "Cursos", "Aprendé, actualizate y desarrollá tu oficio."],
-  ["🚀", "Emprendedores", "Convertí tu idea en una oportunidad."],
-  ["🌱", "Productores regionales", "Descubrí productos hechos en tu región."],
-  ["🎨", "Artesanos", "Visibilizá y conectá tus creaciones."],
-  ["🏪", "Comercios", "Mostrá tus productos y servicios."],
-  ["🏢", "Empresas", "Encontrá talento y proveedores capacitados."],
-  ["♿", "Inclusión", "Oportunidades y herramientas accesibles."],
+  ["🛠️", "Servicios y urgencias", "Encontrá profesionales, pedí presupuestos y resolvé necesidades cercanas."],
+  ["📋", "Mi Proyecto", "Organizá una necesidad, compará propuestas y seguí cada etapa."],
+  ["💼", "Mi Primer Empleo", "Armá tu CV, descubrí oportunidades y preparate para entrevistas."],
+  ["🗓️", "Mi Día profesional", "Organizá solicitudes, presupuestos, trabajos y disponibilidad."],
+  ["🚀", "Mi Negocio", "Herramientas para emprendedores, costos, proveedores, pedidos y crecimiento."],
+  ["🏢", "Empresas", "Publicá oportunidades, encontrá talento, proveedores y servicios."],
+  ["🎓", "Formación", "Cursos, carreras, becas, capacitaciones e instituciones."],
+  ["🏛️", "Red de Municipios", "Desarrollo local, capacitación, obras y oportunidades regionales."],
+  ["🌱", "Economía regional", "Productores, artesanos, comercios y emprendimientos de la región."],
+  ["♿", "Inclusión y accesibilidad", "Oportunidades y herramientas para una comunidad más accesible."],
+  ["📊", "Observatorio WorkCerca", "Información sobre necesidades, empleo, servicios y desarrollo local."],
+  ["🎥", "Comunicación", "Mensajes, notificaciones y futuras videollamadas para consultas y entrevistas."],
 ];
 
 const professionals = [
-  { name: "Perfil Demo Electricidad", job: "Electricista", city: "Reconquista", rating: "4.9", icon: "⚡", description: "Perfil demostrativo para probar cómo se verá un profesional real dentro de OficioCerca.", availability: "Disponible hoy", rate: "Tarifa a consultar", services: ["Instalaciones eléctricas", "Reparaciones", "Mantenimiento"] },
+  { name: "Perfil Demo Electricidad", job: "Electricista", city: "Reconquista", rating: "4.9", icon: "⚡", description: "Perfil demostrativo para probar cómo se verá un profesional real dentro de WorkCerca.", availability: "Disponible hoy", rate: "Tarifa a consultar", services: ["Instalaciones eléctricas", "Reparaciones", "Mantenimiento"] },
   { name: "Perfil Demo Pintura", job: "Pintora", city: "Avellaneda", rating: "4.8", icon: "🎨", description: "Perfil demostrativo para visualizar servicios de pintura, mantenimiento y mejoras del hogar.", availability: "Disponible esta semana", rate: "Presupuesto sin cargo", services: ["Pintura interior", "Pintura exterior", "Mantenimiento"] },
   { name: "Perfil Demo Refrigeración", job: "Técnico en refrigeración", city: "Reconquista", rating: "5.0", icon: "❄️", description: "Perfil demostrativo para mostrar cómo funcionarán los servicios técnicos especializados.", availability: "Consultar disponibilidad", rate: "Tarifa a consultar", services: ["Aire acondicionado", "Refrigeración", "Mantenimiento preventivo"] },
   { name: "Perfil Demo Plomería", job: "Plomero", city: "Reconquista", rating: "4.7", icon: "🚰", description: "Perfil demostrativo para servicios de plomería y mantenimiento domiciliario.", availability: "Disponible hoy", rate: "Presupuesto previo", services: ["Pérdidas de agua", "Instalaciones", "Destapes"] },
 ];
 
 const courses = [
-  { title: "Electricidad básica", level: "Inicial", place: "OficioCerca Academy" },
+  { title: "Electricidad básica", level: "Inicial", place: "WorkCerca Academy" },
   { title: "Cómo iniciar un emprendimiento", level: "Emprendedores", place: "Institución aliada" },
-  { title: "Herramientas digitales para el trabajo", level: "Inicial", place: "OficioCerca Academy" },
+  { title: "Herramientas digitales para el trabajo", level: "Inicial", place: "WorkCerca Academy" },
 ];
 
 export default function Home() {
@@ -131,12 +132,12 @@ export default function Home() {
       if (!error && data) {
         const mapped = data.map((p) => ({
           id: p.id,
-          name: p.nombre || "Profesional de workcerca
+          name: p.nombre || "Profesional de WorkCerca",
           job: p.oficio || "Profesional",
           city: p.ciudad || "Zona no informada",
           rating: "Nuevo",
           icon: "🛠️",
-          description: p.descripcion || "Profesional registrado en OficioCerca.",
+          description: p.descripcion || "Profesional registrado en WorkCerca.",
           availability: p.disponibilidad || "Consultar disponibilidad",
           rate: "Tarifa a consultar",
           services: p.descripcion ? [p.descripcion] : ["Servicio profesional"],
@@ -197,10 +198,10 @@ export default function Home() {
 
     const current = JSON.parse(localStorage.getItem("workcerca-contactos") || "[]");
     current.push(request);
-    localStorage.setItem("oficiocerca-contactos", JSON.stringify(current));
+    localStorage.setItem("workcerca-contactos", JSON.stringify(current));
 
-    if (!OFICIOCERCA_WHATSAPP) {
-      setNotice("La solicitud quedó guardada. El WhatsApp institucional de OficioCerca se incorporará antes del lanzamiento.");
+    if (!WORKCERCA_WHATSAPP) {
+      setNotice("La solicitud quedó guardada. El WhatsApp institucional de WorkCerca se incorporará antes del lanzamiento.");
       return;
     }
 
@@ -219,7 +220,7 @@ export default function Home() {
       ? String(selectedProfessional.whatsapp).replace(/\D/g, "")
       : "";
 
-    const destinationNumber = professionalNumber || OFICIOCERCA_WHATSAPP;
+    const destinationNumber = professionalNumber || WORKCERCA_WHATSAPP;
     const whatsappUrl = `https://wa.me/${destinationNumber}?text=${encodeURIComponent(whatsappMessage)}`;
     window.open(whatsappUrl, "_blank");
 
@@ -263,7 +264,7 @@ export default function Home() {
           email: authEmail,
           password: authPassword,
           options: {
-            emailRedirectTo: OFICIOCERCA_WEB,
+            emailRedirectTo: WORKCERCA_WEB || window.location.origin,
           },
         });
 
@@ -355,7 +356,7 @@ export default function Home() {
         return;
       }
 
-      action("Perfil guardado correctamente en OficioCerca.");
+      action("Perfil guardado correctamente en WorkCerca.");
       setProfileOpen(false);
     } finally {
       setProfileLoading(false);
@@ -382,8 +383,8 @@ export default function Home() {
             style={{ padding: 0, background: "transparent" }}
           >
             <img
-              src={logoOficioCerca.src}
-              alt="OficioCerca"
+              src={logoWorkCerca.src}
+              alt="WorkCerca"
               style={{
                 width: 185,
                 height: 64,
@@ -420,11 +421,10 @@ export default function Home() {
         <div className="heroGlow glowB" />
         <div className="container heroGrid">
           <div>
-            <div className="eyebrow">EL ECOSISTEMA DE OPORTUNIDADES</div>
-            <h1>Encontrá soluciones.<br /><span>Creá oportunidades.</span></h1>
+            <div className="eyebrow">CONECTA · ENCUENTRA · CRECE</div>
+            <h1>Personas, trabajo y oportunidades.<br /><span>Todo más cerca.</span></h1>
             <p className="heroText">
-              OficioCerca conecta personas, profesionales, empresas, comercios,
-              productores, artesanos y capacitaciones en un solo lugar.
+              WorkCerca conecta personas, profesionales, empleo, formación, emprendimientos, empresas, instituciones y municipios en un solo ecosistema.
             </p>
             <div className="searchBox">
               <span>🔎</span>
@@ -448,7 +448,7 @@ export default function Home() {
           <div className="heroCard">
             <img
               src={logoWorkCerca.src}
-              alt="Logo de OficioCerca"
+              alt="Logo de WorkCerca"
               style={{
                 width: "100%",
                 maxHeight: 170,
@@ -457,10 +457,10 @@ export default function Home() {
                 borderRadius: 18
               }}
             />
-            <div className="aiBadge">🤖 OficioCerca AI</div>
+            <div className="aiBadge">🤖 WorkCerca AI</div>
             <h3>¿No sabés por dónde empezar?</h3>
             <p>Contanos qué querés aprender, trabajar o emprender y te ayudaremos a encontrar un camino.</p>
-            <button className="primary wide" onClick={() => action("OficioCerca AI: próximamente podrás recibir recomendaciones personalizadas.")}>Explorar mi oportunidad →</button>
+            <button className="primary wide" onClick={() => action("WorkCerca AI: próximamente podrás recibir recomendaciones personalizadas.")}>Explorar mi oportunidad →</button>
             <div className="miniStats">
               <div><b>9+</b><span>áreas</span></div>
               <div><b>∞</b><span>posibilidades</span></div>
@@ -504,7 +504,7 @@ export default function Home() {
         <div className="container">
           <div className="sectionHead">
             <div><div className="eyebrow blue">EXPLORÁ</div><h2>Todo el ecosistema en un solo lugar</h2></div>
-            <p>Una puerta de entrada para descubrir servicios, trabajo, formación y producción local.</p>
+            <p>Servicios, empleo, formación, empresas, municipios y desarrollo regional. Los nuevos módulos se irán activando por etapas.</p>
           </div>
           <div className="categoryGrid">
             {categories.map(([icon, title, desc]) => (
@@ -522,7 +522,7 @@ export default function Home() {
         <div className="container aiGrid">
           <div>
             <div className="eyebrow">INTELIGENCIA PARA CRECER</div>
-            <h2>OficioCerca AI puede ayudarte a encontrar tu camino.</h2>
+            <h2>WorkCerca AI puede ayudarte a encontrar tu camino.</h2>
             <p>Para quien busca su primer empleo, quiere aprender un oficio, ya tiene una profesión o necesita hacer crecer un emprendimiento.</p>
             <div className="aiList">
               <div>✓ Recomendar capacitaciones según tus intereses</div>
@@ -530,7 +530,7 @@ export default function Home() {
               <div>✓ Ayudar a mejorar tu perfil profesional</div>
               <div>✓ Conectar empresas con talento capacitado</div>
             </div>
-            <button className="primary" onClick={() => action("Asistente AI: módulo en preparación.")}>Conocer OficioCerca AI</button>
+            <button className="primary" onClick={() => action("Asistente AI: módulo en preparación.")}>Conocer WorkCerca AI</button>
           </div>
           <div className="journey">
             {["No tengo experiencia", "Me capacito", "Desarrollo mi oficio", "Encuentro oportunidades", "Crezco"].map((x, i) => (
@@ -543,7 +543,7 @@ export default function Home() {
       <section className="section">
         <div className="container">
           <div className="sectionHead">
-            <div><div className="eyebrow green">OFICIOCERCA ACADEMY</div><h2>Aprendé para crecer</h2></div>
+            <div><div className="eyebrow green">WORKCERCA FORMACIÓN</div><h2>Aprendé para crecer</h2></div>
             <button className="outline" onClick={() => action("Academy: catálogo completo en preparación.")}>Ver cursos →</button>
           </div>
           <div className="courseGrid">
@@ -564,7 +564,7 @@ export default function Home() {
           <div>
             <div className="eyebrow orange">ECONOMÍA REGIONAL</div>
             <h2>Visibilizamos lo que produce nuestra comunidad.</h2>
-            <p>Pequeños productores, artesanos, comercios y emprendedores también forman parte de OficioCerca.</p>
+            <p>Pequeños productores, artesanos, comercios y emprendedores también forman parte de WorkCerca.</p>
             <button className="primary" onClick={() => action("Mapa económico regional: módulo preparado para integrar mapas y datos reales.")}>Explorar la región →</button>
           </div>
           <div className="mapMock">
@@ -586,10 +586,10 @@ export default function Home() {
 
       <footer>
         <div className="container footerGrid">
-          <div><div className="footerBrand"><span className="brandMark">OC</span> OficioCerca</div><p>Servicios, trabajo, capacitación, producción y oportunidades en un solo ecosistema.</p></div>
+          <div><div className="footerBrand"><span className="brandMark">OC</span> WorkCerca</div><p>Servicios, trabajo, capacitación, producción y oportunidades en un solo ecosistema.</p></div>
           <div><b>Explorar</b><a>Profesionales</a><a>Empleo</a><a>Cursos</a><a>Emprendedores</a></div>
           <div><b>Comunidad</b><a>Productores</a><a>Artesanos</a><a>Comercios</a><a>Inclusión</a></div>
-          <div><b>OficioCerca</b><a>Sobre nosotros</a><a>Ayuda</a><a>Contacto</a><a>Privacidad</a></div>
+          <div><b>WorkCerca</b><a>Sobre nosotros</a><a>Ayuda</a><a>Contacto</a><a>Privacidad</a></div>
         </div>
         <div className="container" style={{ marginTop: 28, paddingTop: 22, borderTop: "1px solid #223548" }}>
           <div
@@ -604,7 +604,7 @@ export default function Home() {
               <b style={{ color: "white", fontSize: 18 }}>Contacto institucional</b>
               <div style={{ marginTop: 12, display: "grid", gap: 10, color: "#cbd5e1", fontSize: 14 }}>
                 <a
-                  href={`https://wa.me/${OFICIOCERCA_WHATSAPP}`}
+                  href={`https://wa.me/${WORKCERCA_WHATSAPP}`}
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: "#cbd5e1", textDecoration: "none" }}
@@ -612,43 +612,50 @@ export default function Home() {
                   📱 WhatsApp: +54 3482 640585
                 </a>
                 <a
-                  href={`mailto:${OFICIOCERCA_EMAIL}`}
+                  href={`mailto:${WORKCERCA_EMAIL}`}
                   style={{ color: "#cbd5e1", textDecoration: "none" }}
                 >
-                  ✉️ {OFICIOCERCA_EMAIL}
+                  ✉️ {WORKCERCA_EMAIL}
                 </a>
                 <a
-                  href={`https://www.instagram.com/${OFICIOCERCA_INSTAGRAM}/`}
+                  href={`https://www.instagram.com/${WORKCERCA_INSTAGRAM}/`}
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: "#cbd5e1", textDecoration: "none" }}
                 >
-                  📸 Instagram: @{OFICIOCERCA_INSTAGRAM}
+                  📸 Instagram: @{WORKCERCA_INSTAGRAM}
                 </a>
                 <a
-                  href={OFICIOCERCA_WEB}
+                  href={WORKCERCA_WEB || "/"}
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: "#cbd5e1", textDecoration: "none" }}
                 >
-                  🌐 OficioCerca Web
+                  🌐 WorkCerca Web
                 </a>
               </div>
             </div>
 
-            <div style={{ background: "white", borderRadius: 16, padding: 10, textAlign: "center" }}>
-              <img
-                src={qrOficioCerca.src}
-                alt="Código QR de OficioCerca"
-                style={{ width: 120, height: 120, display: "block" }}
-              />
-              <div style={{ color: "#0b1f33", fontWeight: 800, fontSize: 11, marginTop: 6 }}>
-                Escaneá y entrá
+            <div
+              style={{
+                background: "white",
+                borderRadius: 16,
+                padding: 18,
+                textAlign: "center",
+                width: 150
+              }}
+            >
+              <div style={{ fontSize: 30, marginBottom: 8 }}>▦</div>
+              <div style={{ color: "#0b1f33", fontWeight: 900, fontSize: 13 }}>
+                QR WorkCerca
+              </div>
+              <div style={{ color: "#64748b", fontSize: 11, lineHeight: 1.5, marginTop: 6 }}>
+                Lo generamos cuando confirmemos la URL definitiva.
               </div>
             </div>
           </div>
         </div>
-        <div className="container copyright">© 2026 OficioCerca — Plataforma de servicios, oportunidades y desarrollo regional.</div>
+        <div className="container copyright">© 2026 WorkCerca — Plataforma de servicios, oportunidades y desarrollo regional.</div>
       </footer>
 
 
@@ -720,7 +727,7 @@ export default function Home() {
               >
                 <b>Enviar una consulta</b>
                 <p style={{ color: "#64748b", lineHeight: 1.6 }}>
-                  Completá tus datos y contá brevemente qué necesitás. Completá tus datos y contá brevemente qué necesitás. Al enviar, OficioCerca abrirá el WhatsApp oficial con la solicitud preparada.
+                  Completá tus datos y contá brevemente qué necesitás. Completá tus datos y contá brevemente qué necesitás. Al enviar, WorkCerca abrirá el WhatsApp oficial con la solicitud preparada.
                 </p>
 
                 <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
@@ -820,7 +827,7 @@ export default function Home() {
             </div>
 
             <p style={{ color: "#64748b", lineHeight: 1.6 }}>
-              Elegí si ingresás como cliente o profesional. Después podremos sumar los demás tipos de perfiles de OficioCerca.
+              Tu cuenta puede crecer con vos. Hoy podés usar WorkCerca como cliente y más adelante activar opciones profesionales, de empleo, formación o emprendimiento.
             </p>
 
             <form onSubmit={saveProfile}>
@@ -953,7 +960,7 @@ export default function Home() {
             <h2 style={{ marginTop: 6 }}>Confirmá tu correo electrónico</h2>
             <p style={{ color: "#64748b", lineHeight: 1.7 }}>
               Te enviamos un mensaje de confirmación al correo que registraste.
-              Abrí ese correo, confirmá tu dirección y después volvé a OficioCerca para iniciar sesión.
+              Abrí ese correo, confirmá tu dirección y después volvé a WorkCerca para iniciar sesión.
             </p>
 
             <div
