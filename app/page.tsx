@@ -414,6 +414,7 @@ export default function Home() {
             <button className="bellBtn" onClick={() => action("Notificaciones: módulo en preparación.")}>♧</button>
             {currentUserId ? (
               <>
+                <button className="login" onClick={() => window.location.href = "/mi-workcerca"}>Mi WorkCerca</button>
                 <button className="login" onClick={() => setProfileOpen(true)}>Mi Perfil</button>
                 <button className="primary small" onClick={signOut}>Salir</button>
               </>
