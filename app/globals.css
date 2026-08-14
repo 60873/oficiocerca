@@ -582,3 +582,73 @@ a { color: inherit; }
   .trustGrid { grid-template-columns: 1fr; }
   .footerGrid { grid-template-columns: 1fr; }
 }
+
+
+/* Ajustes finales según la maqueta visual aprobada */
+.heroBrandName {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #ffffff;
+  font-size: clamp(24px, 3.2vw, 42px);
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: .075em;
+  text-shadow: 0 3px 22px rgba(0,0,0,.28);
+}
+
+.formalCard {
+  background: #ffffff;
+  border: 1px solid #dbe5ee;
+  box-shadow: 0 8px 24px rgba(8,36,73,.055);
+}
+
+.formalAvatar {
+  background: #e9f8f7;
+  border-color: #c8e9e6;
+  color: #087f78;
+}
+
+.verified {
+  background: #edf5ff;
+  color: #155eef;
+  border: 1px solid #d7e7ff;
+}
+
+.verifiedReal {
+  background: #e9f8f7;
+  color: #087f78;
+  border-color: #c8e9e6;
+}
+
+.verifiedDemo {
+  background: #eef5ff;
+  color: #155eef;
+  border-color: #d6e5fb;
+}
+
+.formalCard .profileMeta span:nth-child(2) {
+  color: #087f78;
+  font-weight: 700;
+}
+
+.formalCard .outline {
+  border-color: #9eb8d2;
+  color: #082449;
+  background: #ffffff;
+}
+
+.formalCard .outline:hover {
+  background: #082449;
+  border-color: #082449;
+  color: #ffffff;
+}
+
+/* El logo del footer conserva siempre su proporción natural. */
+.footerAbout img {
+  width: min(170px, 100%);
+  height: auto;
+  max-height: 72px;
+  object-fit: contain;
+  object-position: left center;
+  padding: 6px 10px;
+}
