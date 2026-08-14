@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import logoWorkCerca from "../b9132c5a-18cd-4603-a022-cd3efd09857f.png";
+import logoWorkCercaHeader from "../workcerca-logo-header.png";
+import logoWorkCercaFooter from "../workcerca-logo-footer.png";
+import isotipoWorkCerca from "../workcerca-isotipo.png";
 // Contacto institucional de WorkCerca.
 // Cuando tengas el número y el correo definitivos, solo hay que completar estos dos valores.
 const WORKCERCA_WHATSAPP = "543482640585";
@@ -373,7 +376,7 @@ export default function Home() {
   };
 
   return (
-    <main className="workcercaSite">
+    <main className="workcercaSite" data-workcerca-isotipo={isotipoWorkCerca.src}>
       <header className="topbar">
         <div className="container nav">
           <button
@@ -384,7 +387,7 @@ export default function Home() {
             }}
             aria-label="Ir al inicio de WorkCerca"
           >
-            <img src={logoWorkCerca.src} alt="WorkCerca" />
+            <img src={logoWorkCercaHeader.src} alt="WorkCerca" />
           </button>
 
           <nav className="mainNav" aria-label="Navegación principal">
@@ -638,7 +641,7 @@ export default function Home() {
       <footer className="premiumFooter mockFooter">
         <div className="container footerGrid">
           <div className="footerAbout">
-            <img src={logoWorkCerca.src} alt="WorkCerca" />
+            <img src={logoWorkCercaFooter.src} alt="WorkCerca" />
             <p>Conectamos personas, impulsamos negocios, generamos oportunidades.</p>
           </div>
           <div><b>Navegación</b><a>Inicio</a><a>Buscar</a><a>Categorías</a><a>Empresas</a></div>
