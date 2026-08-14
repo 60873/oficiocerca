@@ -131,7 +131,7 @@ export default function Home() {
       if (!error && data) {
         const mapped = data.map((p) => ({
           id: p.id,
-          name: p.nombre || "Profesional de OficioCerca",
+          name: p.nombre || "Profesional de workcerca
           job: p.oficio || "Profesional",
           city: p.ciudad || "Zona no informada",
           rating: "Nuevo",
@@ -195,7 +195,7 @@ export default function Home() {
       createdAt: new Date().toISOString(),
     };
 
-    const current = JSON.parse(localStorage.getItem("oficiocerca-contactos") || "[]");
+    const current = JSON.parse(localStorage.getItem("workcerca-contactos") || "[]");
     current.push(request);
     localStorage.setItem("oficiocerca-contactos", JSON.stringify(current));
 
@@ -205,7 +205,7 @@ export default function Home() {
     }
 
     const whatsappMessage = [
-      "Hola! Quiero solicitar un servicio desde OficioCerca.",
+      "Hola! Quiero solicitar un servicio desde workcerca.",
       "",
       `Servicio: ${selectedProfessional.job}`,
       `Perfil: ${selectedProfessional.name}`,
@@ -226,7 +226,7 @@ export default function Home() {
     setNotice(
       professionalNumber
         ? "Solicitud preparada. Se abrió el WhatsApp del profesional."
-        : "Solicitud preparada. Se abrió el WhatsApp institucional de OficioCerca."
+        : "Solicitud preparada. Se abrió el WhatsApp institucional de workcerca."
     );
     setContactOpen(false);
     setContactName("");
@@ -378,7 +378,7 @@ export default function Home() {
           <button
             className="brand"
             onClick={() => setActive("Inicio")}
-            aria-label="Ir al inicio de OficioCerca"
+            aria-label="Ir al inicio de workcerca"
             style={{ padding: 0, background: "transparent" }}
           >
             <img
