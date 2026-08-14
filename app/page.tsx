@@ -438,6 +438,7 @@ export default function Home() {
 
         <div className="container heroPremiumInner">
           <div className="heroCopy">
+            <div className="heroBrandName">WORKCERCA</div>
             <div className="eyebrow light">CONECTA · ENCUENTRA · CRECE</div>
             <h1>Personas, trabajo y oportunidades. <span>Todo más cerca.</span></h1>
             <p>
@@ -556,7 +557,7 @@ export default function Home() {
                 <div className="professionalHeader">
                   <div className="avatar formalAvatar">{p.icon}</div>
                   <div>
-                    <span className="verified">{p.isReal ? "Perfil registrado" : "Perfil demo"}</span>
+                    <span className={`verified ${p.isReal ? "verifiedReal" : "verifiedDemo"}`}>{p.isReal ? "Perfil registrado" : "Perfil demo"}</span>
                     <h3>{p.name}</h3>
                     <p>{p.job}</p>
                   </div>
