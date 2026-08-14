@@ -111,7 +111,268 @@ export default function Home() {
       setCurrentUserId(user?.id || "");
     });
 
-    return (
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const loadProfessionals = async () => {
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+        setLoadingProfessionals(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id,nombre,tipo_usuario,oficio,ciudad,zona,descripcion,whatsapp,disponibilidad")
+        .eq("tipo_usuario", "Profesional");
+
+      if (!error && data) {
+        const mapped = data.map((p) => ({
+          id: p.id,
+          name: p.nombre || "Profesional de WorkCerca",
+          job: p.oficio || "Profesional",
+          city: p.ciudad || "Zona no informada",
+          rating: "Nuevo",
+          icon: "🛠️",
+          description: p.descripcion || "Profesional registrado en WorkCerca.",
+          availability: p.disponibilidad || "Consultar disponibilidad",
+          rate: "Tarifa a consultar",
+          services: p.descripcion ? [p.descripcion] : ["Servicio profesional"],
+          whatsapp: p.whatsapp || "",
+          isReal: true,
+        }));
+
+        setRealProfessionals(mapped);
+      }
+
+      setLoadingProfessionals(false);
+    };
+
+    loadProfessionals();
+  }, []);
+
+  const searchNow = () => {
+    window.setTimeout(() => {
+      const section = document.getElementById("professionals");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 80);
+  };
+
+  const openProfile = (professional: any) => {
+    setSelectedProfessional(professional);
+    setContactOpen(false);
+    setContactName("");
+    setContactPhone("");
+    setContactZone("");
+    setContactMessage("");
+  };
+
+  const closeProfile = () => {
+    setSelectedProfessional(null);
+    setContactOpen(false);
+    setContactName("");
+    setContactPhone("");
+    setContactZone("");
+    setContactMessage("");
+  };
+
+  const sendContactRequest = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedProfessional) return;
+
+    const request = {
+      professional: selectedProfessional.name,
+      service: selectedProfessional.job,
+      name: contactName,
+      phone: contactPhone,
+      zone: contactZone,
+      message: contactMessage,
+      createdAt: new Date().toISOString(),
+    };
+
+    const current = JSON.parse(localStorage.getItem("workcerca-contactos") || "[]");
+    current.push(request);
+    localStorage.setItem("workcerca-contactos", JSON.stringify(current));
+
+    if (!WORKCERCA_WHATSAPP) {
+      setNotice("La solicitud quedó guardada. El WhatsApp institucional de WorkCerca se incorporará antes del lanzamiento.");
+      return;
+    }
+
+    const whatsappMessage = [
+      "Hola! Quiero solicitar un servicio desde workcerca.",
+      "",
+      `Servicio: ${selectedProfessional.job}`,
+      `Perfil: ${selectedProfessional.name}`,
+      `Nombre: ${contactName}`,
+      `Teléfono: ${contactPhone}`,
+      `Zona/Barrio: ${contactZone}`,
+      `Necesidad: ${contactMessage}`,
+    ].join("\n");
+
+    const professionalNumber = selectedProfessional.whatsapp
+      ? String(selectedProfessional.whatsapp).replace(/\D/g, "")
+      : "";
+
+    const destinationNumber = professionalNumber || WORKCERCA_WHATSAPP;
+    const whatsappUrl = `https://wa.me/${destinationNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+    window.open(whatsappUrl, "_blank");
+
+    setNotice(
+      professionalNumber
+        ? "Solicitud preparada. Se abrió el WhatsApp del profesional."
+        : "Solicitud preparada. Se abrió el WhatsApp institucional de workcerca."
+    );
+    setContactOpen(false);
+    setContactName("");
+    setContactPhone("");
+    setContactZone("");
+    setContactMessage("");
+  };
+
+  const openRegister = () => {
+    setAuthMode("register");
+    setAuthOpen(true);
+  };
+
+  const openLogin = () => {
+    setAuthMode("login");
+    setAuthOpen(true);
+  };
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const supabase = getSupabaseClient();
+
+    if (!supabase) {
+      action("Falta completar la conexión con Supabase en Vercel.");
+      return;
+    }
+
+    setAuthLoading(true);
+
+    try {
+      if (authMode === "register") {
+        const { error } = await supabase.auth.signUp({
+          email: authEmail,
+          password: authPassword,
+          options: {
+            emailRedirectTo: WORKCERCA_WEB || window.location.origin,
+          },
+        });
+
+        if (error) {
+          action(`No se pudo crear la cuenta: ${error.message}`);
+          return;
+        }
+
+        setConfirmEmailNotice(true);
+        setAuthOpen(false);
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: authEmail,
+          password: authPassword,
+        });
+
+        if (error) {
+          action(`No se pudo iniciar sesión: ${error.message}`);
+          return;
+        }
+
+        const { data: userData } = await supabase.auth.getUser();
+        const userId = userData.user?.id || "";
+
+        if (userId) {
+          setCurrentUserId(userId);
+          const { data: existingProfile } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", userId)
+            .maybeSingle();
+
+          if (existingProfile) {
+            setProfileName(existingProfile.nombre || "");
+            setProfileType(existingProfile.tipo_usuario || "Cliente");
+            setProfileJob(existingProfile.oficio || "");
+            setProfileCity(existingProfile.ciudad || "");
+            setProfileZone(existingProfile.zona || "");
+            setProfileDescription(existingProfile.descripcion || "");
+            setProfileWhatsapp(existingProfile.whatsapp || "");
+            setProfileAvailability(existingProfile.disponibilidad || "");
+          }
+
+          setProfileOpen(true);
+        }
+
+        action("Sesión iniciada correctamente.");
+        setAuthOpen(false);
+      }
+
+      setAuthEmail("");
+      setAuthPassword("");
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const saveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const supabase = getSupabaseClient();
+    if (!supabase || !currentUserId) {
+      action("Primero iniciá sesión para guardar tu perfil.");
+      return;
+    }
+
+    setProfileLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .upsert(
+          {
+            id: currentUserId,
+            nombre: profileName,
+            tipo_usuario: profileType,
+            oficio: profileType === "Profesional" ? profileJob : null,
+            ciudad: profileCity,
+            zona: profileZone,
+            descripcion: profileDescription,
+            whatsapp: profileWhatsapp,
+            disponibilidad: profileType === "Profesional" ? profileAvailability : null,
+          },
+          { onConflict: "id" }
+        );
+
+      if (error) {
+        action(`No se pudo guardar el perfil: ${error.message}`);
+        return;
+      }
+
+      action("Perfil guardado correctamente en WorkCerca.");
+      setProfileOpen(false);
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+    await supabase.auth.signOut();
+    setCurrentUserId("");
+    setProfileOpen(false);
+    action("Sesión cerrada.");
+  };
+
+  return (
     <main className="workcercaSite">
       <header className="topbar">
         <div className="container nav">
