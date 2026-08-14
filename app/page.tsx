@@ -1,16 +1,16 @@
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import logoWorkCerca from "../b9132c5a-18cd-4603-a022-cd3efd09857f.png";
 import qrOficioCerca from "../qr-oficiocerca-web.png";
-
-// Contacto institucional de OficioCerca.
+// Contacto institucional de WorkCerca.
 // Cuando tengas el número y el correo definitivos, solo hay que completar estos dos valores.
-const OFICIOCERCA_WHATSAPP = "543482640585";
-const OFICIOCERCA_EMAIL = "oficiocerca@oficiocerca.com";
-const OFICIOCERCA_INSTAGRAM = "oficiocerca";
-const OFICIOCERCA_WEB = "https://oficiocerca-web.vercel.app/";
+const WORKCERCA_WHATSAPP = "543482640585";
+const WORKCERCA_EMAIL = "workcerca@gmail.com";
+const WORKCERCA_INSTAGRAM = "workcerca";
+const WORKCERCA_WEB = "https://oficiocerca-web.vercel.app/";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
