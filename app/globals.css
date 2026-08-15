@@ -1130,3 +1130,35 @@ a { color: inherit; }
   .solTopActions{width:100%}
   .solTopActions button{width:100%}
 }
+.solList {
+  min-height: auto !important;
+}
+
+.solRight {
+  align-self: start;
+}
+
+.solicitudesContent {
+  padding-bottom: 28px;
+}
+
+.solLayout > div:first-child,
+.solRight {
+  height: auto;
+}
+
+.solList .empty {
+  min-height: 0;
+  padding: 24px;
+}
+
+@media (min-width: 900px) {
+  .solLayout {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+
+  .solRight {
+    position: sticky;
+    top: 82px;
+  }
+}
