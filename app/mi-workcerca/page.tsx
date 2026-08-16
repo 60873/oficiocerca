@@ -50,18 +50,18 @@ export default function MiWorkCerca() {
           <div><strong>Hola, Mariana</strong><span>Usuario verificado ✓</span></div>
         </div>
         <nav className="mwcSideNav">
-          <button onClick={() => window.location.href = "/"}>⌂ <span>Inicio</span></button>
-          <button className="active">▣ <span>Mi WorkCerca</span></button>
-          <button onClick={() => window.location.href = "/solicitudes"}>▤ <span>Solicitudes</span><b>2</b></button>
-          <button onClick={() => window.location.href = "/busco-trabajo"}>💼 <span>Busco trabajo / Mi CV</span></button>
-          <button onClick={() => act("Abriremos Presupuestos en su pantalla propia.")}>▧ <span>Presupuestos</span><b>4</b></button>
-          <button onClick={() => act("Mensajes y videollamadas: próxima pantalla.")}>▱ <span>Mensajes</span><b>3</b></button>
-          <button onClick={() => act("Agenda: próxima pantalla.")}>□ <span>Agenda</span></button>
-          <button onClick={() => act("Mi Proyecto: próxima pantalla.")}>▣ <span>Proyectos</span><b>1</b></button>
-          <button onClick={() => act("Favoritos: próxima pantalla.")}>♡ <span>Favoritos</span></button>
-          <button onClick={() => act("Reseñas y calificaciones: próxima pantalla.")}>☆ <span>Mis reseñas</span></button>
-          <button onClick={() => act("Pagos y facturas: próxima pantalla.")}>$ <span>Pagos y facturas</span></button>
-          <button onClick={() => act("Configuración: próxima pantalla.")}>⚙ <span>Configuración</span></button>
+          <button onClick={() => window.location.href = "/"}><i className="mwcNavIcon">⌂</i> <span>Inicio</span></button>
+          <button className="active"><i className="mwcNavIcon">▣</i> <span>Mi WorkCerca</span></button>
+          <button onClick={() => window.location.href = "/solicitudes"}><i className="mwcNavIcon">▤</i> <span>Solicitudes</span><b>2</b></button>
+          <button onClick={() => window.location.href = "/busco-trabajo"}><i className="mwcNavIcon">💼</i> <span>Busco trabajo / Mi CV</span></button>
+          <button onClick={() => act("Abriremos Presupuestos en su pantalla propia.")}><i className="mwcNavIcon">▧</i> <span>Presupuestos</span><b>4</b></button>
+          <button onClick={() => act("Mensajes y videollamadas: próxima pantalla.")}><i className="mwcNavIcon">▱</i> <span>Mensajes</span><b>3</b></button>
+          <button onClick={() => act("Agenda: próxima pantalla.")}><i className="mwcNavIcon">□</i> <span>Agenda</span></button>
+          <button onClick={() => act("Mi Proyecto: próxima pantalla.")}><i className="mwcNavIcon">▣</i> <span>Proyectos</span><b>1</b></button>
+          <button onClick={() => act("Favoritos: próxima pantalla.")}><i className="mwcNavIcon">♡</i> <span>Favoritos</span></button>
+          <button onClick={() => act("Reseñas y calificaciones: próxima pantalla.")}><i className="mwcNavIcon">☆</i> <span>Mis reseñas</span></button>
+          <button onClick={() => act("Pagos y facturas: próxima pantalla.")}><i className="mwcNavIcon">$</i> <span>Pagos y facturas</span></button>
+          <button onClick={() => act("Configuración: próxima pantalla.")}><i className="mwcNavIcon">⚙</i> <span>Configuración</span></button>
         </nav>
         <div className="mwcInvite"><strong>♧ Invitá y ganá</strong><p>Invitá amigos y ganá beneficios en WorkCerca.</p><button onClick={() => act("Invitaciones: función en preparación.")}>Invitar ahora</button></div>
         <div className="mwcHelp"><strong>ⓘ ¿Necesitás ayuda?</strong><p>Estamos para ayudarte</p><button onClick={() => act("Centro de ayuda: próxima pantalla.")}>Centro de ayuda</button></div>
@@ -103,6 +103,37 @@ export default function MiWorkCerca() {
         <div className="mwcTrust"><span>✓ <b>Perfiles verificados<br/>y calificaciones</b></span><span>▣ <b>Comunicación directa<br/>y segura</b></span><span>🛡 <b>Pagos seguros<br/>en la plataforma</b></span><span>♧ <b>Soporte y ayuda<br/>siempre disponibles</b></span></div>
         <footer className="mwcFooter"><div><img src={logoFooter.src} alt="WorkCerca"/><p>Conectamos personas, impulsamos negocios, generamos oportunidades.</p></div><div><b>Navegación</b><span>Inicio</span><span>Buscar</span><span>Categorías</span><span>Empresas</span><span>Emprendedores</span></div><div><b>Recursos</b><span>Centro de ayuda</span><span>Cómo funciona</span><span>Consejos de seguridad</span><span>Blog</span></div><div><b>WorkCerca</b><span>Quiénes somos</span><span>Términos y condiciones</span><span>Política de privacidad</span><span>Contacto</span></div><div><b>Seguinos en</b><p className="socials">●　◎　▶　in</p></div><small>© 2026 WorkCerca — CONECTA. ENCUENTRA. CRECE</small></footer>
       </section>
+      <style jsx>{`
+        .mwcSideNav button {
+          min-height: 46px;
+          font-weight: 600;
+          letter-spacing: .01em;
+        }
+        .mwcNavIcon {
+          width: 28px;
+          height: 28px;
+          border-radius: 8px;
+          display: inline-grid;
+          place-items: center;
+          flex: 0 0 28px;
+          font-style: normal;
+          font-size: 15px;
+          color: #3b82f6;
+          background: rgba(59,130,246,.12);
+          border: 1px solid rgba(96,165,250,.22);
+        }
+        .mwcSideNav button:hover .mwcNavIcon,
+        .mwcSideNav button.active .mwcNavIcon {
+          color: #dff7ff;
+          background: #1d4ed8;
+          border-color: #60a5fa;
+          box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+        }
+        .mwcSideNav button.active {
+          font-weight: 800;
+        }
+      `}</style>
+
     </main>
   );
 }
