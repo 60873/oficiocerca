@@ -50,8 +50,10 @@ export default function MiWorkCerca() {
           <div><strong>Hola, Mariana</strong><span>Usuario verificado ✓</span></div>
         </div>
         <nav className="mwcSideNav">
+          <button onClick={() => window.location.href = "/"}>⌂ <span>Inicio</span></button>
           <button className="active">▣ <span>Mi WorkCerca</span></button>
-          <button onClick={() => act("Abriremos Solicitudes en su pantalla propia.")}>▤ <span>Solicitudes</span><b>2</b></button>
+          <button onClick={() => window.location.href = "/solicitudes"}>▤ <span>Solicitudes</span><b>2</b></button>
+          <button onClick={() => window.location.href = "/busco-trabajo"}>💼 <span>Busco trabajo / Mi CV</span></button>
           <button onClick={() => act("Abriremos Presupuestos en su pantalla propia.")}>▧ <span>Presupuestos</span><b>4</b></button>
           <button onClick={() => act("Mensajes y videollamadas: próxima pantalla.")}>▱ <span>Mensajes</span><b>3</b></button>
           <button onClick={() => act("Agenda: próxima pantalla.")}>□ <span>Agenda</span></button>
