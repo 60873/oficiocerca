@@ -152,11 +152,15 @@ export default function SolicitudesPage() {
         </div>
 
         <nav className="mwcSideNav">
+          <button onClick={() => (window.location.href = "/")}>⌂ <span>Inicio</span></button>
           <button onClick={() => (window.location.href = "/mi-workcerca")}>
             ▣ <span>Mi WorkCerca</span>
           </button>
           <button className="active">
             ▤ <span>Solicitudes</span><b>16</b>
+          </button>
+          <button onClick={() => window.location.href = "/busco-trabajo"}>
+            💼 <span>Busco trabajo / Mi CV</span>
           </button>
           <button onClick={() => act("Presupuestos abrirá su pantalla propia.")}>
             ▧ <span>Presupuestos</span><b>6</b>
@@ -210,6 +214,8 @@ export default function SolicitudesPage() {
       <section className="mwcMain">
         <header className="mwcTop">
           <button onClick={() => (window.location.href = "/")}>Inicio</button>
+          <button onClick={() => (window.location.href = "/mi-workcerca")}>Mi WorkCerca</button>
+          <button onClick={() => (window.location.href = "/busco-trabajo")}>Busco trabajo</button>
           <button>Buscar</button>
           <button>Categorías</button>
           <button onClick={() => setActiveType("Empresa")}>Empresas</button>
@@ -255,6 +261,10 @@ export default function SolicitudesPage() {
                   key={title}
                   className={activeType === title ? "active" : ""}
                   onClick={() => {
+                    if (title === "Busco trabajo") {
+                      window.location.href = "/busco-trabajo";
+                      return;
+                    }
                     setActiveType(title);
                     act(`${title}: mostrando contenido relacionado.`);
                   }}
