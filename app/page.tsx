@@ -50,6 +50,18 @@ const courses = [
   { title: "Herramientas digitales para el trabajo", level: "Inicial", place: "WorkCerca Academy" },
 ];
 
+const empresas = [
+  { name: "Empresa Demo Construcciones", job: "Construcción e infraestructura", city: "Reconquista", rating: "Nuevo", icon: "🏗️", description: "Empresa demostrativa para mostrar cómo se verá una empresa registrada en WorkCerca.", availability: "Recibe consultas", rate: "Presupuesto a medida", services: ["Obras y construcción", "Proveedores", "Servicios para empresas"] },
+  { name: "Empresa Demo Logística", job: "Transporte y logística", city: "Avellaneda", rating: "Nuevo", icon: "🚚", description: "Perfil demostrativo de una empresa de logística y distribución regional.", availability: "Recibe consultas", rate: "Tarifa a consultar", services: ["Distribución", "Almacenamiento", "Última milla"] },
+  { name: "Empresa Demo Tecnología", job: "Tecnología y servicios", city: "Reconquista", rating: "Nuevo", icon: "💻", description: "Perfil demostrativo de una empresa de soluciones tecnológicas para negocios.", availability: "Recibe consultas", rate: "Presupuesto sin cargo", services: ["Software a medida", "Soporte IT", "Digitalización"] },
+];
+
+const emprendedores = [
+  { name: "Emprendimiento Demo Repostería", job: "Gastronomía y repostería", city: "Reconquista", rating: "Nuevo", icon: "🧁", description: "Emprendimiento demostrativo para mostrar cómo se verá un emprendedor registrado en WorkCerca.", availability: "Toma pedidos", rate: "Precios según pedido", services: ["Tortas y postres", "Eventos", "Pedidos a domicilio"] },
+  { name: "Emprendimiento Demo Diseño", job: "Diseño y marca", city: "Avellaneda", rating: "Nuevo", icon: "🎨", description: "Perfil demostrativo de un emprendimiento de diseño gráfico e identidad visual.", availability: "Toma proyectos", rate: "Presupuesto por proyecto", services: ["Logotipos", "Redes sociales", "Papelería"] },
+  { name: "Emprendimiento Demo Textil", job: "Indumentaria y textil", city: "Reconquista", rating: "Nuevo", icon: "🧵", description: "Perfil demostrativo de un emprendimiento textil y de indumentaria local.", availability: "Toma pedidos", rate: "Precios mayoristas y minoristas", services: ["Indumentaria", "Personalizados", "Venta mayorista"] },
+];
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState("Inicio");
@@ -79,6 +91,8 @@ export default function Home() {
   const [profileAvailability, setProfileAvailability] = useState("");
   const [realProfessionals, setRealProfessionals] = useState<any[]>([]);
   const [loadingProfessionals, setLoadingProfessionals] = useState(true);
+  const [realEmpresas, setRealEmpresas] = useState<any[]>([]);
+  const [realEmprendedores, setRealEmprendedores] = useState<any[]>([]);
 
   const filtered = useMemo(() => {
     const allProfessionals = [...realProfessionals, ...professionals];
@@ -156,6 +170,73 @@ export default function Home() {
 
     loadProfessionals();
   }, []);
+
+  useEffect(() => {
+    const loadDirectory = async () => {
+      const supabase = getSupabaseClient();
+      if (!supabase) return;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id,nombre,tipo_usuario,oficio,ciudad,zona,descripcion,whatsapp,disponibilidad")
+        .in("tipo_usuario", ["Empresa", "Emprendedor"]);
+
+      if (!error && data) {
+        const empresasReales = data
+          .filter((p) => p.tipo_usuario === "Empresa")
+          .map((p) => ({
+            id: p.id,
+            name: p.nombre || "Empresa registrada",
+            job: p.oficio || "Empresa",
+            city: p.ciudad || p.zona || "Zona no informada",
+            rating: "Nuevo",
+            icon: "🏢",
+            description: p.descripcion || "Empresa registrada en WorkCerca.",
+            availability: p.disponibilidad || "Recibe consultas",
+            rate: "A consultar",
+            services: p.descripcion ? [p.descripcion] : ["Servicios para empresas"],
+            whatsapp: p.whatsapp || "",
+            isReal: true,
+          }));
+
+        const emprendedoresReales = data
+          .filter((p) => p.tipo_usuario === "Emprendedor")
+          .map((p) => ({
+            id: p.id,
+            name: p.nombre || "Emprendimiento registrado",
+            job: p.oficio || "Emprendimiento",
+            city: p.ciudad || p.zona || "Zona no informada",
+            rating: "Nuevo",
+            icon: "🚀",
+            description: p.descripcion || "Emprendimiento registrado en WorkCerca.",
+            availability: p.disponibilidad || "Toma pedidos",
+            rate: "A consultar",
+            services: p.descripcion ? [p.descripcion] : ["Productos y servicios"],
+            whatsapp: p.whatsapp || "",
+            isReal: true,
+          }));
+
+        setRealEmpresas(empresasReales);
+        setRealEmprendedores(emprendedoresReales);
+      }
+    };
+
+    loadDirectory();
+  }, []);
+
+  const empresasList = useMemo(() => [...realEmpresas, ...empresas], [realEmpresas]);
+  const emprendedoresList = useMemo(() => [...realEmprendedores, ...emprendedores], [realEmprendedores]);
+
+  const goHome = () => {
+    setActive("Inicio");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToSection = (id: string) => {
+    window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  };
 
   const searchNow = () => {
     window.setTimeout(() => {
@@ -344,12 +425,12 @@ export default function Home() {
             id: currentUserId,
             nombre: profileName,
             tipo_usuario: profileType,
-            oficio: profileType === "Profesional" ? profileJob : null,
+            oficio: profileType !== "Cliente" ? profileJob : null,
             ciudad: profileCity,
             zona: profileZone,
             descripcion: profileDescription,
             whatsapp: profileWhatsapp,
-            disponibilidad: profileType === "Profesional" ? profileAvailability : null,
+            disponibilidad: profileType !== "Cliente" ? profileAvailability : null,
           },
           { onConflict: "id" }
         );
@@ -397,8 +478,11 @@ export default function Home() {
                 className={active === item ? "navActive" : ""}
                 onClick={() => {
                   setActive(item);
+                  if (item === "Inicio") window.scrollTo({ top: 0, behavior: "smooth" });
                   if (item === "Buscar") searchNow();
                   if (item === "Categorías") document.getElementById("ecosistema")?.scrollIntoView({ behavior: "smooth" });
+                  if (item === "Empresas") scrollToSection("empresas");
+                  if (item === "Emprendedores") scrollToSection("emprendedores");
                   if (item === "Mi Perfil") {
                     if (currentUserId) setProfileOpen(true);
                     else openLogin();
@@ -630,6 +714,74 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section" id="empresas">
+        <div className="container">
+          <div className="sectionHead compactHead">
+            <div>
+              <h2>Empresas registradas</h2>
+              <p>Empresas de la comunidad WorkCerca y perfiles de demostración mientras ampliamos el directorio.</p>
+            </div>
+          </div>
+
+          <div className="cards professionalCards">
+            {empresasList.slice(0, 6).map((p) => (
+              <article className="proCard formalCard" key={`empresa-${p.name}-${p.job}`}>
+                <div className="professionalHeader">
+                  <div className="avatar formalAvatar">{p.icon}</div>
+                  <div>
+                    <span className={`verified ${p.isReal ? "verifiedReal" : "verifiedDemo"}`}>{p.isReal ? "Perfil registrado" : "Perfil demo"}</span>
+                    <h3>{p.name}</h3>
+                    <p>{p.job}</p>
+                  </div>
+                </div>
+                <div className="profileMeta">
+                  <span>📍 {p.city}</span>
+                  <span>🏷️ {p.job}</span>
+                </div>
+                <p style={{ color: "#64748b", lineHeight: 1.6 }}>{p.description}</p>
+                <button className="outline wide" onClick={() => openProfile(p)}>Ver perfil</button>
+              </article>
+            ))}
+          </div>
+
+          {empresasList.length === 0 && <div className="empty">Todavía no hay empresas registradas. ¡Registrá la tuya!</div>}
+        </div>
+      </section>
+
+      <section className="section soft" id="emprendedores">
+        <div className="container">
+          <div className="sectionHead compactHead">
+            <div>
+              <h2>Emprendedores registrados</h2>
+              <p>Emprendimientos de la comunidad WorkCerca y perfiles de demostración mientras ampliamos el directorio.</p>
+            </div>
+          </div>
+
+          <div className="cards professionalCards">
+            {emprendedoresList.slice(0, 6).map((p) => (
+              <article className="proCard formalCard" key={`emprendedor-${p.name}-${p.job}`}>
+                <div className="professionalHeader">
+                  <div className="avatar formalAvatar">{p.icon}</div>
+                  <div>
+                    <span className={`verified ${p.isReal ? "verifiedReal" : "verifiedDemo"}`}>{p.isReal ? "Perfil registrado" : "Perfil demo"}</span>
+                    <h3>{p.name}</h3>
+                    <p>{p.job}</p>
+                  </div>
+                </div>
+                <div className="profileMeta">
+                  <span>📍 {p.city}</span>
+                  <span>🏷️ {p.job}</span>
+                </div>
+                <p style={{ color: "#64748b", lineHeight: 1.6 }}>{p.description}</p>
+                <button className="outline wide" onClick={() => openProfile(p)}>Ver perfil</button>
+              </article>
+            ))}
+          </div>
+
+          {emprendedoresList.length === 0 && <div className="empty">Todavía no hay emprendedores registrados. ¡Registrá el tuyo!</div>}
+        </div>
+      </section>
+
       <section className="trustStrip">
         <div className="container trustGrid">
           <div><b>✓</b><span>Perfiles verificados<br/>y calificaciones</span></div>
@@ -838,6 +990,8 @@ export default function Home() {
               >
                 <option>Cliente</option>
                 <option>Profesional</option>
+                <option>Empresa</option>
+                <option>Emprendedor</option>
               </select>
 
               <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
@@ -851,16 +1005,16 @@ export default function Home() {
                 style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
               />
 
-              {profileType === "Profesional" && (
+              {profileType !== "Cliente" && (
                 <>
                   <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
-                    Oficio / profesión
+                    {profileType === "Empresa" ? "Rubro" : profileType === "Emprendedor" ? "Categoría del emprendimiento" : "Oficio / profesión"}
                   </label>
                   <input
                     value={profileJob}
                     onChange={(e) => setProfileJob(e.target.value)}
                     required
-                    placeholder="Ej.: Electricista"
+                    placeholder={profileType === "Empresa" ? "Ej.: Construcción, Logística" : profileType === "Emprendedor" ? "Ej.: Repostería, Diseño" : "Ej.: Electricista"}
                     style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
                   />
                 </>
@@ -908,7 +1062,7 @@ export default function Home() {
                 style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
               />
 
-              {profileType === "Profesional" && (
+              {profileType !== "Cliente" && (
                 <>
                   <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
                     Disponibilidad
