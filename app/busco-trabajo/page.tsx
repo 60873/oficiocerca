@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 import logoHeader from "../../workcerca-logo-header.png";
 
 type CvData = {
@@ -31,11 +32,27 @@ const initialCv: CvData = {
   disponibilidad: "",
 };
 
-const jobs = [
-  ["Grupo Norte", "Auxiliar administrativo/a", "Reconquista", 92, "Presencial"],
-  ["Comercial del Litoral", "Atención al cliente", "Avellaneda", 86, "Presencial"],
-  ["Estudio Integral", "Asistente de oficina", "Remoto / Híbrido", 81, "Híbrido"],
-];
+type JobRecord = {
+  id: string;
+  company_name: string;
+  company_verified: boolean;
+  title: string;
+  description: string;
+  location: string;
+  modality: string;
+  schedule: string;
+  requirements: string | null;
+  experience: string | null;
+  salary: string | null;
+  closing_date: string | null;
+  contact: string | null;
+  status: string;
+  created_at: string;
+};
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const training = [
   ["Municipio", "Manipulación Segura de Alimentos", "Capacitación gratuita · Inscripción abierta"],
@@ -50,11 +67,51 @@ export default function BuscoTrabajoPage() {
   const [cv, setCv] = useState<CvData>(initialCv);
   const [profilePhoto, setProfilePhoto] = useState("");
   const [showExampleCv, setShowExampleCv] = useState(false);
+  const [realJobs, setRealJobs] = useState<JobRecord[]>([]);
+  const [jobsLoading, setJobsLoading] = useState(true);
+  const [jobsError, setJobsError] = useState("");
 
   const notify = (text: string) => {
     setNotice(text);
     window.setTimeout(() => setNotice(""), 2500);
   };
+
+  const loadJobs = async () => {
+    if (!supabaseUrl || !supabaseAnonKey) {
+      setJobsError("Falta configurar Supabase.");
+      setJobsLoading(false);
+      return;
+    }
+
+    try {
+      setJobsLoading(true);
+      setJobsError("");
+
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(12);
+
+      if (error) throw error;
+      setRealJobs((data || []) as JobRecord[]);
+    } catch (error: any) {
+      console.error(error);
+      setJobsError(error?.message || "No pudimos cargar las oportunidades.");
+    } finally {
+      setJobsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadJobs();
+  }, []);
+
+  const profileHasData = useMemo(
+    () => Boolean(cv.objetivo.trim() || cv.experiencia.trim() || cv.habilidades.trim() || cv.estudios.trim()),
+    [cv]
+  );
 
   const completeness = useMemo(() => {
     const values = Object.values(cv);
@@ -324,17 +381,49 @@ export default function BuscoTrabajoPage() {
               <div><span className="eyebrow dark">MOTOR DE OPORTUNIDADES WORKCERCA</span><h2>Oportunidades que pueden servirte</h2></div>
               <button className="outline" onClick={() => notify("Ver todas las oportunidades")}>Ver todas</button>
             </div>
-            <div className="jobGrid">
-              {jobs.map(([company, title, location, match, mode]) => (
-                <article key={String(title)}>
-                  <span className="match">{match}% coincidencia</span>
-                  <h3>{title}</h3><b>{company}</b>
-                  <p>⌖ {location} · {mode}</p>
-                  <small>WorkCerca explica por qué esta oportunidad puede coincidir con tu perfil.</small>
-                  <div><button onClick={() => notify(`Ver detalle: ${title}`)}>Ver oportunidad</button><button onClick={() => notify(`Guardar: ${title}`)}>♡</button></div>
-                </article>
-              ))}
-            </div>
+            {jobsLoading && (
+              <div className="jobsState">Cargando oportunidades reales de WorkCerca...</div>
+            )}
+
+            {!jobsLoading && jobsError && (
+              <div className="jobsState error">
+                <strong>No pudimos cargar las oportunidades.</strong>
+                <span>{jobsError}</span>
+                <button onClick={loadJobs}>Reintentar</button>
+              </div>
+            )}
+
+            {!jobsLoading && !jobsError && realJobs.length === 0 && (
+              <div className="jobsState">
+                <strong>Todavía no hay búsquedas laborales activas.</strong>
+                <span>Cuando una empresa publique un empleo, aparecerá automáticamente acá.</span>
+              </div>
+            )}
+
+            {!jobsLoading && !jobsError && realJobs.length > 0 && (
+              <div className="jobGrid">
+                {realJobs.map((job) => (
+                  <article key={job.id}>
+                    <span className="match">
+                      {profileHasData ? "Compatibilidad por analizar" : "Nueva oportunidad"}
+                    </span>
+                    <h3>{job.title}</h3>
+                    <b>{job.company_name}{job.company_verified ? " ✓" : ""}</b>
+                    <p>⌖ {job.location} · {job.modality} · {job.schedule}</p>
+                    <small>
+                      {profileHasData
+                        ? "El Motor WorkCerca podrá analizar esta búsqueda contra tu perfil y explicar la coincidencia."
+                        : "Completá tu CV WorkCerca para recibir coincidencias personalizadas."}
+                    </small>
+                    {job.salary && <small className="jobSalary">Salario: {job.salary}</small>}
+                    <div>
+                      <button onClick={() => notify(`Ver detalle: ${job.title}`)}>Ver oportunidad</button>
+                      <button onClick={() => notify(`Guardar: ${job.title}`)}>♡</button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </section>
 
           <section className="trainingSection">
@@ -421,7 +510,7 @@ export default function BuscoTrabajoPage() {
       )}
 
       <style jsx>{`
-        .profilePhotoControl{display:block;cursor:pointer}.profilePhotoControl input{display:none}.jobProfilePhoto{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #20cbd0}.jobProfile small{display:block;font-size:9px;color:#6fe6e2;margin-top:3px}.exampleCvButton{margin-top:14px;border:1px solid #0aa0b5;background:#f2fdfe;color:#087d90;border-radius:8px;padding:9px 11px;font-size:10px;font-weight:800;cursor:pointer}.cvPreviewIdentity{display:flex;gap:12px;align-items:center;margin:16px 0 6px}.cvPreviewIdentity img,.cvPreviewAvatar{width:58px;height:58px;border-radius:50%;object-fit:cover}.cvPreviewAvatar{display:grid;place-items:center;background:#0a91a8;color:#fff;font-weight:900}.cvExampleOverlay{position:fixed;inset:0;background:#021126aa;z-index:200;display:grid;place-items:center;padding:18px}.cvExampleModal{width:min(820px,96vw);max-height:92vh;overflow:auto;background:#f6f8fb;border-radius:16px;padding:18px}.cvExampleHead{display:flex;justify-content:space-between;gap:20px}.cvExampleHead button{border:0;background:#071a3d;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer}.cvExamplePaper{margin-top:14px;background:#fff;border:1px solid #dbe3ea;border-radius:8px;padding:30px}.cvExampleBrand{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #071a3d;padding-bottom:12px}.cvExampleBrand img{width:145px}.cvExampleIdentity{display:flex;align-items:center;gap:16px;margin:22px 0}.cvExamplePhoto{width:76px;height:76px;border-radius:50%;background:#0a91a8;color:#fff;display:grid;place-items:center;font-size:24px;font-weight:900}.cvExampleIdentity h3{font-size:26px;margin:0}.cvExampleIdentity p{margin:4px 0;color:#40566f}.cvExamplePaper section{margin:18px 0}.cvExamplePaper h4{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px}.cvExamplePaper p{font-size:10px;line-height:1.55;color:#4d6075}.cvExampleCols{display:grid;grid-template-columns:1fr 1fr;gap:24px}.cvExampleStatus{display:grid;gap:5px;background:#f2f8fb;border-radius:8px;padding:12px;margin-top:18px;font-size:9px}.cvExampleDisclaimer{display:block;margin-top:12px;color:#778493;font-size:8px;line-height:1.45}.jobPage{min-height:100vh;background:#f6f8fb;color:#071a3d;font-family:Inter,Arial,sans-serif;display:flex}.jobPage *{box-sizing:border-box}.jobPage button,.jobPage input,.jobPage textarea{font:inherit}.jobSidebar{width:245px;min-height:100vh;background:linear-gradient(180deg,#03142e,#00254b);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto;flex:none}.jobLogo{border:0;background:transparent;padding:0 4px 22px;cursor:pointer}.jobLogo img{width:190px;height:auto;display:block}.jobProfile{display:flex;gap:10px;align-items:center;padding:8px 6px 22px}.jobAvatar{width:46px;height:46px;border-radius:50%;background:#0a9aae;display:grid;place-items:center;font-weight:900}.jobProfile strong,.jobProfile span{display:block}.jobProfile span{font-size:11px;color:#19d5cf;margin-top:3px}.jobSidebar nav{display:grid;gap:5px}.jobSidebar nav button{border:0;background:transparent;color:#fff;border-radius:9px;padding:12px;text-align:left;cursor:pointer}.jobSidebar nav button.active,.jobSidebar nav button:hover{background:linear-gradient(90deg,#0799ba,#08758d)}.jobTrust{margin-top:20px;border:1px solid #2f526f;border-radius:12px;padding:14px}.jobTrust b{color:#26d3cf}.jobTrust p{font-size:11px;line-height:1.5;color:#d4e0eb}.jobMain{flex:1;min-width:0}.jobTop{height:68px;background:#fff;border-bottom:1px solid #e2e8ef;display:flex;justify-content:space-between;align-items:center;padding:0 28px;position:sticky;top:0;z-index:20}.jobTop strong,.jobTop span{display:block}.jobTop span{font-size:11px;color:#718096;margin-top:3px}.jobTopActions{display:flex;gap:8px;align-items:center}.jobTopActions button{border:0;background:transparent;cursor:pointer}.outline{border:1px solid #cbd5e1!important;background:#fff!important;color:#071a3d!important;border-radius:8px;padding:9px 13px!important}.primary{border:0;background:#071a3d;color:#fff;border-radius:8px;padding:10px 15px;cursor:pointer}.jobContent{max-width:1180px;margin:auto;padding:28px}.jobHero{display:grid;grid-template-columns:1.4fr .7fr;gap:20px;align-items:stretch;background:linear-gradient(135deg,#071a3d,#073c61);color:#fff;border-radius:16px;padding:28px}.eyebrow{font-size:10px;letter-spacing:.12em;font-weight:900;color:#30e0dc}.eyebrow.dark{color:#078da8}.jobHero h1{font-size:38px;line-height:1.05;margin:10px 0}.jobHero p{color:#d8e5f0;line-height:1.6;max-width:700px}.jobSeal{background:#fff;color:#071a3d;border-radius:12px;padding:20px;display:flex;flex-direction:column;justify-content:center}.jobSeal img{width:180px;height:auto}.jobSeal strong{margin-top:12px}.jobSeal span{font-size:11px;color:#6b7b8e;margin-top:6px;line-height:1.4}.jobChoiceGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}.jobChoice{border:1px solid #dfe6ed;background:#fff;border-radius:14px;padding:22px;text-align:left;display:grid;grid-template-columns:48px 1fr;gap:14px;cursor:pointer;color:#071a3d}.jobChoice:hover{border-color:#0a99ad}.jobChoice>span{width:48px;height:48px;border-radius:12px;background:#edf6fb;display:grid;place-items:center;font-size:22px}.jobChoice small{font-size:9px;color:#078da8;font-weight:900}.jobChoice h2{font-size:22px;margin:5px 0}.jobChoice p{font-size:12px;line-height:1.5;color:#617287}.jobChoice b{font-size:12px;color:#078da8}.primaryChoice{border:2px solid #0aa0b5;background:#f6fdfe}.jobStandard,.jobOpportunities,.trainingSection,.cvBuilder,.uploadCv{margin-top:18px;background:#fff;border:1px solid #e1e7ee;border-radius:14px;padding:22px}.jobSectionTitle{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:15px}.jobSectionTitle h2{margin:4px 0;font-size:26px}.jobSectionTitle p{margin:5px 0;color:#66778a;font-size:12px}.standardGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.standardGrid article{border:1px solid #e5eaf0;border-radius:11px;padding:16px}.standardGrid article>span{font-size:20px}.standardGrid h3{font-size:14px;margin:8px 0}.standardGrid p{font-size:11px;line-height:1.5;color:#69798b}.cvBuilderHead{display:flex;justify-content:space-between;gap:20px}.cvBuilderHead h2{margin:5px 0}.cvBuilderHead p{font-size:12px;color:#657589;max-width:650px}.cvProgress{width:180px}.cvProgress strong{font-size:28px}.cvProgress span{display:block;font-size:10px;color:#6f7d8e}.cvProgress>div{height:7px;background:#e7edf2;border-radius:10px;margin-top:8px;overflow:hidden}.cvProgress i{display:block;height:100%;background:#0aa0b5}.cvSteps{display:flex;gap:6px;border-bottom:1px solid #e3e8ee;margin:18px 0}.cvSteps button{border:0;background:transparent;padding:10px 12px;color:#65748a;cursor:pointer}.cvSteps button.active{color:#078da8;border-bottom:2px solid #078da8;font-weight:800}.cvBuilderGrid{display:grid;grid-template-columns:1fr .8fr;gap:18px}.cvForm{border-right:1px solid #e5eaf0;padding-right:18px}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.formGrid label,.blockLabel{font-size:11px;font-weight:700;color:#32465e}.formGrid input,.blockLabel input,.blockLabel textarea{width:100%;border:1px solid #dce3ea;border-radius:8px;padding:10px;margin-top:5px;outline:0}.formGrid .full{grid-column:1/-1}.blockLabel{display:block;margin-bottom:12px}.blockLabel textarea{min-height:100px;resize:vertical}.cvHint{background:#f3f8fb;border-radius:8px;padding:11px;font-size:10px;line-height:1.5;color:#536579;margin:12px 0}.aiHelp{border:1px solid #9fdce1;background:#f0fcfd;color:#087f91;border-radius:8px;padding:9px 12px;cursor:pointer}.formActions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.cvPaper{background:#fff;border:1px solid #d9e1e8;border-radius:6px;padding:24px;box-shadow:0 8px 25px #071a3d12}.cvBrand{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #071a3d;padding-bottom:10px}.cvBrand img{width:120px}.cvBrand span{font-size:8px;color:#078da8;font-weight:800}.cvPaper h3{font-size:23px;margin:18px 0 4px}.cvGoal{color:#53677c;font-size:11px}.cvContact{display:flex;flex-wrap:wrap;gap:8px;font-size:8px;color:#657589}.cvPaper hr{border:0;border-top:1px solid #e2e8ee;margin:16px 0}.cvPaper h4{font-size:11px;color:#071a3d;margin:13px 0 4px;text-transform:uppercase}.cvPaper p{font-size:9px;line-height:1.5;color:#4e6074}.cvVerification{display:grid;gap:4px;background:#f4f8fb;border-radius:7px;padding:10px;margin-top:14px;font-size:8px}.cvPaper>small{display:block;font-size:7px;color:#7b8796;margin-top:12px;line-height:1.4}.uploadCv{text-align:center}.dropZone{display:grid;place-items:center;border:2px dashed #bfcbd7;border-radius:12px;padding:38px;margin:20px auto;max-width:600px;cursor:pointer}.dropZone input{display:none}.dropZone span{font-size:30px}.dropZone strong,.dropZone small{display:block;margin-top:5px}.jobGrid,.studyFilters{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 16px}.studyFilters button{border:1px solid #d9e3ea;background:#fff;border-radius:999px;padding:8px 11px;font-size:9px;color:#16314f;cursor:pointer}.studyFilters button:hover{border-color:#0aa0b5;background:#f2fcfd}.vocationalBox{display:flex;justify-content:space-between;gap:20px;align-items:center;background:linear-gradient(135deg,#eefbfd,#f5f4ff);border:1px solid #cfe6eb;border-radius:12px;padding:18px;margin-bottom:16px}.vocationalBox h3{font-size:18px;margin:5px 0}.vocationalBox p{font-size:10px;line-height:1.55;color:#5c6e82;max-width:720px}.vocationalBox button{border:0;background:#071a3d;color:#fff;border-radius:8px;padding:11px 14px;white-space:nowrap;cursor:pointer}.trainingGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.jobGrid article,.trainingGrid article{border:1px solid #e1e7ee;border-radius:11px;padding:16px}.match{display:inline-block;background:#e4f8f1;color:#167256;border-radius:20px;padding:4px 8px;font-size:8px;font-weight:900}.jobGrid h3,.trainingGrid h3{font-size:15px;margin:8px 0}.jobGrid p,.jobGrid small,.trainingGrid p{font-size:9px;color:#657589;line-height:1.5}.jobGrid article>div{display:flex;justify-content:space-between;margin-top:12px}.jobGrid button,.trainingGrid button{border:1px solid #d7e0e8;background:#fff;border-radius:7px;padding:7px 9px;font-size:9px;cursor:pointer}.trainingGrid button{border:0;color:#078da8;padding:0}.jobActionsBar{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:18px 0}.jobActionsBar button{border:1px solid #dce3ea;background:#fff;border-radius:9px;padding:12px 8px;font-size:9px;color:#071a3d;cursor:pointer}.jobToast{position:fixed;right:20px;top:82px;z-index:100;background:#071a3d;color:#fff;border-radius:9px;padding:12px 17px;box-shadow:0 12px 30px #0003;font-size:11px}@media(max-width:1050px){.jobSidebar{width:210px}.jobHero{grid-template-columns:1fr}.standardGrid{grid-template-columns:repeat(2,1fr)}.cvBuilderGrid{grid-template-columns:1fr}.cvForm{border-right:0;padding-right:0}.jobGrid,.trainingGrid{grid-template-columns:1fr 1fr}.jobActionsBar{grid-template-columns:repeat(3,1fr)}}@media(max-width:760px){.vocationalBox{flex-direction:column;align-items:flex-start}.vocationalBox button{width:100%}.jobPage{display:block}.jobSidebar{position:relative;width:100%;height:auto;min-height:0}.jobSidebar nav{grid-template-columns:1fr 1fr}.jobTop{position:relative;padding:12px;height:auto}.jobTopActions button:not(.outline){display:none}.jobContent{padding:15px}.jobHero h1{font-size:30px}.jobChoiceGrid,.jobGrid,.trainingGrid{grid-template-columns:1fr}.standardGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.formGrid .full{grid-column:auto}.jobActionsBar{grid-template-columns:1fr 1fr}}@media(max-width:480px){.jobSidebar nav,.jobActionsBar{grid-template-columns:1fr}.jobChoice{grid-template-columns:1fr}.jobHero{padding:20px}.jobContent{padding:10px}.cvBuilderHead{flex-direction:column}.cvProgress{width:100%}}
+        .profilePhotoControl{display:block;cursor:pointer}.profilePhotoControl input{display:none}.jobProfilePhoto{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #20cbd0}.jobProfile small{display:block;font-size:9px;color:#6fe6e2;margin-top:3px}.exampleCvButton{margin-top:14px;border:1px solid #0aa0b5;background:#f2fdfe;color:#087d90;border-radius:8px;padding:9px 11px;font-size:10px;font-weight:800;cursor:pointer}.cvPreviewIdentity{display:flex;gap:12px;align-items:center;margin:16px 0 6px}.cvPreviewIdentity img,.cvPreviewAvatar{width:58px;height:58px;border-radius:50%;object-fit:cover}.cvPreviewAvatar{display:grid;place-items:center;background:#0a91a8;color:#fff;font-weight:900}.cvExampleOverlay{position:fixed;inset:0;background:#021126aa;z-index:200;display:grid;place-items:center;padding:18px}.cvExampleModal{width:min(820px,96vw);max-height:92vh;overflow:auto;background:#f6f8fb;border-radius:16px;padding:18px}.cvExampleHead{display:flex;justify-content:space-between;gap:20px}.cvExampleHead button{border:0;background:#071a3d;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer}.cvExamplePaper{margin-top:14px;background:#fff;border:1px solid #dbe3ea;border-radius:8px;padding:30px}.cvExampleBrand{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #071a3d;padding-bottom:12px}.cvExampleBrand img{width:145px}.cvExampleIdentity{display:flex;align-items:center;gap:16px;margin:22px 0}.cvExamplePhoto{width:76px;height:76px;border-radius:50%;background:#0a91a8;color:#fff;display:grid;place-items:center;font-size:24px;font-weight:900}.cvExampleIdentity h3{font-size:26px;margin:0}.cvExampleIdentity p{margin:4px 0;color:#40566f}.cvExamplePaper section{margin:18px 0}.cvExamplePaper h4{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px}.cvExamplePaper p{font-size:10px;line-height:1.55;color:#4d6075}.cvExampleCols{display:grid;grid-template-columns:1fr 1fr;gap:24px}.cvExampleStatus{display:grid;gap:5px;background:#f2f8fb;border-radius:8px;padding:12px;margin-top:18px;font-size:9px}.cvExampleDisclaimer{display:block;margin-top:12px;color:#778493;font-size:8px;line-height:1.45}.jobPage{min-height:100vh;background:#f6f8fb;color:#071a3d;font-family:Inter,Arial,sans-serif;display:flex}.jobPage *{box-sizing:border-box}.jobPage button,.jobPage input,.jobPage textarea{font:inherit}.jobSidebar{width:245px;min-height:100vh;background:linear-gradient(180deg,#03142e,#00254b);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto;flex:none}.jobLogo{border:0;background:transparent;padding:0 4px 22px;cursor:pointer}.jobLogo img{width:190px;height:auto;display:block}.jobProfile{display:flex;gap:10px;align-items:center;padding:8px 6px 22px}.jobAvatar{width:46px;height:46px;border-radius:50%;background:#0a9aae;display:grid;place-items:center;font-weight:900}.jobProfile strong,.jobProfile span{display:block}.jobProfile span{font-size:11px;color:#19d5cf;margin-top:3px}.jobSidebar nav{display:grid;gap:5px}.jobSidebar nav button{border:0;background:transparent;color:#fff;border-radius:9px;padding:12px;text-align:left;cursor:pointer}.jobSidebar nav button.active,.jobSidebar nav button:hover{background:linear-gradient(90deg,#0799ba,#08758d)}.jobTrust{margin-top:20px;border:1px solid #2f526f;border-radius:12px;padding:14px}.jobTrust b{color:#26d3cf}.jobTrust p{font-size:11px;line-height:1.5;color:#d4e0eb}.jobMain{flex:1;min-width:0}.jobTop{height:68px;background:#fff;border-bottom:1px solid #e2e8ef;display:flex;justify-content:space-between;align-items:center;padding:0 28px;position:sticky;top:0;z-index:20}.jobTop strong,.jobTop span{display:block}.jobTop span{font-size:11px;color:#718096;margin-top:3px}.jobTopActions{display:flex;gap:8px;align-items:center}.jobTopActions button{border:0;background:transparent;cursor:pointer}.outline{border:1px solid #cbd5e1!important;background:#fff!important;color:#071a3d!important;border-radius:8px;padding:9px 13px!important}.primary{border:0;background:#071a3d;color:#fff;border-radius:8px;padding:10px 15px;cursor:pointer}.jobContent{max-width:1180px;margin:auto;padding:28px}.jobHero{display:grid;grid-template-columns:1.4fr .7fr;gap:20px;align-items:stretch;background:linear-gradient(135deg,#071a3d,#073c61);color:#fff;border-radius:16px;padding:28px}.eyebrow{font-size:10px;letter-spacing:.12em;font-weight:900;color:#30e0dc}.eyebrow.dark{color:#078da8}.jobHero h1{font-size:38px;line-height:1.05;margin:10px 0}.jobHero p{color:#d8e5f0;line-height:1.6;max-width:700px}.jobSeal{background:#fff;color:#071a3d;border-radius:12px;padding:20px;display:flex;flex-direction:column;justify-content:center}.jobSeal img{width:180px;height:auto}.jobSeal strong{margin-top:12px}.jobSeal span{font-size:11px;color:#6b7b8e;margin-top:6px;line-height:1.4}.jobChoiceGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}.jobChoice{border:1px solid #dfe6ed;background:#fff;border-radius:14px;padding:22px;text-align:left;display:grid;grid-template-columns:48px 1fr;gap:14px;cursor:pointer;color:#071a3d}.jobChoice:hover{border-color:#0a99ad}.jobChoice>span{width:48px;height:48px;border-radius:12px;background:#edf6fb;display:grid;place-items:center;font-size:22px}.jobChoice small{font-size:9px;color:#078da8;font-weight:900}.jobChoice h2{font-size:22px;margin:5px 0}.jobChoice p{font-size:12px;line-height:1.5;color:#617287}.jobChoice b{font-size:12px;color:#078da8}.primaryChoice{border:2px solid #0aa0b5;background:#f6fdfe}.jobStandard,.jobOpportunities,.trainingSection,.cvBuilder,.uploadCv{margin-top:18px;background:#fff;border:1px solid #e1e7ee;border-radius:14px;padding:22px}.jobSectionTitle{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:15px}.jobSectionTitle h2{margin:4px 0;font-size:26px}.jobSectionTitle p{margin:5px 0;color:#66778a;font-size:12px}.standardGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.standardGrid article{border:1px solid #e5eaf0;border-radius:11px;padding:16px}.standardGrid article>span{font-size:20px}.standardGrid h3{font-size:14px;margin:8px 0}.standardGrid p{font-size:11px;line-height:1.5;color:#69798b}.cvBuilderHead{display:flex;justify-content:space-between;gap:20px}.cvBuilderHead h2{margin:5px 0}.cvBuilderHead p{font-size:12px;color:#657589;max-width:650px}.cvProgress{width:180px}.cvProgress strong{font-size:28px}.cvProgress span{display:block;font-size:10px;color:#6f7d8e}.cvProgress>div{height:7px;background:#e7edf2;border-radius:10px;margin-top:8px;overflow:hidden}.cvProgress i{display:block;height:100%;background:#0aa0b5}.cvSteps{display:flex;gap:6px;border-bottom:1px solid #e3e8ee;margin:18px 0}.cvSteps button{border:0;background:transparent;padding:10px 12px;color:#65748a;cursor:pointer}.cvSteps button.active{color:#078da8;border-bottom:2px solid #078da8;font-weight:800}.cvBuilderGrid{display:grid;grid-template-columns:1fr .8fr;gap:18px}.cvForm{border-right:1px solid #e5eaf0;padding-right:18px}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.formGrid label,.blockLabel{font-size:11px;font-weight:700;color:#32465e}.formGrid input,.blockLabel input,.blockLabel textarea{width:100%;border:1px solid #dce3ea;border-radius:8px;padding:10px;margin-top:5px;outline:0}.formGrid .full{grid-column:1/-1}.blockLabel{display:block;margin-bottom:12px}.blockLabel textarea{min-height:100px;resize:vertical}.cvHint{background:#f3f8fb;border-radius:8px;padding:11px;font-size:10px;line-height:1.5;color:#536579;margin:12px 0}.aiHelp{border:1px solid #9fdce1;background:#f0fcfd;color:#087f91;border-radius:8px;padding:9px 12px;cursor:pointer}.formActions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.cvPaper{background:#fff;border:1px solid #d9e1e8;border-radius:6px;padding:24px;box-shadow:0 8px 25px #071a3d12}.cvBrand{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #071a3d;padding-bottom:10px}.cvBrand img{width:120px}.cvBrand span{font-size:8px;color:#078da8;font-weight:800}.cvPaper h3{font-size:23px;margin:18px 0 4px}.cvGoal{color:#53677c;font-size:11px}.cvContact{display:flex;flex-wrap:wrap;gap:8px;font-size:8px;color:#657589}.cvPaper hr{border:0;border-top:1px solid #e2e8ee;margin:16px 0}.cvPaper h4{font-size:11px;color:#071a3d;margin:13px 0 4px;text-transform:uppercase}.cvPaper p{font-size:9px;line-height:1.5;color:#4e6074}.cvVerification{display:grid;gap:4px;background:#f4f8fb;border-radius:7px;padding:10px;margin-top:14px;font-size:8px}.cvPaper>small{display:block;font-size:7px;color:#7b8796;margin-top:12px;line-height:1.4}.uploadCv{text-align:center}.dropZone{display:grid;place-items:center;border:2px dashed #bfcbd7;border-radius:12px;padding:38px;margin:20px auto;max-width:600px;cursor:pointer}.dropZone input{display:none}.dropZone span{font-size:30px}.dropZone strong,.dropZone small{display:block;margin-top:5px}.jobGrid,.studyFilters{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 16px}.studyFilters button{border:1px solid #d9e3ea;background:#fff;border-radius:999px;padding:8px 11px;font-size:9px;color:#16314f;cursor:pointer}.studyFilters button:hover{border-color:#0aa0b5;background:#f2fcfd}.vocationalBox{display:flex;justify-content:space-between;gap:20px;align-items:center;background:linear-gradient(135deg,#eefbfd,#f5f4ff);border:1px solid #cfe6eb;border-radius:12px;padding:18px;margin-bottom:16px}.vocationalBox h3{font-size:18px;margin:5px 0}.vocationalBox p{font-size:10px;line-height:1.55;color:#5c6e82;max-width:720px}.vocationalBox button{border:0;background:#071a3d;color:#fff;border-radius:8px;padding:11px 14px;white-space:nowrap;cursor:pointer}.trainingGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.jobGrid article,.trainingGrid article{border:1px solid #e1e7ee;border-radius:11px;padding:16px}.match{display:inline-block;background:#e4f8f1;color:#167256;border-radius:20px;padding:4px 8px;font-size:8px;font-weight:900}.jobGrid h3,.trainingGrid h3{font-size:15px;margin:8px 0}.jobGrid p,.jobGrid small,.trainingGrid p{font-size:9px;color:#657589;line-height:1.5}.jobGrid article>div{display:flex;justify-content:space-between;margin-top:12px}.jobGrid button,.trainingGrid button{border:1px solid #d7e0e8;background:#fff;border-radius:7px;padding:7px 9px;font-size:9px;cursor:pointer}.trainingGrid button{border:0;color:#078da8;padding:0}.jobActionsBar{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:18px 0}.jobActionsBar button{border:1px solid #dce3ea;background:#fff;border-radius:9px;padding:12px 8px;font-size:9px;color:#071a3d;cursor:pointer}.jobsState{border:1px dashed #cdd8e2;background:#f8fbfd;border-radius:11px;padding:18px;display:grid;gap:6px;color:#53677b;font-size:10px}.jobsState strong{color:#17314e;font-size:12px}.jobsState button{justify-self:start;border:1px solid #d7e0e8;background:#fff;border-radius:7px;padding:7px 9px;color:#078da8;cursor:pointer}.jobsState.error{border-color:#efcaca;background:#fff8f8}.jobSalary{display:block;margin-top:6px;color:#16815d!important;font-weight:800}.jobToast{position:fixed;right:20px;top:82px;z-index:100;background:#071a3d;color:#fff;border-radius:9px;padding:12px 17px;box-shadow:0 12px 30px #0003;font-size:11px}@media(max-width:1050px){.jobSidebar{width:210px}.jobHero{grid-template-columns:1fr}.standardGrid{grid-template-columns:repeat(2,1fr)}.cvBuilderGrid{grid-template-columns:1fr}.cvForm{border-right:0;padding-right:0}.jobGrid,.trainingGrid{grid-template-columns:1fr 1fr}.jobActionsBar{grid-template-columns:repeat(3,1fr)}}@media(max-width:760px){.vocationalBox{flex-direction:column;align-items:flex-start}.vocationalBox button{width:100%}.jobPage{display:block}.jobSidebar{position:relative;width:100%;height:auto;min-height:0}.jobSidebar nav{grid-template-columns:1fr 1fr}.jobTop{position:relative;padding:12px;height:auto}.jobTopActions button:not(.outline){display:none}.jobContent{padding:15px}.jobHero h1{font-size:30px}.jobChoiceGrid,.jobGrid,.trainingGrid{grid-template-columns:1fr}.standardGrid{grid-template-columns:1fr}.formGrid{grid-template-columns:1fr}.formGrid .full{grid-column:auto}.jobActionsBar{grid-template-columns:1fr 1fr}}@media(max-width:480px){.jobSidebar nav,.jobActionsBar{grid-template-columns:1fr}.jobChoice{grid-template-columns:1fr}.jobHero{padding:20px}.jobContent{padding:10px}.cvBuilderHead{flex-direction:column}.cvProgress{width:100%}}
       `}</style>
     </main>
   );
