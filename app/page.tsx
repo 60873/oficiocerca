@@ -62,6 +62,16 @@ const emprendedores = [
   { name: "Emprendimiento Demo Textil", job: "Indumentaria y textil", city: "Reconquista", rating: "Nuevo", icon: "🧵", description: "Perfil demostrativo de un emprendimiento textil y de indumentaria local.", availability: "Toma pedidos", rate: "Precios mayoristas y minoristas", services: ["Indumentaria", "Personalizados", "Venta mayorista"] },
 ];
 
+const municipios = [
+  { name: "Municipio Demo Reconquista", job: "Municipio", city: "Reconquista", rating: "Nuevo", icon: "🏛️", description: "Perfil demostrativo de un municipio. Próximamente publicará avisos oficiales, capacitaciones, empleo, ferias, trámites, cortes de servicios, campañas y oportunidades.", availability: "Publica avisos oficiales", rate: "Servicio público", services: ["Avisos oficiales", "Capacitaciones y empleo", "Trámites y campañas"] },
+  { name: "Municipio Demo Avellaneda", job: "Municipio", city: "Avellaneda", rating: "Nuevo", icon: "🏛️", description: "Perfil demostrativo de un municipio de la región dentro del ecosistema WorkCerca.", availability: "Publica avisos oficiales", rate: "Servicio público", services: ["Ferias y eventos", "Cortes de servicios", "Oportunidades"] },
+];
+
+const instituciones = [
+  { name: "Institución Demo Educativa", job: "Institución educativa", city: "Reconquista", rating: "Nuevo", icon: "🎓", description: "Perfil demostrativo de una institución. Próximamente publicará carreras, cursos, becas, orientación vocacional, salud, charlas, campañas y avisos.", availability: "Publica propuestas", rate: "Institucional", services: ["Carreras y cursos", "Becas y orientación", "Charlas y campañas"] },
+  { name: "Institución Demo Salud", job: "Institución de salud", city: "Avellaneda", rating: "Nuevo", icon: "🏥", description: "Perfil demostrativo de una institución de salud dentro del ecosistema WorkCerca.", availability: "Publica propuestas", rate: "Institucional", services: ["Campañas de salud", "Charlas", "Avisos institucionales"] },
+];
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState("Inicio");
@@ -93,6 +103,8 @@ export default function Home() {
   const [loadingProfessionals, setLoadingProfessionals] = useState(true);
   const [realEmpresas, setRealEmpresas] = useState<any[]>([]);
   const [realEmprendedores, setRealEmprendedores] = useState<any[]>([]);
+  const [realMunicipios, setRealMunicipios] = useState<any[]>([]);
+  const [realInstituciones, setRealInstituciones] = useState<any[]>([]);
 
   const filtered = useMemo(() => {
     const allProfessionals = [...realProfessionals, ...professionals];
@@ -179,7 +191,7 @@ export default function Home() {
       const { data, error } = await supabase
         .from("profiles")
         .select("id,nombre,tipo_usuario,oficio,ciudad,zona,descripcion,whatsapp,disponibilidad")
-        .in("tipo_usuario", ["Empresa", "Emprendedor"]);
+        .in("tipo_usuario", ["Empresa", "Emprendedor", "Municipio", "Institución"]);
 
       if (!error && data) {
         const empresasReales = data
@@ -216,8 +228,44 @@ export default function Home() {
             isReal: true,
           }));
 
+        const municipiosReales = data
+          .filter((p) => p.tipo_usuario === "Municipio")
+          .map((p) => ({
+            id: p.id,
+            name: p.nombre || "Municipio registrado",
+            job: p.oficio || "Municipio",
+            city: p.ciudad || p.zona || "Localidad no informada",
+            rating: "Nuevo",
+            icon: "🏛️",
+            description: p.descripcion || "Municipio registrado en WorkCerca.",
+            availability: p.disponibilidad || "Publica avisos oficiales",
+            rate: "Servicio público",
+            services: p.descripcion ? [p.descripcion] : ["Avisos oficiales y campañas"],
+            whatsapp: p.whatsapp || "",
+            isReal: true,
+          }));
+
+        const institucionesReales = data
+          .filter((p) => p.tipo_usuario === "Institución")
+          .map((p) => ({
+            id: p.id,
+            name: p.nombre || "Institución registrada",
+            job: p.oficio || "Institución",
+            city: p.ciudad || p.zona || "Ubicación no informada",
+            rating: "Nuevo",
+            icon: "🎓",
+            description: p.descripcion || "Institución registrada en WorkCerca.",
+            availability: p.disponibilidad || "Publica propuestas",
+            rate: "Institucional",
+            services: p.descripcion ? [p.descripcion] : ["Carreras, cursos y campañas"],
+            whatsapp: p.whatsapp || "",
+            isReal: true,
+          }));
+
         setRealEmpresas(empresasReales);
         setRealEmprendedores(emprendedoresReales);
+        setRealMunicipios(municipiosReales);
+        setRealInstituciones(institucionesReales);
       }
     };
 
@@ -226,6 +274,8 @@ export default function Home() {
 
   const empresasList = useMemo(() => [...realEmpresas, ...empresas], [realEmpresas]);
   const emprendedoresList = useMemo(() => [...realEmprendedores, ...emprendedores], [realEmprendedores]);
+  const municipiosList = useMemo(() => [...realMunicipios, ...municipios], [realMunicipios]);
+  const institucionesList = useMemo(() => [...realInstituciones, ...instituciones], [realInstituciones]);
 
   const goHome = () => {
     setActive("Inicio");
@@ -472,7 +522,7 @@ export default function Home() {
           </button>
 
           <nav className="mainNav" aria-label="Navegación principal">
-            {["Inicio", "Buscar", "Categorías", "Empresas", "Emprendedores", "Mi Perfil"].map((item) => (
+            {["Inicio", "Buscar", "Categorías", "Empresas", "Emprendedores", "Municipios", "Instituciones", "Mi Perfil"].map((item) => (
               <button
                 key={item}
                 className={active === item ? "navActive" : ""}
@@ -483,6 +533,8 @@ export default function Home() {
                   if (item === "Categorías") document.getElementById("ecosistema")?.scrollIntoView({ behavior: "smooth" });
                   if (item === "Empresas") scrollToSection("empresas");
                   if (item === "Emprendedores") scrollToSection("emprendedores");
+                  if (item === "Municipios") scrollToSection("municipios");
+                  if (item === "Instituciones") scrollToSection("instituciones");
                   if (item === "Mi Perfil") {
                     if (currentUserId) setProfileOpen(true);
                     else openLogin();
@@ -782,6 +834,74 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section" id="municipios">
+        <div className="container">
+          <div className="sectionHead compactHead">
+            <div>
+              <h2>Municipios</h2>
+              <p>Municipios de la región dentro del ecosistema WorkCerca. Próximamente publicarán avisos oficiales, capacitaciones, empleo, ferias, trámites, cortes de servicios, campañas y oportunidades.</p>
+            </div>
+          </div>
+
+          <div className="cards professionalCards">
+            {municipiosList.slice(0, 6).map((p) => (
+              <article className="proCard formalCard" key={`municipio-${p.name}-${p.city}`}>
+                <div className="professionalHeader">
+                  <div className="avatar formalAvatar">{p.icon}</div>
+                  <div>
+                    <span className={`verified ${p.isReal ? "verifiedReal" : "verifiedDemo"}`}>{p.isReal ? "Perfil registrado" : "Perfil demo"}</span>
+                    <h3>{p.name}</h3>
+                    <p>{p.job}</p>
+                  </div>
+                </div>
+                <div className="profileMeta">
+                  <span>📍 {p.city}</span>
+                  <span>🏷️ {p.job}</span>
+                </div>
+                <p style={{ color: "#64748b", lineHeight: 1.6 }}>{p.description}</p>
+                <button className="outline wide" onClick={() => openProfile(p)}>Ver perfil</button>
+              </article>
+            ))}
+          </div>
+
+          {municipiosList.length === 0 && <div className="empty">Todavía no hay municipios registrados.</div>}
+        </div>
+      </section>
+
+      <section className="section soft" id="instituciones">
+        <div className="container">
+          <div className="sectionHead compactHead">
+            <div>
+              <h2>Instituciones</h2>
+              <p>Instituciones de la comunidad WorkCerca. Próximamente publicarán carreras, cursos, becas, orientación vocacional, salud, charlas, campañas y avisos.</p>
+            </div>
+          </div>
+
+          <div className="cards professionalCards">
+            {institucionesList.slice(0, 6).map((p) => (
+              <article className="proCard formalCard" key={`institucion-${p.name}-${p.city}`}>
+                <div className="professionalHeader">
+                  <div className="avatar formalAvatar">{p.icon}</div>
+                  <div>
+                    <span className={`verified ${p.isReal ? "verifiedReal" : "verifiedDemo"}`}>{p.isReal ? "Perfil registrado" : "Perfil demo"}</span>
+                    <h3>{p.name}</h3>
+                    <p>{p.job}</p>
+                  </div>
+                </div>
+                <div className="profileMeta">
+                  <span>📍 {p.city}</span>
+                  <span>🏷️ {p.job}</span>
+                </div>
+                <p style={{ color: "#64748b", lineHeight: 1.6 }}>{p.description}</p>
+                <button className="outline wide" onClick={() => openProfile(p)}>Ver perfil</button>
+              </article>
+            ))}
+          </div>
+
+          {institucionesList.length === 0 && <div className="empty">Todavía no hay instituciones registradas.</div>}
+        </div>
+      </section>
+
       <section className="trustStrip">
         <div className="container trustGrid">
           <div><b>✓</b><span>Perfiles verificados<br/>y calificaciones</span></div>
@@ -992,6 +1112,8 @@ export default function Home() {
                 <option>Profesional</option>
                 <option>Empresa</option>
                 <option>Emprendedor</option>
+                <option>Municipio</option>
+                <option>Institución</option>
               </select>
 
               <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
@@ -1008,13 +1130,13 @@ export default function Home() {
               {profileType !== "Cliente" && (
                 <>
                   <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
-                    {profileType === "Empresa" ? "Rubro" : profileType === "Emprendedor" ? "Categoría del emprendimiento" : "Oficio / profesión"}
+                    {profileType === "Empresa" ? "Rubro" : profileType === "Emprendedor" ? "Categoría del emprendimiento" : profileType === "Municipio" ? "Localidad / jurisdicción" : profileType === "Institución" ? "Tipo de institución" : "Oficio / profesión"}
                   </label>
                   <input
                     value={profileJob}
                     onChange={(e) => setProfileJob(e.target.value)}
                     required
-                    placeholder={profileType === "Empresa" ? "Ej.: Construcción, Logística" : profileType === "Emprendedor" ? "Ej.: Repostería, Diseño" : "Ej.: Electricista"}
+                    placeholder={profileType === "Empresa" ? "Ej.: Construcción, Logística" : profileType === "Emprendedor" ? "Ej.: Repostería, Diseño" : profileType === "Municipio" ? "Ej.: Municipalidad de Reconquista" : profileType === "Institución" ? "Ej.: Educativa, Salud" : "Ej.: Electricista"}
                     style={{ width: "100%", marginTop: 6, padding: 12, border: "1px solid #d7e2df", borderRadius: 10 }}
                   />
                 </>
