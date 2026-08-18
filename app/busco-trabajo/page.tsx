@@ -417,7 +417,7 @@ export default function BuscoTrabajoPage() {
                     </small>
                     {job.salary && <small className="jobSalary">Salario: {job.salary}</small>}
                     <div>
-                      <button onClick={() => notify(`Ver detalle: ${job.title}`)}>Ver oportunidad</button>
+                      <button onClick={() => (window.location.href = `/empleos/${job.id}`)}>Ver oportunidad</button>
                       <button onClick={() => notify(`Guardar: ${job.title}`)}>♡</button>
                     </div>
                   </article>
@@ -515,3 +515,4 @@ export default function BuscoTrabajoPage() {
     </main>
   );
 }
+      
