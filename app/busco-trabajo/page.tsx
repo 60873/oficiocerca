@@ -515,4 +515,3 @@ export default function BuscoTrabajoPage() {
     </main>
   );
 }
-      
