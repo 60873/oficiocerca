@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import logoHeader from "../workcerca-logo-header.png";
-
+import logoHeader from "../../workcerca-logo-header.png";
 export default function VideollamadasPage() {
   const params = useSearchParams();
   const candidate = params.get("candidato") || "Postulante WorkCerca";
