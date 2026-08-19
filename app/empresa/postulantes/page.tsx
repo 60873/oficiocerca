@@ -123,9 +123,9 @@ export default function EmpresaPostulantesPage() {
           <button onClick={() => (window.location.href = "/empresa")}>▦ <span>Mi Empresa</span></button>
           <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ <span>Publicar empleo</span></button>
           <button className="active">◫ <span>Postulantes</span><b>{applications.length}</b></button>
-          <button onClick={() => notify("Mensajes: próximo paso")}>▱ <span>Mensajes</span></button>
-          <button onClick={() => notify("Videollamadas: próximo paso")}>▣ <span>Videollamadas</span></button>
-          <button onClick={() => notify("Agenda: próximo paso")}>□ <span>Agenda</span></button>
+          <button onClick={() => (window.location.href = "/mensajes")}>▱ <span>Mensajes</span></button>
+          <button onClick={() => (window.location.href = "/videollamadas")}>▣ <span>Videollamadas</span></button>
+          <button onClick={() => (window.location.href = "/agenda")}>□ <span>Agenda</span></button>
         </nav>
       </aside>
 
@@ -215,8 +215,8 @@ export default function EmpresaPostulantesPage() {
                     </div>
                     <div className="actions">
                       <button onClick={() => notify(`Abrir CV de ${item.applicant_name}`)}>Ver perfil / CV</button>
-                      <button onClick={() => notify(`Mensaje a ${item.applicant_name}`)}>Mensaje</button>
-                      <button onClick={() => updateStatus(item.id, "entrevista")}>Agendar entrevista</button>
+                      <button onClick={() => (window.location.href = `/mensajes?candidato=${encodeURIComponent(item.applicant_name)}&empleo=${encodeURIComponent(item.jobs?.title || "")}`)}>Mensaje</button>
+                      <button onClick={() => { updateStatus(item.id, "entrevista"); window.location.href = `/agenda?nuevo=entrevista&candidato=${encodeURIComponent(item.applicant_name)}&empleo=${encodeURIComponent(item.jobs?.title || "")}`; }}>Agendar entrevista</button>
                     </div>
                   </article>
                 ))}
