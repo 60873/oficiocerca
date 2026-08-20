@@ -31,6 +31,12 @@ const candidates: Candidate[] = [
   { name: "Sofía Gómez", role: "Asistente de oficina", match: 84, location: "Reconquista", verified: false, cv: "Perfil completo" },
 ];
 
+const candidateIds: Record<string, string> = {
+  "María López": "1",
+  "Lucas Benítez": "2",
+  "Sofía Gómez": "3",
+};
+
 const jobs: Job[] = [
   { title: "Auxiliar administrativo/a", applicants: 18, status: "Activa", location: "Reconquista" },
   { title: "Vendedor/a", applicants: 12, status: "Activa", location: "Avellaneda" },
@@ -84,18 +90,19 @@ export default function EmpresaPage() {
           <button onClick={() => (window.location.href = "/solicitudes")}>▤ <span>Solicitudes</span></button>
           <button onClick={() => (window.location.href = "/busco-trabajo")}>💼 <span>Busco trabajo / CV</span></button>
           <button className="active">▦ <span>Mi Empresa</span></button>
-          <button onClick={() => notify("Publicar empleo")}>＋ <span>Publicar empleo</span></button>
-          <button onClick={() => notify("Buscar candidatos")}>⌕ <span>Buscar candidatos</span></button>
+          <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ <span>Publicar empleo</span></button>
+          <button onClick={() => (window.location.href = "/empresa/candidatos")}>⌕ <span>Buscar candidatos</span></button>
           <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ <span>Postulantes</span><b>•</b></button>
           <button onClick={() => (window.location.href = "/mensajes")}>▱ <span>Mensajes</span><b>7</b></button>
           <button onClick={() => (window.location.href = "/videollamadas")}>▣ <span>Videollamadas</span><b>3</b></button>
           <button onClick={() => (window.location.href = "/agenda")}>□ <span>Agenda</span></button>
-          <button onClick={() => notify("Proveedores y profesionales")}>⌘ <span>Proveedores</span></button>
-          <button onClick={() => notify("Productos y servicios")}>▤ <span>Productos / Servicios</span></button>
-          <button onClick={() => notify("Promociones")}>★ <span>Promociones</span></button>
-          <button onClick={() => notify("Publicidad")}>◎ <span>Publicidad</span></button>
-          <button onClick={() => notify("Estadísticas")}>◉ <span>Estadísticas</span></button>
-          <button onClick={() => notify("Configuración")}>⚙ <span>Configuración</span></button>
+          <button onClick={() => (window.location.href = "/empresa/entrevistas")}>🎙 <span>Entrevistas</span></button>
+          <button onClick={() => (window.location.href = "/empresa/proveedores")}>⌘ <span>Proveedores</span></button>
+          <button onClick={() => (window.location.href = "/empresa/productos-servicios")}>▤ <span>Productos / Servicios</span></button>
+          <button onClick={() => (window.location.href = "/empresa/promociones")}>★ <span>Promociones</span></button>
+          <button onClick={() => (window.location.href = "/empresa/publicidad")}>◎ <span>Publicidad</span></button>
+          <button onClick={() => (window.location.href = "/empresa/estadisticas")}>◉ <span>Estadísticas</span></button>
+          <button onClick={() => (window.location.href = "/empresa/configuracion")}>⚙ <span>Configuración</span></button>
         </nav>
 
         <div className="companyTrust">
@@ -115,8 +122,8 @@ export default function EmpresaPage() {
             <button onClick={() => (window.location.href = "/mi-workcerca")}>Mi WorkCerca</button>
             <button onClick={() => (window.location.href = "/busco-trabajo")}>CV / Empleo</button>
             <button onClick={() => notify("Notificaciones")}>🔔</button>
-            <button onClick={() => notify("Mensajes")}>💬</button>
-            <button onClick={() => notify("Videollamadas")}>📹</button>
+            <button onClick={() => (window.location.href = "/mensajes")}>💬</button>
+            <button onClick={() => (window.location.href = "/videollamadas")}>📹</button>
           </div>
         </header>
 
@@ -136,12 +143,12 @@ export default function EmpresaPage() {
           </section>
 
           <section className="companyQuick">
-            <button onClick={() => notify("Crear publicación de empleo")}><span>＋</span><strong>Publicar empleo</strong><small>Creá una búsqueda laboral</small></button>
-            <button onClick={() => notify("Buscar candidatos por coincidencia")}><span>⌕</span><strong>Buscar candidatos</strong><small>Perfiles y CV compatibles</small></button>
-            <button onClick={() => notify("Ver postulantes")}><span>◫</span><strong>Ver postulantes</strong><small>Revisá CV y postulaciones</small></button>
-            <button onClick={() => (window.location.href = "/agenda?nuevo=entrevista")}><span>▣</span><strong>Entrevistas</strong><small>Agenda y videollamadas</small></button>
-            <button onClick={() => notify("Publicar producto o servicio")}><span>▤</span><strong>Productos / Servicios</strong><small>Mostrá lo que ofrecés</small></button>
-            <button onClick={() => notify("Crear promoción")}><span>★</span><strong>Crear promoción</strong><small>Visibilizá una oferta</small></button>
+            <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}><span>＋</span><strong>Publicar empleo</strong><small>Creá una búsqueda laboral</small></button>
+            <button onClick={() => (window.location.href = "/empresa/candidatos")}><span>⌕</span><strong>Buscar candidatos</strong><small>Perfiles y CV compatibles</small></button>
+            <button onClick={() => (window.location.href = "/empresa/postulantes")}><span>◫</span><strong>Ver postulantes</strong><small>Revisá CV y postulaciones</small></button>
+            <button onClick={() => (window.location.href = "/empresa/entrevistas")}><span>▣</span><strong>Entrevistas</strong><small>Agenda y videollamadas</small></button>
+            <button onClick={() => (window.location.href = "/empresa/productos-servicios")}><span>▤</span><strong>Productos / Servicios</strong><small>Mostrá lo que ofrecés</small></button>
+            <button onClick={() => (window.location.href = "/empresa/promociones")}><span>★</span><strong>Crear promoción</strong><small>Visibilizá una oferta</small></button>
           </section>
 
           <section className="companyKpis">
@@ -154,13 +161,13 @@ export default function EmpresaPage() {
 
           <div className="companyTwoCol">
             <section className="companyPanel">
-              <div className="panelHead"><div><span className="eyebrow dark">EMPLEO</span><h2>Búsquedas laborales activas</h2></div><button onClick={() => notify("Publicar nuevo empleo")}>＋ Nueva búsqueda</button></div>
+              <div className="panelHead"><div><span className="eyebrow dark">EMPLEO</span><h2>Búsquedas laborales activas</h2></div><button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ Nueva búsqueda</button></div>
               <div className="jobTable">
                 {jobs.map((job) => (
                   <article key={job.title}>
                     <div><strong>{job.title}</strong><span>⌖ {job.location}</span></div>
                     <b>{job.applicants} postulantes</b><span className="status">{job.status}</span>
-                    <button onClick={() => notify(`Ver postulantes: ${job.title}`)}>Ver →</button>
+                    <button onClick={() => (window.location.href = "/empresa/postulantes")}>Ver →</button>
                   </article>
                 ))}
               </div>
@@ -175,7 +182,7 @@ export default function EmpresaPage() {
                     <div className="candidateAvatar">{candidate.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}</div>
                     <div><strong>{candidate.name} {candidate.verified && <i>✓</i>}</strong><span>{candidate.role}</span><small>⌖ {candidate.location} · {candidate.cv}</small></div>
                     <div className="candidateMatch"><b>{candidate.match}%</b><span>coincidencia</span></div>
-                    <div className="candidateActions"><button onClick={() => notify(`Ver CV de ${candidate.name}`)}>Ver CV</button><button onClick={() => notify(`Mensaje a ${candidate.name}`)}>💬</button><button onClick={() => notify(`Videollamada con ${candidate.name}`)}>📹</button></div>
+                    <div className="candidateActions"><button onClick={() => (window.location.href = `/empresa/candidatos/${candidateIds[candidate.name] || "1"}`)}>Ver CV</button><button onClick={() => (window.location.href = `/mensajes?candidato=${encodeURIComponent(candidate.name)}&empleo=${encodeURIComponent(candidate.role)}`)}>💬</button><button onClick={() => (window.location.href = `/videollamadas?candidato=${encodeURIComponent(candidate.name)}&empleo=${encodeURIComponent(candidate.role)}`)}>📹</button></div>
                   </article>
                 ))}
               </div>
@@ -184,10 +191,10 @@ export default function EmpresaPage() {
 
           <div className="companyTwoCol">
             <section className="companyPanel">
-              <div className="panelHead"><div><span className="eyebrow dark">VISIBILIDAD COMERCIAL</span><h2>Promociones y ofertas</h2></div><button onClick={() => notify("Crear promoción")}>＋ Crear promoción</button></div>
+              <div className="panelHead"><div><span className="eyebrow dark">VISIBILIDAD COMERCIAL</span><h2>Promociones y ofertas</h2></div><button onClick={() => (window.location.href = "/empresa/promociones")}>＋ Crear promoción</button></div>
               <div className="promoGrid">
                 {promos.map((promo) => (
-                  <article key={promo.title}><span>Promoción</span><h3>{promo.title}</h3><p>{promo.detail}</p><small>Vigente hasta {promo.until}</small><div><button onClick={() => notify(`Editar promoción: ${promo.title}`)}>Editar</button><button onClick={() => notify(`Ver rendimiento: ${promo.title}`)}>Estadísticas</button></div></article>
+                  <article key={promo.title}><span>Promoción</span><h3>{promo.title}</h3><p>{promo.detail}</p><small>Vigente hasta {promo.until}</small><div><button onClick={() => (window.location.href = "/empresa/promociones")}>Editar</button><button onClick={() => (window.location.href = "/empresa/estadisticas")}>Estadísticas</button></div></article>
                 ))}
               </div>
               <div className="aiCommerce"><strong>✦ Cómo participa la IA</strong><p>Si una persona busca “el cosito del baño”, WorkCerca puede interpretar la necesidad y mostrar productos, comercios cercanos, promociones activas y profesionales relacionados.</p></div>
@@ -195,7 +202,7 @@ export default function EmpresaPage() {
 
             <section className="companyPanel">
               <div className="panelHead"><div><span className="eyebrow dark">PROVEEDORES Y SERVICIOS</span><h2>Conectá con quien tu empresa necesita</h2></div></div>
-              <div className="providerActions"><button onClick={() => notify("Buscar profesionales cercanos")}>⌖ Profesionales cercanos</button><button onClick={() => notify("Solicitar presupuesto")}>▧ Solicitar presupuesto</button><button onClick={() => notify("Buscar proveedores")}>⌘ Buscar proveedores</button><button onClick={() => notify("Publicar necesidad")}>＋ Publicar necesidad</button></div>
+              <div className="providerActions"><button onClick={() => notify("Buscar profesionales cercanos")}>⌖ Profesionales cercanos</button><button onClick={() => notify("Solicitar presupuesto")}>▧ Solicitar presupuesto</button><button onClick={() => (window.location.href = "/empresa/proveedores")}>⌘ Buscar proveedores</button><button onClick={() => notify("Publicar necesidad")}>＋ Publicar necesidad</button></div>
               <div className="institutionLinks">
                 <article><span>🏛</span><div><strong>Municipios</strong><p>Programas, capacitaciones, empleo local y oportunidades territoriales.</p></div><button onClick={() => notify("Conectar con municipios")}>Ver →</button></article>
                 <article><span>🎓</span><div><strong>Instituciones</strong><p>Cursos, formación, carreras y capacitación para perfiles que tu empresa necesita.</p></div><button onClick={() => notify("Conectar con instituciones")}>Ver →</button></article>
@@ -204,7 +211,7 @@ export default function EmpresaPage() {
           </div>
 
           <section className="companyActionsBar">
-            <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ Postulantes</button><button onClick={() => (window.location.href = "/mensajes")}>💬 Mensajes</button><button onClick={() => (window.location.href = "/videollamadas")}>📹 Videollamadas</button><button onClick={() => (window.location.href = "/agenda")}>📅 Agenda</button><button onClick={() => notify("Promociones")}>★ Promociones</button><button onClick={() => notify("Publicidad")}>◎ Publicidad</button><button onClick={() => notify("Estadísticas")}>◉ Estadísticas</button>
+            <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ Postulantes</button><button onClick={() => (window.location.href = "/mensajes")}>💬 Mensajes</button><button onClick={() => (window.location.href = "/videollamadas")}>📹 Videollamadas</button><button onClick={() => (window.location.href = "/agenda")}>📅 Agenda</button><button onClick={() => (window.location.href = "/empresa/promociones")}>★ Promociones</button><button onClick={() => (window.location.href = "/empresa/publicidad")}>◎ Publicidad</button><button onClick={() => (window.location.href = "/empresa/estadisticas")}>◉ Estadísticas</button>
           </section>
         </div>
       </section>
