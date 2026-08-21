@@ -611,24 +611,25 @@ export default function Home() {
         .wcSearchGlass {
           position: absolute;
           left: 50%;
-          bottom: 26px;
+          bottom: 18px;
           transform: translateX(-50%);
           z-index: 4;
           width: min(1180px, calc(100% - 40px));
           display: grid;
           grid-template-columns: 1.2fr 1.05fr auto;
           align-items: stretch;
-          background: rgba(7,24,49,.56);
-          border: 1px solid rgba(255,255,255,.45);
-          border-radius: 22px;
-          box-shadow: 0 20px 60px rgba(0,0,0,.28);
-          backdrop-filter: blur(12px);
+          background: rgba(7,24,49,.18);
+          border: 1px solid rgba(255,255,255,.42);
+          border-radius: 18px;
+          box-shadow: 0 12px 32px rgba(0,0,0,.14);
+          backdrop-filter: blur(5px);
+          -webkit-backdrop-filter: blur(5px);
           overflow: hidden;
           color: white;
         }
         .wcSearchPart {
-          min-height: 112px;
-          padding: 20px 24px;
+          min-height: 88px;
+          padding: 13px 20px;
           display: flex;
           align-items: center;
           gap: 15px;
@@ -964,7 +965,7 @@ export default function Home() {
           </div>
 
           <div className="wcHeroCopy">
-            <h1>Conectá,<br/>encontrá<br/><span>y hacé crecer<br/>tus ideas</span></h1>
+            <h1>CONECTA <span>•</span> ENCUENTRA <span>•</span> CRECE</h1>
             <p>Personas, profesionales, empresas y servicios en un solo lugar.</p>
           </div>
 
