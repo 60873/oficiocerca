@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-const sidebar = [
+const sidebar: readonly (readonly [string, string, string, string?])[] = [
   ["⌂","Inicio","panel"],
   ["💼","Oportunidades","oportunidades"],
   ["🎯","Para vos con IA","ia"],
