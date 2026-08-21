@@ -1152,3 +1152,4 @@ export default function Home() {
       {notice && <div className="toast">{notice}</div>}
     </main>
   );
+}
