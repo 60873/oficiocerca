@@ -41,6 +41,203 @@ const sidebar = [
   ["⚙", "Configuración", "configuracion"],
 ];
 
+
+const moduleScreens: Record<string, {
+  title: string;
+  subtitle: string;
+  icon: string;
+  primary: string;
+  items: { title: string; text: string; badge?: string }[];
+}> = {
+  perfil: {
+    title: "Mi Perfil Profesional",
+    subtitle: "Administrá tu presentación pública, experiencia, especialidades y datos de contacto.",
+    icon: "👤",
+    primary: "Editar mi perfil",
+    items: [
+      { title: "Perfil público", text: "Revisá cómo te ven personas, empresas, municipios e instituciones.", badge: "Verificado" },
+      { title: "Especialidades", text: "Electricidad · Instalaciones · Mantenimiento · Tableros" },
+      { title: "Zona de trabajo", text: "Reconquista, Santa Fe · Radio configurado hasta 30 km" },
+    ],
+  },
+  cv: {
+    title: "Mi CV",
+    subtitle: "Tu CV laboral se conecta con empresas, municipios e instituciones que buscan perfiles como el tuyo.",
+    icon: "📄",
+    primary: "Editar mi CV",
+    items: [
+      { title: "CV WorkCerca", text: "Experiencia, formación, habilidades y referencias en un solo perfil.", badge: "Completo 85%" },
+      { title: "Postulación rápida", text: "Usá este CV para presentarte a oportunidades compatibles." },
+      { title: "Visibilidad inteligente", text: "La IA puede sugerir tu perfil cuando una organización busca tus habilidades." },
+    ],
+  },
+  servicios: {
+    title: "Mis Servicios",
+    subtitle: "Publicá y organizá los servicios que ofrecés como profesional independiente.",
+    icon: "🧰",
+    primary: "Agregar servicio",
+    items: [
+      { title: "Instalaciones eléctricas", text: "Domiciliarias y comerciales · Presupuesto previo", badge: "Activo" },
+      { title: "Mantenimiento eléctrico", text: "Revisión, diagnóstico y mantenimiento preventivo", badge: "Activo" },
+      { title: "Tableros eléctricos", text: "Armado, reparación y actualización de tableros" },
+    ],
+  },
+  solicitudes: {
+    title: "Solicitudes recibidas",
+    subtitle: "Consultas de personas y organizaciones interesadas en contratar tus servicios.",
+    icon: "✉",
+    primary: "Ver nuevas solicitudes",
+    items: [
+      { title: "Instalación eléctrica en vivienda", text: "Reconquista · 1.2 km · Recibida hoy", badge: "Nueva" },
+      { title: "Mantenimiento de tablero", text: "Avellaneda · 12 km · Recibida hoy", badge: "Nueva" },
+      { title: "Revisión en comercio", text: "Reconquista · 2.5 km · Recibida ayer" },
+    ],
+  },
+  presupuestos: {
+    title: "Presupuestos",
+    subtitle: "Prepará, enviá y seguí presupuestos vinculados a solicitudes de trabajo.",
+    icon: "$",
+    primary: "Crear presupuesto",
+    items: [
+      { title: "Presupuesto #WC-102", text: "Instalación domiciliaria · Pendiente de respuesta", badge: "Pendiente" },
+      { title: "Presupuesto #WC-101", text: "Tablero eléctrico · Enviado al cliente", badge: "Enviado" },
+      { title: "Historial", text: "Consultá presupuestos aceptados, rechazados y vencidos." },
+    ],
+  },
+  trabajos: {
+    title: "Trabajos activos",
+    subtitle: "Seguimiento de trabajos confirmados, fechas, estado y próximos pasos.",
+    icon: "▣",
+    primary: "Actualizar trabajos",
+    items: [
+      { title: "Instalación comercial", text: "En ejecución · Próxima visita mañana 09:00", badge: "Activo" },
+      { title: "Mantenimiento preventivo", text: "En ejecución · Avance estimado 60%", badge: "Activo" },
+      { title: "Finalizados", text: "Accedé al historial y solicitá calificaciones al finalizar." },
+    ],
+  },
+  agenda: {
+    title: "Agenda",
+    subtitle: "Organizá entrevistas, visitas, trabajos y videollamadas en un solo lugar.",
+    icon: "▦",
+    primary: "Agregar evento",
+    items: [
+      { title: "10:30 · Visita técnica", text: "Reconquista · Instalación eléctrica" },
+      { title: "14:00 · Videollamada", text: "Empresa del Norte SRL · Entrevista laboral" },
+      { title: "17:30 · Presupuesto", text: "Avellaneda · Revisión de tablero" },
+    ],
+  },
+  mensajes: {
+    title: "Mensajes",
+    subtitle: "Conversaciones con clientes, empresas, municipios e instituciones.",
+    icon: "◯",
+    primary: "Nuevo mensaje",
+    items: [
+      { title: "Empresa Reconquista SRL", text: "Nos interesa tu perfil para una vacante.", badge: "2 nuevos" },
+      { title: "Municipalidad de Reconquista", text: "Invitación a participar de un proyecto local." },
+      { title: "Centro de Salud N°3", text: "Consulta por mantenimiento programado." },
+    ],
+  },
+  videollamadas: {
+    title: "Videollamadas",
+    subtitle: "Entrevistas y reuniones remotas directamente desde WorkCerca.",
+    icon: "▣",
+    primary: "Programar videollamada",
+    items: [
+      { title: "Próxima entrevista", text: "Empresa del Norte SRL · Hoy 14:00", badge: "Hoy" },
+      { title: "Reuniones programadas", text: "Tus próximas videollamadas aparecerán aquí." },
+      { title: "Historial", text: "Consultá entrevistas y reuniones anteriores." },
+    ],
+  },
+  disponibilidad: {
+    title: "Disponibilidad",
+    subtitle: "Definí cuándo, dónde y para qué tipo de oportunidades estás disponible.",
+    icon: "◷",
+    primary: "Editar disponibilidad",
+    items: [
+      { title: "Estado", text: "Disponible para servicios y oportunidades laborales.", badge: "Disponible" },
+      { title: "Radio de trabajo", text: "Hasta 30 km desde Reconquista." },
+      { title: "Horarios", text: "Lun a Vie 08:00–18:00 · Sáb 08:00–13:00" },
+    ],
+  },
+  calificaciones: {
+    title: "Calificaciones y reseñas",
+    subtitle: "Tu reputación se construye con experiencias reales dentro del ecosistema.",
+    icon: "☆",
+    primary: "Ver todas las reseñas",
+    items: [
+      { title: "Calificación general", text: "4.9 sobre 5 · 128 reseñas", badge: "Excelente" },
+      { title: "Puntualidad", text: "Valoración destacada por clientes y organizaciones." },
+      { title: "Calidad del trabajo", text: "Fortaleza principal detectada en tus reseñas." },
+    ],
+  },
+  empleo: {
+    title: "Buscar empleo",
+    subtitle: "Encontrá puestos compatibles con tu profesión, CV, ubicación y disponibilidad.",
+    icon: "⌕",
+    primary: "Buscar oportunidades",
+    items: [
+      { title: "Técnico Electricista", text: "Empresa del Norte SRL · Reconquista · Tiempo completo", badge: "92% compatible" },
+      { title: "Instalador Eléctrico", text: "Municipalidad de Reconquista · Proyecto", badge: "88% compatible" },
+      { title: "Técnico de mantenimiento", text: "Institución Educativa N°45 · Media jornada", badge: "84% compatible" },
+    ],
+  },
+  postulaciones: {
+    title: "Mis postulaciones",
+    subtitle: "Seguimiento de todas tus postulaciones laborales y procesos de selección.",
+    icon: "➤",
+    primary: "Ver oportunidades",
+    items: [
+      { title: "Empresa del Norte SRL", text: "Técnico Electricista · CV enviado", badge: "En revisión" },
+      { title: "Municipalidad de Reconquista", text: "Instalador Eléctrico · Postulación recibida", badge: "Recibida" },
+      { title: "Institución Educativa N°45", text: "Técnico de mantenimiento · Entrevista pendiente", badge: "Entrevista" },
+    ],
+  },
+  oportunidades: {
+    title: "Oportunidades",
+    subtitle: "La IA WorkCerca reúne empleo, proyectos, servicios y oportunidades compatibles con vos.",
+    icon: "⚡",
+    primary: "Actualizar sugerencias IA",
+    items: [
+      { title: "Empresa", text: "Vacante de Técnico Electricista · 92% compatible", badge: "IA" },
+      { title: "Municipio", text: "Proyecto de instalación eléctrica comunitaria · 88% compatible", badge: "IA" },
+      { title: "Institución", text: "Mantenimiento técnico · 84% compatible", badge: "IA" },
+    ],
+  },
+  capacitaciones: {
+    title: "Capacitaciones",
+    subtitle: "Cursos y formación recomendados según tu perfil y la demanda de tu zona.",
+    icon: "🎓",
+    primary: "Explorar capacitaciones",
+    items: [
+      { title: "Instalaciones Industriales", text: "Alta demanda en Reconquista y zona", badge: "Recomendada por IA" },
+      { title: "Seguridad eléctrica", text: "Actualización profesional · Modalidad mixta" },
+      { title: "Herramientas digitales", text: "Mejorá presupuestos, organización y comunicación." },
+    ],
+  },
+  confianza: {
+    title: "Mi reputación / Confianza",
+    subtitle: "Verificaciones, calificaciones y señales que fortalecen tu perfil WorkCerca.",
+    icon: "🛡",
+    primary: "Completar verificaciones",
+    items: [
+      { title: "Identidad", text: "Identidad validada dentro de WorkCerca.", badge: "Verificado" },
+      { title: "Matrícula / credencial", text: "Credencial profesional disponible para validación." },
+      { title: "Historial de reputación", text: "Calificaciones, trabajos y referencias construyen tu confianza." },
+    ],
+  },
+  configuracion: {
+    title: "Configuración",
+    subtitle: "Preferencias de cuenta, privacidad, notificaciones y seguridad.",
+    icon: "⚙",
+    primary: "Guardar preferencias",
+    items: [
+      { title: "Privacidad", text: "Elegí qué información mostrar a personas y organizaciones." },
+      { title: "Notificaciones", text: "Configurá alertas de solicitudes, empleo, mensajes y agenda." },
+      { title: "Seguridad", text: "Acceso, sesiones activas y protección de tu cuenta." },
+    ],
+  },
+};
+
 export default function ProfesionalesPage() {
   const [active, setActive] = useState("panel");
   const [notice, setNotice] = useState("");
@@ -223,6 +420,24 @@ export default function ProfesionalesPage() {
         .viewTitle{display:none;padding:14px 16px;margin-bottom:12px}
         .viewTitle h2{margin:0}
 
+
+        .moduleScreen{display:grid;gap:12px}
+        .moduleHero{
+          padding:20px;border-radius:15px;background:linear-gradient(135deg,#0b5ef0,#0a46b7);
+          color:#fff;display:grid;grid-template-columns:64px 1fr auto;gap:16px;align-items:center;
+          box-shadow:0 12px 28px rgba(11,94,240,.16)
+        }
+        .moduleHeroIcon{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:30px}
+        .moduleHero h2{margin:0;font-size:24px}.moduleHero p{margin:5px 0 0;color:rgba(255,255,255,.88);line-height:1.5}
+        .modulePrimary{border:0;border-radius:10px;background:#fff;color:#0a4cc7;min-height:42px;padding:0 16px;font-weight:900}
+        .moduleGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .moduleItem{padding:17px;min-height:138px;display:flex;flex-direction:column;justify-content:space-between}
+        .moduleItem h3{margin:0 0 7px;font-size:16px}.moduleItem p{margin:0;color:#5b687e;line-height:1.5;font-size:13px}
+        .moduleBadge{display:inline-block;margin-top:14px;align-self:flex-start;background:#e8f2ff;color:#0b5bdc;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900}
+        .moduleActions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .moduleActionCard{padding:18px}
+        .moduleActionCard h3{margin:0 0 6px}.moduleActionCard p{margin:0 0 14px;color:#5a677c;font-size:13px;line-height:1.5}
+        @media(max-width:900px){.moduleGrid{grid-template-columns:1fr}.moduleHero{grid-template-columns:54px 1fr}.modulePrimary{grid-column:1/-1}.moduleActions{grid-template-columns:1fr}}
         .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:999;background:#071f49;color:#fff;padding:13px 18px;border-radius:12px;box-shadow:0 14px 38px rgba(0,0,0,.28);font-weight:800}
 
         @media(max-width:1200px){
@@ -303,16 +518,59 @@ export default function ProfesionalesPage() {
 
         <section className="content">
           <div className="mainCol">
-            {active !== "panel" && (
-              <div className="card viewTitle" style={{display:"block"}}>
-                <h2>{title}</h2>
-                <p style={{margin:"6px 0 0",color:"#667085"}}>
-                  Esta sección queda integrada al Panel Profesional y se conectará con el ecosistema WorkCerca.
-                </p>
-              </div>
-            )}
+            {active !== "panel" ? (
+              <section className="moduleScreen">
+                <div className="moduleHero">
+                  <div className="moduleHeroIcon">{moduleScreens[active]?.icon || "•"}</div>
+                  <div>
+                    <h2>{moduleScreens[active]?.title || title}</h2>
+                    <p>{moduleScreens[active]?.subtitle}</p>
+                  </div>
+                  <button
+                    className="modulePrimary"
+                    onClick={() => action(`${moduleScreens[active]?.primary}: acción preparada para conectar con Supabase y la IA WorkCerca.`)}
+                  >
+                    {moduleScreens[active]?.primary}
+                  </button>
+                </div>
 
-            <div className="stats">
+                <div className="moduleGrid">
+                  {(moduleScreens[active]?.items || []).map((item) => (
+                    <article className="card moduleItem" key={item.title}>
+                      <div>
+                        <h3>{item.title}</h3>
+                        <p>{item.text}</p>
+                      </div>
+                      {item.badge && <span className="moduleBadge">{item.badge}</span>}
+                    </article>
+                  ))}
+                </div>
+
+                <div className="moduleActions">
+                  <article className="card moduleActionCard">
+                    <h3>✦ IA WorkCerca</h3>
+                    <p>
+                      La IA analiza tu perfil, CV, ubicación y disponibilidad para relacionarte
+                      con personas, empresas, municipios e instituciones cuando corresponda.
+                    </p>
+                    <button className="primaryBtn" onClick={() => action("IA WorkCerca: sugerencias actualizadas para esta sección.")}>
+                      Ver sugerencias IA
+                    </button>
+                  </article>
+
+                  <article className="card moduleActionCard">
+                    <h3>🔗 Conexión con el ecosistema</h3>
+                    <p>
+                      Esta pantalla forma parte del mismo perfil profesional y comparte información
+                      autorizada con el resto de WorkCerca según tus permisos.
+                    </p>
+                    <button className="outlineBtn" onClick={() => setActive("panel")}>Volver al Panel Profesional</button>
+                  </article>
+                </div>
+              </section>
+            ) : (
+              <>
+                <div className="stats">
               <article className="stat">
                 <div className="statIcon">▰</div>
                 <div><strong>3</strong><span>Solicitudes nuevas</span></div>
@@ -439,6 +697,8 @@ export default function ProfesionalesPage() {
                 <span className="peopleText">+ comunidad profesional<br/>WorkCerca</span>
               </div>
             </article>
+              </>
+            )}
           </div>
 
           <aside className="rightCol">
