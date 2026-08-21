@@ -52,6 +52,8 @@ const courses = [
 
 export default function Home() {
   const [query, setQuery] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [gpsLoading, setGpsLoading] = useState(false);
   const [active, setActive] = useState("Inicio");
   const [notice, setNotice] = useState("");
   const [selectedProfessional, setSelectedProfessional] = useState<any | null>(null);
@@ -156,6 +158,45 @@ export default function Home() {
 
     loadProfessionals();
   }, []);
+
+  const goTo = (path: string) => { window.location.href = path; };
+
+  const useCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      action("Tu navegador no permite usar GPS. Podés elegir una ciudad manualmente.");
+      return;
+    }
+    setGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}`);
+          const data = await response.json();
+          const city = data?.address?.city || data?.address?.town || data?.address?.village || data?.address?.municipality || data?.address?.county || "Ubicación actual";
+          setSearchLocation(city);
+          action(`Ubicación actual: ${city}. Esto no modifica la ciudad guardada en tu perfil.`);
+        } catch {
+          setSearchLocation("Ubicación actual");
+          action("GPS activado. Tu localidad del perfil no fue modificada.");
+        } finally { setGpsLoading(false); }
+      },
+      () => { setGpsLoading(false); action("No pudimos acceder a tu ubicación. Podés escribir otra ciudad."); },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
+
+  const useProfileLocation = () => {
+    if (profileCity.trim()) {
+      setSearchLocation(profileCity.trim());
+      action(`Buscando en ${profileCity.trim()}, tu localidad del perfil.`);
+    } else if (currentUserId) {
+      action("Completá primero la ciudad de tu perfil.");
+      setProfileOpen(true);
+    } else {
+      action("Iniciá sesión para usar la localidad guardada en tu perfil.");
+      openLogin();
+    }
+  };
 
   const searchNow = () => {
     window.setTimeout(() => {
@@ -391,14 +432,15 @@ export default function Home() {
           </button>
 
           <nav className="mainNav" aria-label="Navegación principal">
-            {["Inicio", "Buscar", "Categorías", "Empresas", "Emprendedores", "Mi Perfil"].map((item) => (
+            {["Inicio", "Buscar", "Oportunidades", "Capacitaciones", "Mi Perfil"].map((item) => (
               <button
                 key={item}
                 className={active === item ? "navActive" : ""}
                 onClick={() => {
                   setActive(item);
                   if (item === "Buscar") searchNow();
-                  if (item === "Categorías") document.getElementById("ecosistema")?.scrollIntoView({ behavior: "smooth" });
+                  if (item === "Oportunidades") goTo("/oportunidades");
+                  if (item === "Capacitaciones") goTo("/capacitaciones");
                   if (item === "Mi Perfil") {
                     if (currentUserId) setProfileOpen(true);
                     else openLogin();
@@ -461,10 +503,12 @@ export default function Home() {
             <div className="locationField">
               <span className="pinIcon">⌖</span>
               <div>
-                <label>Tu ubicación</label>
-                <button type="button" onClick={() => action("El GPS real se activará en la etapa de geolocalización.")}>
-                  Usar mi ubicación
-                </button>
+                <label>Tu ubicación para esta búsqueda</label>
+                <div className="locationChoices">
+                  <button type="button" onClick={useCurrentLocation}>{gpsLoading ? "Ubicando..." : searchLocation || "Usar mi ubicación"}</button>
+                  <button type="button" onClick={useProfileLocation}>🏠 Mi localidad</button>
+                  <input value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} placeholder="Elegir otra ciudad" aria-label="Elegir otra ciudad" />
+                </div>
               </div>
             </div>
 
@@ -473,19 +517,19 @@ export default function Home() {
 
           <div className="heroPaths mockHeroPaths">
             {[
-              ["💼", "Mi Primer Empleo"],
-              ["🛠️", "Oficios y Servicios"],
-              ["🏪", "Comercios y Emprendedores"],
-              ["⛑️", "Empresas e Industria"],
-              ["🎓", "Profesionales y Proyectos"],
-              ["📣", "Publicidad y Promociones"],
-              ["🤝", "Comunidad y Conexiones"],
-            ].map(([icon, title]) => (
-              <button key={title} onClick={() => action(`${title}: esta sección se activará por etapas.`)}>
-                <span>{icon}</span>
-                <b>{title}</b>
+              ["👤", "Personas", "/mi-workcerca"],
+              ["🧑‍🔧", "Profesionales", "/profesionales"],
+              ["🚀", "Emprendedores", "/emprendedores"],
+              ["🏢", "Empresas", "/empresa"],
+              ["🏛️", "Municipios", "/municipios"],
+              ["🎓", "Instituciones", "/instituciones"],
+              ["🔎", "Oportunidades", "/oportunidades"],
+            ].map(([icon, title, path]) => (
+              <button key={title} onClick={() => goTo(path)}>
+                <span>{icon}</span><b>{title}</b>
               </button>
             ))}
+            <button className="emergencyPath" onClick={() => goTo("/emergencias")}><span>🚨</span><b>Emergencias 24/7</b></button>
           </div>
         </div>
       </section>
@@ -528,8 +572,8 @@ export default function Home() {
             <div className="featureText">
               <h2>Servicios cerca tuyo con GPS</h2>
               <p>Encontrá profesionales y comercios cerca de tu ubicación en tiempo real.</p>
-              <button className="primary" onClick={() => action("GPS: integración real planificada para la próxima etapa.")}>
-                Ver en el mapa
+              <button className="primary" onClick={useCurrentLocation}>
+                {gpsLoading ? "Ubicando..." : "Usar GPS ahora"}
               </button>
             </div>
             <img
@@ -552,7 +596,7 @@ export default function Home() {
             <div className="featureText">
               <h2>Dale visibilidad a tu negocio</h2>
               <p>Promocioná tus productos y servicios a miles de personas todos los días.</p>
-              <button className="primary" onClick={() => action("Publicidad WorkCerca: módulo comercial en preparación.")}>
+              <button className="primary" onClick={() => goTo("/empresa/publicidad")}>
                 Publicitar ahora
               </button>
             </div>
@@ -634,7 +678,7 @@ export default function Home() {
         <div className="container trustGrid">
           <div><b>✓</b><span>Perfiles verificados<br/>y calificaciones</span></div>
           <div><b>◌</b><span>Comunicación directa<br/>y segura</span></div>
-          <div><b>▢</b><span>Pagos seguros<br/>en la plataforma</span></div>
+          <div><b>✓</b><span>Verificación clara<br/>de perfiles y credenciales</span></div>
           <div><b>⌂</b><span>Soporte y ayuda<br/>siempre disponibles</span></div>
         </div>
       </section>
@@ -838,6 +882,10 @@ export default function Home() {
               >
                 <option>Cliente</option>
                 <option>Profesional</option>
+                <option>Emprendedor</option>
+                <option>Empresa</option>
+                <option>Municipio</option>
+                <option>Institución</option>
               </select>
 
               <label style={{ display: "block", marginTop: 14, fontWeight: 800, fontSize: 13 }}>
@@ -1104,4 +1152,3 @@ export default function Home() {
       {notice && <div className="toast">{notice}</div>}
     </main>
   );
-}
