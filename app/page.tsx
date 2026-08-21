@@ -674,7 +674,7 @@ export default function Home() {
         }
         .wcActors {
           display: grid;
-          grid-template-columns: repeat(7, 1fr);
+          grid-template-columns: repeat(8, 1fr);
           background: white;
           border-radius: 0 0 22px 22px;
           box-shadow: 0 14px 34px rgba(20,50,90,.11);
@@ -1022,6 +1022,7 @@ export default function Home() {
             ["🏢", "Empresas", "/empresa"],
             ["🏛️", "Municipios", "/municipios"],
             ["🎓", "Instituciones", "/instituciones"],
+            ["🎓", "Feria de Carreras", "/feria-de-carreras"],
             ["🔎", "Oportunidades", "/oportunidades"],
           ].map(([icon, title, path]) => (
             <button className="wcActor" key={title} onClick={() => goTo(path)}>
