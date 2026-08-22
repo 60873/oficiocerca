@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logoHeader from "../../workcerca-logo-header.png";
 import logoFooter from "../../workcerca-logo-footer.png";
 
@@ -38,10 +38,25 @@ const promos = [
 export default function MiWorkCerca() {
   const [query, setQuery] = useState("");
   const [notice, setNotice] = useState("");
+  const [activeScreen, setActiveScreen] = useState("panel");
+  const [pageReady, setPageReady] = useState(false);
+
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash) setActiveScreen(hash);
+    const frame = window.requestAnimationFrame(() => setPageReady(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  const openScreen = (key: string) => {
+    setActiveScreen(key);
+    window.history.replaceState(null, "", key === "panel" ? "/mi-workcerca" : `/mi-workcerca#${key}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const act = (text: string) => { setNotice(text); window.setTimeout(() => setNotice(""), 2600); };
 
   return (
-    <main className="mwcPage">
+    <main className="mwcPage" style={{opacity: pageReady ? 1 : 0, visibility: pageReady ? "visible" : "hidden", transition:"opacity 220ms ease-out"}}>
       {notice && <div className="mwcToast">{notice}</div>}
       <aside className="mwcSidebar">
         <button className="mwcSideLogo" onClick={() => window.location.href = "/"}><img src={logoHeader.src} alt="WorkCerca" /></button>
@@ -50,21 +65,22 @@ export default function MiWorkCerca() {
           <div><strong>Hola, Mariana</strong><span>Usuario verificado ✓</span></div>
         </div>
         <nav className="mwcSideNav">
-          <button onClick={() => window.location.href = "/"}><i className="mwcNavIcon">⌂</i> <span>Inicio</span></button>
-          <button className="active"><i className="mwcNavIcon">▣</i> <span>Mi WorkCerca</span></button>
-          <button onClick={() => window.location.href = "/solicitudes"}><i className="mwcNavIcon">▤</i> <span>Solicitudes</span><b>2</b></button>
-          <button onClick={() => window.location.href = "/busco-trabajo"}><i className="mwcNavIcon">💼</i> <span>Busco trabajo / Mi CV</span></button>
-          <button onClick={() => act("Abriremos Presupuestos en su pantalla propia.")}><i className="mwcNavIcon">▧</i> <span>Presupuestos</span><b>4</b></button>
-          <button onClick={() => act("Mensajes y videollamadas: próxima pantalla.")}><i className="mwcNavIcon">▱</i> <span>Mensajes</span><b>3</b></button>
-          <button onClick={() => act("Agenda: próxima pantalla.")}><i className="mwcNavIcon">□</i> <span>Agenda</span></button>
-          <button onClick={() => act("Mi Proyecto: próxima pantalla.")}><i className="mwcNavIcon">▣</i> <span>Proyectos</span><b>1</b></button>
-          <button onClick={() => act("Favoritos: próxima pantalla.")}><i className="mwcNavIcon">♡</i> <span>Favoritos</span></button>
-          <button onClick={() => act("Reseñas y calificaciones: próxima pantalla.")}><i className="mwcNavIcon">☆</i> <span>Mis reseñas</span></button>
-          <button onClick={() => act("Pagos y facturas: próxima pantalla.")}><i className="mwcNavIcon">$</i> <span>Pagos y facturas</span></button>
-          <button onClick={() => act("Configuración: próxima pantalla.")}><i className="mwcNavIcon">⚙</i> <span>Configuración</span></button>
+          <button onClick={() => window.location.href = "/"}>⌂ <span>Inicio WorkCerca</span></button>
+          <button className={activeScreen==="panel" ? "active" : ""} onClick={() => openScreen("panel")}>▣ <span>Mi WorkCerca</span></button>
+          <button onClick={() => window.location.href = "/solicitudes"}>▤ <span>Solicitudes</span><b>2</b></button>
+          <button onClick={() => window.location.href = "/busco-trabajo"}>💼 <span>Busco trabajo / Mi CV</span></button>
+          <button className={activeScreen==="presupuestos" ? "active" : ""} onClick={() => openScreen("presupuestos")}>▧ <span>Presupuestos</span><b>4</b></button>
+          <button className={activeScreen==="mensajes" ? "active" : ""} onClick={() => openScreen("mensajes")}>▱ <span>Mensajes</span><b>3</b></button>
+          <button className={activeScreen==="videollamadas" ? "active" : ""} onClick={() => openScreen("videollamadas")}>▣ <span>Videollamadas</span><b>3</b></button>
+          <button className={activeScreen==="agenda" ? "active" : ""} onClick={() => openScreen("agenda")}>□ <span>Agenda</span></button>
+          <button className={activeScreen==="proyectos" ? "active" : ""} onClick={() => openScreen("proyectos")}>▣ <span>Proyectos</span><b>1</b></button>
+          <button className={activeScreen==="favoritos" ? "active" : ""} onClick={() => openScreen("favoritos")}>♡ <span>Favoritos</span></button>
+          <button className={activeScreen==="resenas" ? "active" : ""} onClick={() => openScreen("resenas")}>☆ <span>Mis reseñas</span></button>
+          <button className={activeScreen==="pagos" ? "active" : ""} onClick={() => openScreen("pagos")}>$ <span>Pagos y facturas</span></button>
+          <button className={activeScreen==="configuracion" ? "active" : ""} onClick={() => openScreen("configuracion")}>⚙ <span>Configuración</span></button>
         </nav>
-        <div className="mwcInvite"><strong>♧ Invitá y ganá</strong><p>Invitá amigos y ganá beneficios en WorkCerca.</p><button onClick={() => act("Invitaciones: función en preparación.")}>Invitar ahora</button></div>
-        <div className="mwcHelp"><strong>ⓘ ¿Necesitás ayuda?</strong><p>Estamos para ayudarte</p><button onClick={() => act("Centro de ayuda: próxima pantalla.")}>Centro de ayuda</button></div>
+        <div className="mwcInvite"><strong>✦ IA WorkCerca</strong><p>Decime qué necesitás y te guío por la plataforma.</p><button onClick={() => act("IA WorkCerca lista para orientarte.")}>Hablar con IA</button></div>
+        <div className="mwcHelp"><strong>ⓘ Cómo funciona WorkCerca</strong><p>Recorrido simple por todas las herramientas.</p><button onClick={() => act("Recorrido guiado WorkCerca.")}>Ver recorrido</button></div>
       </aside>
 
       <section className="mwcMain">
@@ -73,6 +89,7 @@ export default function MiWorkCerca() {
           <div className="mwcTopRight"><button>🔔<i>3</i></button><button>💬</button><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="Perfil" /></div>
         </header>
 
+        {activeScreen === "panel" && (
         <div className="mwcContent">
           <h1>¿Qué vas a hacer <em>hoy?</em></h1>
           <div className="mwcSearch">
@@ -100,40 +117,82 @@ export default function MiWorkCerca() {
           </div>
         </div>
 
+        )}
+
+        {activeScreen !== "panel" && (
+          <div className="mwcInternal">
+            <section className="mwcInternalHero">
+              <div>
+                <span>MI WORKCERCA · {activeScreen.toUpperCase()}</span>
+                <h1>{
+                  activeScreen==="presupuestos" ? "Presupuestos" :
+                  activeScreen==="mensajes" ? "Mensajes" :
+                  activeScreen==="videollamadas" ? "Videollamadas" :
+                  activeScreen==="agenda" ? "Agenda" :
+                  activeScreen==="proyectos" ? "Proyectos" :
+                  activeScreen==="favoritos" ? "Favoritos" :
+                  activeScreen==="resenas" ? "Mis reseñas" :
+                  activeScreen==="pagos" ? "Pagos y facturas" : "Configuración"
+                }</h1>
+                <p>Todo dentro de tu mismo panel. No cambiamos el barral ni te hacemos perder dónde estabas.</p>
+              </div>
+              <button onClick={() => openScreen("panel")}>← Volver a Mi WorkCerca</button>
+            </section>
+
+            <div className="mwcInternalGrid">
+              {activeScreen==="presupuestos" && <>
+                <article><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Presupuestos recibidos</h3><p>Compará propuestas, precios, disponibilidad y reputación antes de decidir.</p><button onClick={() => act("Abrir presupuesto recibido")}>Ver recibidos</button></article>
+                <article><h3>Solicitar presupuesto</h3><p>Contá qué necesitás y WorkCerca te ayuda a encontrar opciones.</p><button onClick={() => window.location.href="/solicitudes"}>Nueva solicitud</button></article>
+              </>}
+              {activeScreen==="mensajes" && <>
+                <article><img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Conversaciones recientes</h3><p>Profesionales, empresas, instituciones y contactos de WorkCerca en un solo lugar.</p><button onClick={() => window.location.href="/mensajes"}>Abrir mensajes</button></article>
+                <article><h3>IA WorkCerca</h3><p>Puede ayudarte a ordenar consultas y encontrar la conversación relacionada con tu necesidad.</p><button onClick={() => act("IA para mensajes")}>Usar IA</button></article>
+              </>}
+              {activeScreen==="videollamadas" && <>
+                <article><img src="https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Próximas videollamadas</h3><p>Entrevistas, instituciones, empresas y reuniones de trabajo.</p><button onClick={() => window.location.href="/videollamadas"}>Entrar a videollamadas</button></article>
+                <article><h3>Programar reunión</h3><p>Coordiná una videollamada sin salir del ecosistema.</p><button onClick={() => window.location.href="/agenda"}>Ir a Agenda</button></article>
+              </>}
+              {activeScreen==="agenda" && <>
+                <article><img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Tu agenda</h3><p>Entrevistas, turnos, reuniones y recordatorios.</p><button onClick={() => window.location.href="/agenda"}>Abrir agenda completa</button></article>
+                <article><h3>Próximo evento</h3><p>Organizá tus actividades sin perder el contexto de WorkCerca.</p><button onClick={() => act("Nuevo evento")}>Agregar evento</button></article>
+              </>}
+              {activeScreen==="proyectos" && <>
+                <article><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Mis proyectos</h3><p>Ideas, trabajos y proyectos que estás siguiendo dentro de WorkCerca.</p><button onClick={() => act("Abrir proyecto")}>Ver proyectos</button></article>
+                <article><h3>Crear proyecto</h3><p>Podés relacionarlo con profesionales, empresas, capacitaciones y oportunidades.</p><button onClick={() => act("Nuevo proyecto")}>Nuevo proyecto</button></article>
+              </>}
+              {activeScreen==="favoritos" && <>
+                <article><img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Guardados</h3><p>Perfiles, oportunidades, cursos y servicios que marcaste para volver después.</p><button onClick={() => act("Ver favoritos")}>Ver favoritos</button></article>
+                <article><h3>Organizá tus favoritos</h3><p>Separalos por trabajo, estudio, servicios o proyectos.</p><button onClick={() => act("Organizar favoritos")}>Organizar</button></article>
+              </>}
+              {activeScreen==="resenas" && <>
+                <article><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Mis reseñas</h3><p>Opiniones vinculadas a experiencias reales dentro de WorkCerca.</p><button onClick={() => act("Ver reseñas")}>Ver reseñas</button></article>
+                <article><h3>Reputación y confianza</h3><p>Las calificaciones ayudan a elegir mejor, pero no reemplazan la verificación.</p><button onClick={() => act("Ver reputación")}>Ver reputación</button></article>
+              </>}
+              {activeScreen==="pagos" && <>
+                <article><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Pagos y facturas</h3><p>Historial, comprobantes y operaciones relacionadas con servicios.</p><button onClick={() => act("Ver movimientos")}>Ver movimientos</button></article>
+                <article><h3>Seguridad</h3><p>Información clara de cada operación y comprobantes disponibles.</p><button onClick={() => act("Centro de seguridad")}>Ver seguridad</button></article>
+              </>}
+              {activeScreen==="configuracion" && <>
+                <article><h3>Privacidad</h3><p>Elegí qué información puede mostrarse y a quién.</p><button onClick={() => act("Preferencias de privacidad")}>Configurar</button></article>
+                <article><h3>Accesibilidad</h3><p>Preferencias de lectura, ayudas y futura integración de lengua de señas.</p><button onClick={() => act("Preferencias de accesibilidad")}>Configurar</button></article>
+                <article><h3>Notificaciones</h3><p>Elegí qué avisos querés recibir de oportunidades, mensajes y actividad.</p><button onClick={() => act("Preferencias de notificaciones")}>Configurar</button></article>
+              </>}
+            </div>
+          </div>
+        )}
+
         <div className="mwcTrust"><span>✓ <b>Perfiles verificados<br/>y calificaciones</b></span><span>▣ <b>Comunicación directa<br/>y segura</b></span><span>🛡 <b>Pagos seguros<br/>en la plataforma</b></span><span>♧ <b>Soporte y ayuda<br/>siempre disponibles</b></span></div>
         <footer className="mwcFooter"><div><img src={logoFooter.src} alt="WorkCerca"/><p>Conectamos personas, impulsamos negocios, generamos oportunidades.</p></div><div><b>Navegación</b><span>Inicio</span><span>Buscar</span><span>Categorías</span><span>Empresas</span><span>Emprendedores</span></div><div><b>Recursos</b><span>Centro de ayuda</span><span>Cómo funciona</span><span>Consejos de seguridad</span><span>Blog</span></div><div><b>WorkCerca</b><span>Quiénes somos</span><span>Términos y condiciones</span><span>Política de privacidad</span><span>Contacto</span></div><div><b>Seguinos en</b><p className="socials">●　◎　▶　in</p></div><small>© 2026 WorkCerca — CONECTA. ENCUENTRA. CRECE</small></footer>
       </section>
-      <style jsx>{`
-        .mwcSideNav button {
-          min-height: 46px;
-          font-weight: 600;
-          letter-spacing: .01em;
-        }
-        .mwcNavIcon {
-          width: 28px;
-          height: 28px;
-          border-radius: 8px;
-          display: inline-grid;
-          place-items: center;
-          flex: 0 0 28px;
-          font-style: normal;
-          font-size: 15px;
-          color: #3b82f6;
-          background: rgba(59,130,246,.12);
-          border: 1px solid rgba(96,165,250,.22);
-        }
-        .mwcSideNav button:hover .mwcNavIcon,
-        .mwcSideNav button.active .mwcNavIcon {
-          color: #dff7ff;
-          background: #1d4ed8;
-          border-color: #60a5fa;
-          box-shadow: 0 0 0 3px rgba(59,130,246,.12);
-        }
-        .mwcSideNav button.active {
-          font-weight: 800;
-        }
-      `}</style>
 
+        <style jsx>{`
+          .mwcInternal{padding:28px;max-width:1180px;margin:auto}
+          .mwcInternalHero{min-height:190px;border-radius:18px;padding:26px;display:flex;justify-content:space-between;align-items:end;gap:24px;color:#fff;background:linear-gradient(90deg,rgba(4,24,50,.9),rgba(5,56,98,.65)),url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1600&q=80") center/cover}
+          .mwcInternalHero span{font-size:9px;letter-spacing:.12em;color:#62d8ef;font-weight:900}.mwcInternalHero h1{font-size:34px;margin:8px 0}.mwcInternalHero p{font-size:11px;max-width:620px;color:#dbe8f4}.mwcInternalHero button{border:1px solid #ffffff66;background:#fff;color:#0b5fbd;border-radius:9px;padding:10px 13px;font-size:10px;font-weight:900}
+          .mwcInternalGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}.mwcInternalGrid article{background:#fff;border:1px solid #e1e7ef;border-radius:15px;padding:18px;box-shadow:0 8px 24px rgba(20,50,90,.06)}.mwcInternalGrid img{width:100%;height:145px;object-fit:cover;border-radius:11px;margin-bottom:12px}.mwcInternalGrid h3{font-size:17px;margin:0 0 7px}.mwcInternalGrid p{font-size:11px;line-height:1.5;color:#657589}.mwcInternalGrid button{border:0;background:#0b6fe5;color:#fff;border-radius:8px;padding:9px 12px;font-size:9px;font-weight:900}
+          .mwcSideNav button.active{background:linear-gradient(90deg,#0874ea,#16b5cf)!important}
+          @media(max-width:760px){.mwcInternalGrid{grid-template-columns:1fr}.mwcInternalHero{align-items:start;flex-direction:column}.mwcInternal{padding:14px}}
+        `}</style>
     </main>
   );
 }
