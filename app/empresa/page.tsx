@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import logoHeader from "../../workcerca-logo-header.png";
 
 type Candidate = {
@@ -52,6 +52,12 @@ export default function EmpresaPage() {
   const [notice, setNotice] = useState("");
   const [search, setSearch] = useState("");
   const [screen, setScreen] = useState<"panel" | "talento" | "capacitaciones" | "ia">("panel");
+  const [pageReady, setPageReady] = useState(false);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setPageReady(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const notify = (text:string) => {
     setNotice(text);
@@ -71,7 +77,16 @@ export default function EmpresaPage() {
   }, [search]);
 
   return (
-    <main className="companyPage">
+    <main
+      className="companyPage"
+      style={{
+        minHeight: "100vh",
+        background: "#f5f8fc",
+        opacity: pageReady ? 1 : 0,
+        visibility: pageReady ? "visible" : "hidden",
+        transition: "opacity 220ms ease-out",
+      }}
+    >
       {notice && <div className="toast">{notice}</div>}
 
       <aside className="sidebar">
