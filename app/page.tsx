@@ -503,8 +503,8 @@ export default function Home() {
           min-height: 585px;
           overflow: hidden;
           background:
-            linear-gradient(90deg, rgba(5,21,49,.82) 0%, rgba(5,21,49,.52) 40%, rgba(5,21,49,.18) 72%, rgba(5,21,49,.28) 100%),
-            url("https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1800") center/cover no-repeat;
+            linear-gradient(90deg, rgba(5,21,49,.88) 0%, rgba(5,21,49,.62) 37%, rgba(5,21,49,.24) 68%, rgba(5,21,49,.34) 100%),
+            url("https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1900") center/cover no-repeat;
           isolation: isolate;
         }
         .wcHero::before {
@@ -559,16 +559,16 @@ export default function Home() {
         .wcMiniCard small { display: block; margin-top: 3px; opacity: .86; font-size: 12px; }
 
         .wcHeroCopy {
-          width: min(560px, 48vw);
-          margin-top: 42px;
+          width: min(610px, 52vw);
+          margin-top: 58px;
           color: white;
           position: relative;
           z-index: 2;
         }
         .wcHeroCopy h1 {
           margin: 0;
-          font-size: clamp(48px, 5.5vw, 84px);
-          line-height: .96;
+          font-size: clamp(46px, 5vw, 76px);
+          line-height: .98;
           letter-spacing: -.05em;
           font-weight: 1000;
           text-shadow: 0 4px 22px rgba(0,0,0,.32);
@@ -618,12 +618,12 @@ export default function Home() {
           display: grid;
           grid-template-columns: 1.2fr 1.05fr auto;
           align-items: stretch;
-          background: rgba(7,24,49,.18);
-          border: 1px solid rgba(255,255,255,.42);
+          background: linear-gradient(90deg, rgba(5,20,45,.38), rgba(7,27,58,.27));
+          border: 1px solid rgba(255,255,255,.46);
           border-radius: 18px;
-          box-shadow: 0 12px 32px rgba(0,0,0,.14);
-          backdrop-filter: blur(5px);
-          -webkit-backdrop-filter: blur(5px);
+          box-shadow: 0 16px 42px rgba(0,0,0,.16);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           overflow: hidden;
           color: white;
         }
@@ -667,6 +667,27 @@ export default function Home() {
           font-weight: 900;
           box-shadow: 0 12px 30px rgba(0,68,190,.35);
         }
+        .wcSearchAi {
+          grid-column: 1 / -1;
+          min-height: 42px;
+          border-top: 1px solid rgba(255,255,255,.22);
+          display: grid;
+          grid-template-columns: auto 1fr auto;
+          gap: 12px;
+          align-items: center;
+          padding: 8px 16px;
+          color: #fff;
+          background: rgba(5,19,42,.20);
+        }
+        .wcSearchAi span { font-size: 11px; }
+        .wcSearchAi small { font-size: 10px; color: rgba(255,255,255,.82); }
+        .wcSearchAi button {
+          border: 0;
+          background: transparent;
+          color: #72b3ff;
+          font-size: 10px;
+          font-weight: 900;
+        }
 
         .wcActorsWrap {
           position: relative;
@@ -676,36 +697,59 @@ export default function Home() {
         .wcActors {
           display: grid;
           grid-template-columns: repeat(8, 1fr);
-          background: white;
-          border-radius: 0 0 22px 22px;
-          box-shadow: 0 14px 34px rgba(20,50,90,.11);
+          gap: 12px;
+          background: #fff;
+          border-radius: 18px;
+          box-shadow: 0 14px 34px rgba(20,50,90,.10);
           border: 1px solid #e2eaf4;
-          overflow: hidden;
+          padding: 18px;
+          overflow: visible;
         }
         .wcActor {
-          min-height: 116px;
-          border: 0;
-          border-right: 1px solid #e3ebf6;
-          background: white;
+          min-height: 166px;
+          border: 1px solid #e2e9f2;
+          border-radius: 15px;
+          background: #fff;
           color: var(--wc-text);
-          display: grid;
-          place-items: center;
-          align-content: center;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
           gap: 8px;
+          padding: 8px;
           font-weight: 900;
+          box-shadow: 0 8px 20px rgba(23,52,91,.06);
+          overflow: hidden;
+          transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
         }
-        .wcActor:last-child { border-right: 0; }
-        .wcActor:hover { background: #f3f8ff; transform: translateY(-1px); }
-        .wcActorIcon {
+        .wcActor:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 14px 30px rgba(23,52,91,.12);
+          border-color: #bcd2f3;
+        }
+        .wcActorPhoto {
+          width: 100%;
+          height: 78px;
+          object-fit: cover;
+          border-radius: 10px;
+          display: block;
+        }
+        .wcActorText {
           display: grid;
-          place-items: center;
-          width: 48px;
-          height: 48px;
-          border-radius: 14px;
-          color: #0960dd;
-          background: #edf5ff;
-          font-size: 29px;
+          gap: 2px;
+          text-align: center;
+          padding: 1px 3px 5px;
         }
+        .wcActorText strong {
+          font-size: 13px;
+          color: #102046;
+        }
+        .wcActorText small {
+          font-size: 10px;
+          line-height: 1.25;
+          color: #6b778c;
+          font-weight: 600;
+        }
+        .wcActorIcon { display: none; }
 
         .wcFeatureRow {
           margin: 24px 0;
@@ -714,27 +758,69 @@ export default function Home() {
           gap: 16px;
         }
         .wcFeature {
+          position: relative;
           border: 1px solid #dae5f1;
           border-radius: 18px;
-          min-height: 118px;
+          min-height: 164px;
           padding: 18px 20px;
-          background: white;
+          overflow: hidden;
           display: flex;
-          gap: 16px;
-          align-items: center;
-          box-shadow: 0 9px 22px rgba(24,53,95,.06);
+          gap: 14px;
+          align-items: flex-start;
+          box-shadow: 0 10px 26px rgba(24,53,95,.08);
+          background: white;
         }
-        .wcFeature.emergency { background: linear-gradient(135deg, #ecfbff, #effff8); }
-        .wcFeature.training { background: linear-gradient(135deg, #fff9e9, #fff4dc); }
-        .wcFeature.observatory { background: linear-gradient(135deg, #f7f2ff, #f4f0ff); }
+        .wcFeature::before {
+          content: "";
+          position: absolute;
+          inset: 0 0 0 48%;
+          background-position: center;
+          background-size: cover;
+          opacity: .94;
+        }
+        .wcFeature::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(90deg, rgba(255,255,255,.99) 0%, rgba(255,255,255,.97) 46%, rgba(255,255,255,.36) 70%, rgba(255,255,255,.05) 100%);
+        }
+        .wcFeature.emergency::before {
+          background-image: url("https://images.pexels.com/photos/3806288/pexels-photo-3806288.jpeg?auto=compress&cs=tinysrgb&w=850");
+        }
+        .wcFeature.training::before {
+          background-image: url("https://images.pexels.com/photos/4145190/pexels-photo-4145190.jpeg?auto=compress&cs=tinysrgb&w=850");
+        }
+        .wcFeature.observatory::before {
+          background-image: url("https://images.pexels.com/photos/590016/pexels-photo-590016.jpeg?auto=compress&cs=tinysrgb&w=850");
+        }
+        .wcFeature > * { position: relative; z-index: 2; }
         .wcFeatureIcon {
-          flex: 0 0 58px; width: 58px; height: 58px; border-radius: 50%;
-          display: grid; place-items: center; background: rgba(255,255,255,.75);
-          color: #075bd4; font-size: 30px;
+          flex: 0 0 46px;
+          width: 46px;
+          height: 46px;
+          border-radius: 13px;
+          display: grid;
+          place-items: center;
+          background: #eff5ff;
+          color: #075bd4;
+          font-size: 23px;
         }
-        .wcFeature b { display: block; font-size: 19px; }
-        .wcFeature p { margin: 5px 0 0; color: #44516a; line-height: 1.4; }
-        .wcFeature button { margin-left: auto; width: 38px; height: 38px; border-radius: 50%; border: 1px solid #7aa9f6; background: white; color: #1269e8; font-weight: 900; }
+        .wcFeature.emergency .wcFeatureIcon { background: #fff0ef; color: #dc3f39; }
+        .wcFeature.observatory .wcFeatureIcon { background: #f3efff; color: #7040ca; }
+        .wcFeature b { display: block; font-size: 18px; }
+        .wcFeature p { margin: 6px 0 0; color: #44516a; line-height: 1.4; max-width: 220px; font-size: 13px; }
+        .wcFeatureDetail { display: block; color: #778399; font-size: 10px; margin-top: 7px; font-weight: 700; }
+        .wcFeature button {
+          margin-left: auto;
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          border: 1px solid #7aa9f6;
+          background: rgba(255,255,255,.95);
+          color: #1269e8;
+          font-weight: 900;
+          align-self: flex-end;
+        }
 
         .wcSection { padding: 18px 0 28px; }
         .wcSectionHead { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 14px; }
@@ -749,15 +835,18 @@ export default function Home() {
         }
         .wcProCard {
           border: 1px solid #e0e8f2;
-          border-radius: 18px;
+          border-radius: 16px;
           background: white;
-          min-height: 170px;
-          padding: 17px;
+          min-height: 178px;
+          padding: 14px;
           display: grid;
-          grid-template-columns: auto 1fr auto;
+          grid-template-columns: 48px 1fr 76px;
           gap: 12px;
-          box-shadow: 0 10px 24px rgba(24,53,95,.06);
+          align-items: center;
+          box-shadow: 0 10px 24px rgba(24,53,95,.07);
+          transition: transform .18s ease, box-shadow .18s ease;
         }
+        .wcProCard:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(24,53,95,.12); }
         .wcProIcon {
           width: 62px; height: 62px; border-radius: 50%;
           display: grid; place-items: center;
@@ -966,7 +1055,7 @@ export default function Home() {
 
           <div className="wcHeroCopy">
             <h1>CONECTA <span>•</span> ENCUENTRA <span>•</span> CRECE</h1>
-            <p>Personas, profesionales, empresas y servicios en un solo lugar.</p>
+            <p>Personas, profesionales, empresas y oportunidades en un solo lugar.</p>
           </div>
 
           <div className="wcWorkerStrip" aria-hidden="true">
@@ -1010,6 +1099,11 @@ export default function Home() {
             </div>
 
             <button className="wcSearchButton" onClick={searchNow}>⌕ Buscar</button>
+            <div className="wcSearchAi">
+              <span>✦ <b>IA WorkCerca</b></span>
+              <small>Te entiende, te orienta y te conecta con lo que necesitás.</small>
+              <button type="button" onClick={() => action("IA WorkCerca: contame qué necesitás y te ayudo a encontrar el camino.")}>Preguntale a la IA →</button>
+            </div>
           </div>
         </div>
       </section>
@@ -1017,18 +1111,18 @@ export default function Home() {
       <div className="wcActorsWrap">
         <div className="wcContainer wcActors">
           {[
-            ["👥", "Personas", "/mi-workcerca"],
-            ["🛠️", "Profesionales", "/profesionales"],
-            ["🚀", "Emprendedores", "/emprendedores"],
-            ["🏢", "Empresas", "/empresa"],
-            ["🏛️", "Municipios", "/municipios"],
-            ["🎓", "Instituciones", "/instituciones"],
-            ["🎓", "Feria de Carreras", "/feria-de-carreras"],
-            ["🔎", "Oportunidades", "/oportunidades"],
-          ].map(([icon, title, path]) => (
+            ["Personas", "/mi-workcerca", "Conectá con otros", "https://images.pexels.com/photos/3184423/pexels-photo-3184423.jpeg?auto=compress&cs=tinysrgb&w=500"],
+            ["Profesionales", "/profesionales", "Servicios confiables", "https://images.pexels.com/photos/8961158/pexels-photo-8961158.jpeg?auto=compress&cs=tinysrgb&w=500"],
+            ["Emprendedores", "/emprendedores", "Impulsá tu negocio", "https://images.pexels.com/photos/4348404/pexels-photo-4348404.jpeg?auto=compress&cs=tinysrgb&w=500"],
+            ["Empresas", "/empresa", "Encontrá talento", "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=500"],
+            ["Municipios", "/municipios", "Gestión y oportunidades", "https://images.pexels.com/photos/208733/pexels-photo-208733.jpeg?auto=compress&cs=tinysrgb&w=500"],
+            ["Instituciones", "/instituciones", "Educación y desarrollo", "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=500"],
+            ["Feria de Carreras", "/feria-de-carreras", "Tu futuro empieza acá", "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=500"],
+            ["Oportunidades", "/oportunidades", "Empleo, ofertas y proyectos", "https://images.pexels.com/photos/3184460/pexels-photo-3184460.jpeg?auto=compress&cs=tinysrgb&w=500"],
+          ].map(([title, path, subtitle, photo]) => (
             <button className="wcActor" key={title} onClick={() => goTo(path)}>
-              <span className="wcActorIcon">{icon}</span>
-              <span>{title}</span>
+              <img className="wcActorPhoto" src={photo} alt="" />
+              <span className="wcActorText"><strong>{title}</strong><small>{subtitle}</small></span>
             </button>
           ))}
         </div>
@@ -1037,10 +1131,11 @@ export default function Home() {
       <div className="wcContainer">
         <div className="wcFeatureRow">
           <article className="wcFeature emergency">
-            <div className="wcFeatureIcon">🛡️</div>
+            <div className="wcFeatureIcon">⚡</div>
             <div>
-              <b>Emergencias 24/7</b>
-              <p>Cuando más lo necesitás, estamos cerca.</p>
+              <b>Necesito ahora</b>
+              <p>Encontrá soluciones inmediatas cerca tuyo con IA.</p>
+              <span className="wcFeatureDetail">Gomería · Cerrajero · Electricista · Cuidados · Contactos oficiales</span>
             </div>
             <button onClick={() => goTo("/emergencias")}>→</button>
           </article>
@@ -1050,6 +1145,7 @@ export default function Home() {
             <div>
               <b>Capacitaciones</b>
               <p>Aprendé, crecé y construí tu futuro.</p>
+              <span className="wcFeatureDetail">Cursos · Instituciones · Certificaciones</span>
             </div>
             <button onClick={() => goTo("/capacitaciones")}>→</button>
           </article>
@@ -1059,6 +1155,7 @@ export default function Home() {
             <div>
               <b>Observatorio WorkCerca</b>
               <p>Información que impulsa decisiones.</p>
+              <span className="wcFeatureDetail">Empleo · Formación · Economía · Tendencias</span>
             </div>
             <button onClick={() => action("Observatorio WorkCerca: módulo preparado para una próxima etapa.")}>→</button>
           </article>
