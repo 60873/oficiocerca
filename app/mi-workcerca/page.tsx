@@ -91,6 +91,11 @@ export default function MiWorkCerca() {
 
         {activeScreen === "panel" && (
         <div className="mwcContent">
+          <section className="mwcPhotoHero">
+            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1600&q=85" alt="Personas y profesionales conectando oportunidades" />
+            <div className="mwcPhotoShade" />
+            <div className="mwcPhotoCopy"><span>MI WORKCERCA · TU ESPACIO</span><h1>Todo lo que necesitás, más cerca.</h1><p>Servicios, trabajo, profesionales, empresas y oportunidades conectados por IA y ubicación.</p><div><b>✦ IA WorkCerca</b><b>⌖ Cerca tuyo</b><b>✓ Perfiles verificados</b></div></div>
+          </section>
           <h1>¿Qué vas a hacer <em>hoy?</em></h1>
           <div className="mwcSearch">
             <span>⌕</span><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Ej: Electricista, Plomero, Pintura, Abogado..." />
@@ -185,7 +190,8 @@ export default function MiWorkCerca() {
         <footer className="mwcFooter"><div><img src={logoFooter.src} alt="WorkCerca"/><p>Conectamos personas, impulsamos negocios, generamos oportunidades.</p></div><div><b>Navegación</b><span>Inicio</span><span>Buscar</span><span>Categorías</span><span>Empresas</span><span>Emprendedores</span></div><div><b>Recursos</b><span>Centro de ayuda</span><span>Cómo funciona</span><span>Consejos de seguridad</span><span>Blog</span></div><div><b>WorkCerca</b><span>Quiénes somos</span><span>Términos y condiciones</span><span>Política de privacidad</span><span>Contacto</span></div><div><b>Seguinos en</b><p className="socials">●　◎　▶　in</p></div><small>© 2026 WorkCerca — CONECTA. ENCUENTRA. CRECE</small></footer>
       </section>
 
-        <style jsx>{`
+        <style jsx>{`.mwcPhotoHero{position:relative;height:245px;border-radius:18px;overflow:hidden;margin-bottom:24px;box-shadow:0 14px 34px rgba(9,45,82,.12)}.mwcPhotoHero>img{width:100%;height:100%;object-fit:cover;display:block}.mwcPhotoShade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,20,42,.92) 0%,rgba(4,48,88,.68) 52%,rgba(4,48,88,.12) 100%)}.mwcPhotoCopy{position:absolute;left:28px;bottom:27px;color:#fff;max-width:650px}.mwcPhotoCopy>span{font-size:9px;letter-spacing:.14em;color:#62d8ef;font-weight:900}.mwcPhotoCopy h1{font-size:34px!important;line-height:1.05;margin:8px 0!important;color:#fff!important}.mwcPhotoCopy p{font-size:11px;line-height:1.55;color:#e3edf7;margin:0 0 13px}.mwcPhotoCopy div{display:flex;gap:8px;flex-wrap:wrap}.mwcPhotoCopy b{font-size:8px;padding:7px 10px;border:1px solid #ffffff55;background:#ffffff16;border-radius:99px}.mwcOppGrid article{overflow:hidden;position:relative}.mwcOppGrid article:nth-child(1){background:linear-gradient(#ffffffed,#ffffffed),url(https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=600&q=80) center/cover}.mwcOppGrid article:nth-child(2){background:linear-gradient(#ffffffed,#ffffffed),url(https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80) center/cover}.mwcOppGrid article:nth-child(3){background:linear-gradient(#ffffffed,#ffffffed),url(https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=600&q=80) center/cover}.mwcOppGrid article:nth-child(4){background:linear-gradient(#ffffffed,#ffffffed),url(https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=600&q=80) center/cover}
+
           .mwcInternal{padding:28px;max-width:1180px;margin:auto}
           .mwcInternalHero{min-height:190px;border-radius:18px;padding:26px;display:flex;justify-content:space-between;align-items:end;gap:24px;color:#fff;background:linear-gradient(90deg,rgba(4,24,50,.9),rgba(5,56,98,.65)),url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1600&q=80") center/cover}
           .mwcInternalHero span{font-size:9px;letter-spacing:.12em;color:#62d8ef;font-weight:900}.mwcInternalHero h1{font-size:34px;margin:8px 0}.mwcInternalHero p{font-size:11px;max-width:620px;color:#dbe8f4}.mwcInternalHero button{border:1px solid #ffffff66;background:#fff;color:#0b5fbd;border-radius:9px;padding:10px 13px;font-size:10px;font-weight:900}
