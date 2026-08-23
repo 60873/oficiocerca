@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logoHeader from "../../workcerca-logo-header.png";
 
 type RequestItem = {
@@ -111,6 +111,12 @@ export default function SolicitudesPage() {
   const [activeType, setActiveType] = useState("Todas");
   const [query, setQuery] = useState("");
   const [notice, setNotice] = useState("");
+  const [pageReady, setPageReady] = useState(false);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setPageReady(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   const act = (text: string) => {
     setNotice(text);
@@ -133,82 +139,25 @@ export default function SolicitudesPage() {
       {notice && <div className="mwcToast">{notice}</div>}
 
       <aside className="mwcSidebar">
-        <button
-          className="mwcSideLogo"
-          onClick={() => (window.location.href = "/")}
-        >
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <div className="mwcUser">
-          <img
-            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=140&q=80"
-            alt="Perfil"
-          />
-          <div>
-            <strong>Hola, Mariana</strong>
-            <span>Usuario verificado ✓</span>
-          </div>
-        </div>
-
+        <button className="mwcSideLogo" onClick={() => window.location.href="/"}><img src={logoHeader.src} alt="WorkCerca"/></button>
+        <div className="mwcUser"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=140&q=80" alt="Perfil"/><div><strong>Hola, Mariana</strong><span>Usuario verificado ✓</span></div></div>
         <nav className="mwcSideNav">
-          <button onClick={() => (window.location.href = "/")}>⌂ <span>Inicio</span></button>
-          <button onClick={() => (window.location.href = "/mi-workcerca")}>
-            ▣ <span>Mi WorkCerca</span>
-          </button>
-          <button className="active">
-            ▤ <span>Solicitudes</span><b>16</b>
-          </button>
-          <button onClick={() => window.location.href = "/busco-trabajo"}>
-            💼 <span>Busco trabajo / Mi CV</span>
-          </button>
-          <button onClick={() => act("Presupuestos abrirá su pantalla propia.")}>
-            ▧ <span>Presupuestos</span><b>6</b>
-          </button>
-          <button onClick={() => act("Mensajes abrirá tus conversaciones.")}>
-            ▱ <span>Mensajes</span><b>7</b>
-          </button>
-          <button onClick={() => act("Videollamadas abrirá entrevistas y reuniones.")}>
-            📹 <span>Videollamadas</span><b>3</b>
-          </button>
-          <button onClick={() => act("Agenda abrirá tus citas y tareas.")}>
-            □ <span>Agenda</span>
-          </button>
-          <button onClick={() => act("Proyectos abrirá Mi Proyecto.")}>
-            ▣ <span>Proyectos</span><b>3</b>
-          </button>
-          <button onClick={() => act("Favoritos abrirá tus guardados.")}>
-            ♡ <span>Favoritos</span>
-          </button>
-          <button onClick={() => act("Reseñas abrirá tus calificaciones.")}>
-            ☆ <span>Mis reseñas</span>
-          </button>
-          <button onClick={() => act("Pagos y facturas abrirá su pantalla.")}>
-            $ <span>Pagos y facturas</span>
-          </button>
-          <button onClick={() => act("Estadísticas abrirá tus métricas.")}>
-            ◉ <span>Estadísticas</span>
-          </button>
-          <button onClick={() => act("Configuración abrirá tus preferencias.")}>
-            ⚙ <span>Configuración</span>
-          </button>
+          <button onClick={() => window.location.href="/"}>⌂ <span>Inicio WorkCerca</span></button>
+          <button onClick={() => window.location.href="/mi-workcerca"}>▣ <span>Mi WorkCerca</span></button>
+          <button className="active">▤ <span>Solicitudes</span><b>16</b></button>
+          <button onClick={() => window.location.href="/busco-trabajo"}>💼 <span>Busco trabajo / Mi CV</span></button>
+          <button onClick={() => window.location.href="/mi-workcerca#presupuestos"}>▧ <span>Presupuestos</span><b>6</b></button>
+          <button onClick={() => window.location.href="/mi-workcerca#mensajes"}>▱ <span>Mensajes</span><b>7</b></button>
+          <button onClick={() => window.location.href="/mi-workcerca#videollamadas"}>▣ <span>Videollamadas</span><b>3</b></button>
+          <button onClick={() => window.location.href="/mi-workcerca#agenda"}>□ <span>Agenda</span></button>
+          <button onClick={() => window.location.href="/mi-workcerca#proyectos"}>▣ <span>Proyectos</span><b>3</b></button>
+          <button onClick={() => window.location.href="/mi-workcerca#favoritos"}>♡ <span>Favoritos</span></button>
+          <button onClick={() => window.location.href="/mi-workcerca#resenas"}>☆ <span>Mis reseñas</span></button>
+          <button onClick={() => window.location.href="/mi-workcerca#pagos"}>$ <span>Pagos y facturas</span></button>
+          <button onClick={() => window.location.href="/mi-workcerca#configuracion"}>⚙ <span>Configuración</span></button>
         </nav>
-
-        <div className="mwcInvite">
-          <strong>♧ Invitá y ganá</strong>
-          <p>Invitá amigos y ganá beneficios en WorkCerca.</p>
-          <button onClick={() => act("Invitaciones: función en preparación.")}>
-            Invitar ahora
-          </button>
-        </div>
-
-        <div className="mwcHelp">
-          <strong>ⓘ ¿Necesitás ayuda?</strong>
-          <p>Estamos para ayudarte</p>
-          <button onClick={() => act("Centro de ayuda: próxima pantalla.")}>
-            Centro de ayuda
-          </button>
-        </div>
+        <div className="mwcInvite"><strong>✦ IA WorkCerca</strong><p>Te ayuda a entender y gestionar tus solicitudes.</p><button onClick={() => act("IA WorkCerca para Solicitudes")}>Hablar con IA</button></div>
+        <div className="mwcHelp"><strong>ⓘ Cómo funciona</strong><p>Volvé siempre al mismo panel sin perderte.</p><button onClick={() => window.location.href="/mi-workcerca"}>Mi WorkCerca</button></div>
       </aside>
 
       <section className="mwcMain">
