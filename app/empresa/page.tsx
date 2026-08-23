@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import logoHeader from "../../../workcerca-logo-header.png";
-
+import logoHeader from "../../workcerca-logo-header.png";
 type ApplicationRow = {
   id: string;
   job_id: string;
