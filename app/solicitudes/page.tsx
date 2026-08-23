@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import logoHeader from "../../workcerca-logo-header.png";
-
 type RequestItem = {
   title: string;
   type: string;
