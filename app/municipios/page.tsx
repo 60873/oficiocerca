@@ -340,18 +340,10 @@ export default function MunicipiosPage() {
         .mainCol,.rightCol{min-width:0}
 
         .hero{
-          min-height:220px;
-          border:1px solid var(--line);
-          border-radius:15px;
-          overflow:hidden;
-          position:relative;
-          background:
-            linear-gradient(90deg,rgba(5,23,48,.88),rgba(5,23,48,.45) 48%,rgba(5,23,48,.2)),
-            radial-gradient(circle at 15% 85%,rgba(255,101,176,.46),transparent 18%),
-            radial-gradient(circle at 30% 78%,rgba(255,89,165,.40),transparent 18%),
-            radial-gradient(circle at 48% 82%,rgba(255,110,183,.42),transparent 20%),
-            linear-gradient(135deg,#3d739b,#8eb5cf 55%,#c5d7e3);
-          box-shadow:0 12px 28px rgba(0,0,0,.16)
+          min-height:310px;border:1px solid rgba(255,255,255,.12);border-radius:18px;overflow:hidden;position:relative;
+          background:linear-gradient(90deg,rgba(4,18,39,.94),rgba(4,18,39,.72) 45%,rgba(4,18,39,.18)),
+          url("https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1800&q=88") center/cover no-repeat;
+          box-shadow:0 18px 42px rgba(0,0,0,.25)
         }
         .hero::after{
           content:"RECONQUISTA";
@@ -360,7 +352,7 @@ export default function MunicipiosPage() {
           font-weight:1000;letter-spacing:-.05em;color:rgba(255,255,255,.24);
           text-shadow:0 5px 20px rgba(0,0,0,.24)
         }
-        .lapacho{
+        .lapacho{display:none;
           position:absolute;bottom:0;width:130px;height:120px;border-radius:60% 60% 10px 10px;
           background:
             radial-gradient(circle at 25% 20%,#ff86bf 0 13%,transparent 14%),
@@ -395,6 +387,13 @@ export default function MunicipiosPage() {
         .oppIcon{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#173d6b}.oppRow b{font-size:11px}.oppRow p{margin:2px 0;color:#9fb3cb;font-size:9px}.tag{display:inline-block;border-radius:6px;padding:3px 6px;background:#17456f;color:#8cc4ff;font-size:8px;font-weight:900}.mini{border:1px solid #4c73a0;background:#102e56;color:#fff;border-radius:7px;padding:5px 8px;font-size:9px}
         .talent{padding:14px;text-align:center}.donut{width:170px;height:170px;border-radius:50%;margin:9px auto;background:conic-gradient(#2b88f2 0 45%,#31b96a 45% 75%,#8d63e8 75% 90%,#f0a02a 90%);display:grid;place-items:center}.donutInner{width:100px;height:100px;border-radius:50%;background:#0d294f;display:grid;place-items:center}.donutInner strong{font-size:28px}.talentLegend{display:grid;gap:5px;text-align:left;font-size:10px;color:#b0c0d4}.legendDot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
 
+        .communityVisuals{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:11px;margin-top:11px}
+        .communityPhoto{min-height:175px;border-radius:16px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.11);background-size:cover;background-position:center;box-shadow:0 12px 28px rgba(0,0,0,.16)}
+        .communityPhoto::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(3,17,36,.92))}
+        .communityPhotoText{position:absolute;z-index:2;left:15px;right:15px;bottom:14px}.communityPhotoText b{display:block;font-size:13px}.communityPhotoText span{display:block;margin-top:4px;color:#d1deeb;font-size:9px;line-height:1.4}
+        .photoWork{background-image:url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1000&q=85")}
+        .photoTraining{background-image:url("https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=900&q=85")}
+        .photoLocal{background-image:url("https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=85")}
         .network{margin-top:11px;padding:14px}
         .municipios{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
         .muni{width:68px;text-align:center;font-size:9px;color:#b5c4d5}.muniIcon{width:48px;height:48px;margin:0 auto 5px;border-radius:50%;display:grid;place-items:center;background:#173f70;border:1px solid #3f6f9f;font-size:21px}
@@ -496,8 +495,13 @@ export default function MunicipiosPage() {
                 <section className="hero">
                   <div className="lapacho l1"/><div className="lapacho l2"/><div className="lapacho l3"/><div className="lapacho l4"/>
                   <div className="heroContent">
+                    <div style={{display:"inline-block",marginBottom:12,padding:"7px 10px",border:"1px solid rgba(255,255,255,.25)",borderRadius:999,background:"rgba(5,24,50,.58)",fontSize:10,fontWeight:900}}>📍 RECONQUISTA · SANTA FE · COMUNIDAD CONECTADA</div>
                     <h2>¡Bienvenido, Municipio de Reconquista! 👋</h2>
                     <p>WorkCerca te brinda herramientas para acercar oportunidades, desarrollar capacidades y fortalecer la comunidad.</p>
+                    <div style={{display:"flex",gap:9,flexWrap:"wrap",marginTop:16}}>
+                      <button onClick={() => setActive("oportunidades")} style={{border:0,borderRadius:9,padding:"10px 13px",background:"#2476ef",color:"#fff",fontWeight:900}}>Ver oportunidades locales</button>
+                      <button onClick={() => setActive("ia")} style={{border:"1px solid rgba(255,255,255,.35)",borderRadius:9,padding:"10px 13px",background:"rgba(5,24,50,.55)",color:"#fff",fontWeight:900}}>✦ Consultar IA WorkCerca</button>
+                    </div>
                     <div className="quote">“Conectamos personas, capacidades y oportunidades para impulsar el desarrollo local y regional.”</div>
                   </div>
                 </section>
@@ -517,6 +521,12 @@ export default function MunicipiosPage() {
                     </article>
                   ))}
                 </div>
+
+                <section className="communityVisuals">
+                  <article className="communityPhoto photoWork"><div className="communityPhotoText"><b>Trabajo y producción local</b><span>Empresas, profesionales, oficios y oportunidades de la comunidad.</span></div></article>
+                  <article className="communityPhoto photoTraining"><div className="communityPhotoText"><b>Formación con salida real</b><span>Capacitaciones vinculadas a necesidades y brechas detectadas.</span></div></article>
+                  <article className="communityPhoto photoLocal"><div className="communityPhotoText"><b>Emprendedores y empresas</b><span>Visibilidad, redes y posibilidades de crecimiento local.</span></div></article>
+                </section>
 
                 <article className="card needs">
                   <div className="panelHead"><h3>Necesidades y oportunidades locales</h3><button className="link" onClick={() => setActive("observatorio")}>Ver todas →</button></div>
