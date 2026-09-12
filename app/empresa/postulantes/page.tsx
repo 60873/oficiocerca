@@ -26,8 +26,9 @@ type ApplicationRow = {
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
+const supabase = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 const STATUS_OPTIONS = ["enviada", "vista", "preseleccionado", "entrevista", "descartado"];
 
 export default function EmpresaPostulantesPage() {
@@ -43,6 +44,11 @@ export default function EmpresaPostulantesPage() {
   };
 
   const loadApplications = async () => {
+   if (!supabase) {
+  setLoading(false);
+  notify("WorkCerca no pudo conectar las postulaciones en este momento.");
+  return;
+} 
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -92,6 +98,10 @@ export default function EmpresaPostulantesPage() {
   }, [applications, filter, search]);
 
   const updateStatus = async (id: string, status: string) => {
+   if (!supabase) {
+  notify("WorkCerca no pudo conectar las postulaciones en este momento.");
+  return;
+}
     const { error } = await supabase.from("applications").update({ status }).eq("id", id);
     if (error) {
       notify(error.message);
