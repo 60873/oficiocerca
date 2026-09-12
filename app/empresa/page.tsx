@@ -37,7 +37,10 @@ type Promotion = {
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
 
 const statusLabel = (status: string) => ({
   draft: "Borrador",
@@ -85,7 +88,7 @@ export default function EmpresaPage() {
 
     const boot = async () => {
       try {
-        if (!supabaseUrl || !supabaseAnonKey) {
+        if (!supabase) {
           if (alive) notify("WorkCerca no pudo conectar los datos de Empresa en este momento.");
           return;
         }
@@ -122,12 +125,18 @@ export default function EmpresaPage() {
     return () => { alive = false; };
   }, []);
 
+  
   useEffect(() => {
-    if (!businessId) {
-      setJobs([]);
-      setPromotions([]);
-      setProductCount(0);
-      setFreshProductCount(0);
+  if (!supabase) {
+    setLoading(false);
+    return;
+  }
+
+  if (!businessId) {
+    setJobs([]);
+    setPromotions([]);
+    setProductCount(0);
+    setFreshProductCount(0);
       setApplicationCount(0);
       return;
     }
