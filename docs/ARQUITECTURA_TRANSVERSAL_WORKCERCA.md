@@ -30,7 +30,9 @@ La búsqueda inicial de profesionales y necesidades cotidianas debe poder comenz
 
 ## Flor
 
-Flor todavía no está programada ni incorporada a la pantalla. Debe diseñarse como IA transversal, no como otro módulo.
+Flor ya tiene una presencia visual y una puerta de entrada identificada en la interfaz mediante el mensaje **“La IA te acompaña / Decime qué necesitás”**. No debe agregarse desde cero ni duplicarse como otro módulo.
+
+Su estado continúa en revisión: hay que localizar la implementación existente, comprobar si hoy es solamente un acceso o aviso, verificar qué interacción real ofrece y conectarla progresivamente con las herramientas del ecosistema. La presencia visual no permite afirmar todavía que la conversación, interpretación y ejecución transversal estén completas.
 
 ### Conducta
 
