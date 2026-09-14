@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import logoHeader from "../../../workcerca-logo-header.png";
+import EmpresaSidebar from "../EmpresaSidebar";
 
 type Candidate = {
   id: string;
@@ -44,19 +44,7 @@ export default function EmpresaCandidatosPage() {
     <main className="page">
       {notice ? <div className="toast">{notice}</div> : null}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => (window.location.href = "/")}>
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-        <nav>
-          <button onClick={() => (window.location.href = "/empresa")}>Mi Empresa</button>
-          <button className="active">Buscar candidatos</button>
-          <button onClick={() => (window.location.href = "/empresa/postulantes")}>Postulantes</button>
-          <button onClick={() => (window.location.href = "/mensajes")}>Mensajes</button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>Videollamadas</button>
-          <button onClick={() => (window.location.href = "/agenda")}>Agenda</button>
-        </nav>
-      </aside>
+      <EmpresaSidebar active="candidatos" />
 
       <section className="main">
         <header className="topbar">
