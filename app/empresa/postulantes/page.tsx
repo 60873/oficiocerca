@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 import logoHeader from "../../../workcerca-logo-header.png";
 
 type ApplicationRow = {
@@ -32,6 +33,8 @@ const supabase = supabaseUrl && supabaseAnonKey
 const STATUS_OPTIONS = ["enviada", "vista", "preseleccionado", "entrevista", "descartado"];
 
 export default function EmpresaPostulantesPage() {
+  const router = useRouter();
+  const [navigating, setNavigating] = useState(false);
   const [applications, setApplications] = useState<ApplicationRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
@@ -111,32 +114,90 @@ export default function EmpresaPostulantesPage() {
     notify(`Estado actualizado a ${status}.`);
   };
 
+  useEffect(() => {
+    [
+      "/",
+      "/empresa",
+      "/empresa/publicar-empleo",
+      "/empresa/candidatos",
+      "/empresa/entrevistas",
+      "/mensajes",
+      "/agenda",
+      "/videollamadas",
+      "/empresa/productos-servicios",
+      "/empresa/promociones",
+      "/empresa/proveedores",
+      "/empresa/publicidad",
+      "/empresa/estadisticas",
+      "/empresa/configuracion",
+    ].forEach((path) => router.prefetch(path));
+  }, [router]);
+
+  const go = (path: string) => {
+    if (navigating) return;
+    setNavigating(true);
+    router.push(path);
+  };
+
   return (
-    <main className="page">
+    <main className={`page ${navigating ? "isNavigating" : ""}`}>
+      {navigating && <div className="routeTransition" aria-hidden="true" />}
       {notice && <div className="toast">{notice}</div>}
 
       <aside className="sidebar">
-        <button className="logo" onClick={() => (window.location.href = "/")}>
+        <button className="logo" onClick={() => go("/")}>
           <img src={logoHeader.src} alt="WorkCerca" />
         </button>
 
         <div className="profile">
           <div className="avatar">E</div>
           <div>
-            <strong>Empresa Demo WorkCerca</strong>
-            <span>Empresa verificada ✓</span>
+            <strong>Mi Empresa WorkCerca</strong>
+            <span>Panel Empresa</span>
           </div>
         </div>
 
         <nav>
-          <button onClick={() => (window.location.href = "/")}>⌂ <span>Inicio</span></button>
-          <button onClick={() => (window.location.href = "/empresa")}>▦ <span>Mi Empresa</span></button>
-          <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ <span>Publicar empleo</span></button>
-          <button className="active">◫ <span>Postulantes</span><b>{applications.length}</b></button>
-          <button onClick={() => (window.location.href = "/mensajes")}>▱ <span>Mensajes</span></button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>▣ <span>Videollamadas</span></button>
-          <button onClick={() => (window.location.href = "/agenda")}>□ <span>Agenda</span></button>
+          <div className="navGroup">
+            <span className="navLabel">EMPRESA</span>
+            <button onClick={() => go("/")}>⌂ <span>Inicio WorkCerca</span></button>
+            <button onClick={() => go("/empresa")}>▦ <span>Mi Empresa</span></button>
+          </div>
+
+          <div className="navGroup">
+            <span className="navLabel">TALENTO Y EMPLEO</span>
+            <button onClick={() => go("/empresa/publicar-empleo")}>＋ <span>Publicar empleo</span></button>
+            <button className="active">◫ <span>Postulantes</span>{applications.length > 0 && <b>{applications.length}</b>}</button>
+            <button onClick={() => go("/empresa/candidatos")}>⌕ <span>Buscar candidatos</span></button>
+            <button onClick={() => go("/empresa/entrevistas")}>◈ <span>Entrevistas</span></button>
+          </div>
+
+          <div className="navGroup">
+            <span className="navLabel">COMUNICACIÓN</span>
+            <button onClick={() => go("/mensajes")}>▱ <span>Mensajes</span></button>
+            <button onClick={() => go("/agenda")}>□ <span>Agenda</span></button>
+            <button onClick={() => go("/videollamadas")}>▣ <span>Videollamadas</span></button>
+          </div>
+
+          <div className="navGroup">
+            <span className="navLabel">NEGOCIO</span>
+            <button onClick={() => go("/empresa/productos-servicios")}>▤ <span>Productos / Servicios</span></button>
+            <button onClick={() => go("/empresa/promociones")}>★ <span>Promociones</span></button>
+            <button onClick={() => go("/empresa/proveedores")}>⌘ <span>Proveedores</span></button>
+            <button onClick={() => go("/empresa/publicidad")}>◎ <span>Publicidad</span></button>
+          </div>
+
+          <div className="navGroup">
+            <span className="navLabel">GESTIÓN</span>
+            <button onClick={() => go("/empresa/estadisticas")}>◉ <span>Estadísticas</span></button>
+            <button onClick={() => go("/empresa/configuracion")}>⚙ <span>Configuración</span></button>
+          </div>
         </nav>
+
+        <div className="trust">
+          <strong>WorkCerca Confianza</strong>
+          <p>La visibilidad puede promocionarse; la confianza, la verificación y los datos reales no se compran.</p>
+        </div>
       </aside>
 
       <section className="main">
@@ -146,7 +207,7 @@ export default function EmpresaPostulantesPage() {
             <span>Personas que se postularon a búsquedas laborales de tu empresa.</span>
           </div>
           <div className="topActions">
-            <button onClick={() => (window.location.href = "/empresa")}>Volver a Mi Empresa</button>
+            <button onClick={() => go("/empresa")}>Volver a Mi Empresa</button>
             <button onClick={loadApplications}>Actualizar</button>
           </div>
         </header>
@@ -225,8 +286,8 @@ export default function EmpresaPostulantesPage() {
                     </div>
                     <div className="actions">
                       <button onClick={() => notify(`Abrir CV de ${item.applicant_name}`)}>Ver perfil / CV</button>
-                      <button onClick={() => (window.location.href = `/mensajes?candidato=${encodeURIComponent(item.applicant_name)}&empleo=${encodeURIComponent(item.jobs?.title || "")}`)}>Mensaje</button>
-                      <button onClick={() => { updateStatus(item.id, "entrevista"); window.location.href = `/agenda?nuevo=entrevista&candidato=${encodeURIComponent(item.applicant_name)}&empleo=${encodeURIComponent(item.jobs?.title || "")}`; }}>Agendar entrevista</button>
+                      <button onClick={() => go(`/mensajes?candidato=${encodeURIComponent(item.applicant_name)}&empleo=${encodeURIComponent(item.jobs?.title || "")}`)}>Mensaje</button>
+                      <button onClick={() => { void updateStatus(item.id, "entrevista"); go(`/agenda?nuevo=entrevista&candidato=${encodeURIComponent(item.applicant_name)}&empleo=${encodeURIComponent(item.jobs?.title || "")}`); }}>Agendar entrevista</button>
                     </div>
                   </article>
                 ))}
@@ -249,7 +310,8 @@ export default function EmpresaPostulantesPage() {
       </section>
 
       <style jsx>{`
-        .page{min-height:100vh;background:#f6f8fb;color:#071a3d;font-family:Inter,Arial,sans-serif;display:flex}.page *{box-sizing:border-box}.sidebar{width:245px;min-height:100vh;background:linear-gradient(180deg,#03142e,#00254b);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh}.logo{border:0;background:transparent}.logo img{width:190px}.profile{display:flex;gap:10px;align-items:center;padding:18px 6px}.avatar{width:46px;height:46px;border-radius:50%;background:#0a91a8;display:grid;place-items:center;font-weight:900}.profile span{display:block;color:#32d8d3;font-size:9px}.sidebar nav{display:grid;gap:5px}.sidebar nav button{border:0;background:transparent;color:#fff;border-radius:9px;padding:11px;text-align:left;display:flex;gap:9px}.sidebar nav button span{flex:1}.sidebar nav button b{background:#183b5c;border-radius:999px;padding:3px 7px}.sidebar nav button.active,.sidebar nav button:hover{background:#087f99}.main{flex:1}.topbar{height:68px;background:#fff;border-bottom:1px solid #e1e7ed;display:flex;justify-content:space-between;align-items:center;padding:0 28px}.topbar span{display:block;font-size:10px;color:#718096}.topActions{display:flex;gap:8px}.topActions button{border:1px solid #dce3ea;background:#fff;border-radius:8px;padding:8px 11px}.content{max-width:1150px;margin:auto;padding:28px}.hero{display:grid;grid-template-columns:1.4fr .7fr;gap:18px;background:linear-gradient(135deg,#071a3d,#073c61);color:#fff;border-radius:16px;padding:28px}.eyebrow{font-size:9px;font-weight:900;color:#36dad5}.eyebrow.dark{color:#078da8}.hero h1{font-size:34px;margin:8px 0}.hero p{font-size:11px;color:#dce8f2;line-height:1.6}.heroCard{background:#fff;color:#071a3d;border-radius:12px;padding:18px}.heroCard span{font-size:9px;color:#078da8;font-weight:900}.heroCard strong{display:block;font-size:18px;margin:8px 0}.heroCard p{font-size:9px;color:#617287}.summaryGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.summaryGrid article{background:#fff;border:1px solid #e1e7ed;border-radius:10px;padding:15px}.summaryGrid strong,.summaryGrid span{display:block}.summaryGrid strong{font-size:24px}.summaryGrid span{font-size:9px;color:#708095}.panel,.interviewAi{background:#fff;border:1px solid #e1e7ed;border-radius:13px;padding:18px;margin-bottom:14px}.sectionHead{display:flex;justify-content:space-between;gap:15px;margin-bottom:12px}.sectionHead h2{font-size:20px;margin:4px 0}.filters{display:flex;gap:8px}.filters input,.filters select{border:1px solid #dce3ea;border-radius:8px;padding:8px 10px}.applications{display:grid;gap:9px}.applications article{display:grid;grid-template-columns:46px 1.2fr 1fr .7fr auto;gap:11px;align-items:center;border:1px solid #e5eaf0;border-radius:11px;padding:13px}.candidateAvatar{width:42px;height:42px;border-radius:50%;background:#e7f5f8;color:#087e92;display:grid;place-items:center;font-weight:900}.candidateInfo h3{font-size:12px;margin:4px 0}.candidateInfo p,.candidateInfo small,.jobInfo span,.jobInfo small{display:block;font-size:8px;color:#68798d;margin:2px 0}.jobTag{display:inline-block;background:#edf8fa;color:#087f93;border-radius:999px;padding:4px 7px;font-size:7px;font-weight:900}.jobInfo b{font-size:9px}.statusControl label{display:block;font-size:7px;color:#728296}.statusControl select{border:1px solid #dce3ea;border-radius:7px;padding:7px}.actions{display:grid;gap:4px}.actions button{border:1px solid #dce3ea;background:#fff;border-radius:6px;padding:6px 8px;font-size:7px}.state{border:1px dashed #ccd7e1;border-radius:10px;background:#f8fbfd;padding:18px;display:grid;gap:6px;font-size:10px;color:#607185}.interviewAi{display:flex;justify-content:space-between;gap:18px;align-items:center;background:linear-gradient(135deg,#eefbfd,#f6f3ff)}.interviewAi h2{font-size:20px;margin:5px 0}.interviewAi p{font-size:9px;color:#5d6f83;max-width:760px}.interviewAi button{border:0;background:#071a3d;color:#fff;border-radius:8px;padding:10px 12px}.toast{position:fixed;right:20px;top:82px;z-index:100;background:#071a3d;color:#fff;border-radius:9px;padding:12px 17px}
+        .page{min-height:100vh;background:#f6f8fb;color:#071a3d;font-family:Inter,Arial,sans-serif;display:flex}.page *{box-sizing:border-box}.page button,.page input,.page select{font:inherit}.sidebar{width:250px;min-height:100vh;background:linear-gradient(180deg,#03142e,#00254b);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;overflow:auto;flex:none}.logo{border:0;background:transparent;padding:0 4px 22px;cursor:pointer}.logo img{width:190px}.profile{display:flex;gap:11px;align-items:center;padding:8px 5px 22px}.avatar{width:48px;height:48px;border-radius:50%;background:#0a97ad;display:grid;place-items:center;font-size:20px;font-weight:900}.profile strong,.profile span{display:block}.profile strong{font-size:13px}.profile span{font-size:9px;color:#41ded9;margin-top:5px}.sidebar nav{display:grid;gap:15px}.navGroup{display:grid;gap:4px}.navLabel{display:block;padding:0 10px 4px;color:#7fb4c9;font-size:8px;font-weight:900;letter-spacing:.12em}.sidebar nav button{display:flex;align-items:center;gap:10px;border:0;background:transparent;color:#fff;border-radius:9px;padding:11px;text-align:left;cursor:pointer;font-size:11px}.sidebar nav button span{flex:1}.sidebar nav button b{background:#1d3551;border-radius:20px;padding:3px 7px;font-size:8px}.sidebar nav button.active,.sidebar nav button:hover{background:linear-gradient(90deg,#088fa9,#08718a)}.trust{margin-top:20px;border:1px solid #2e5876;border-radius:12px;padding:14px}.trust strong{color:#38d6d1;font-size:11px}.trust p{font-size:9px;line-height:1.5;color:#d4e1eb}.main{flex:1}.topbar{height:68px;background:#fff;border-bottom:1px solid #e1e7ed;display:flex;justify-content:space-between;align-items:center;padding:0 28px}.topbar span{display:block;font-size:10px;color:#718096}.topActions{display:flex;gap:8px}.topActions button{border:1px solid #dce3ea;background:#fff;border-radius:8px;padding:8px 11px}.content{max-width:1150px;margin:auto;padding:28px}.hero{display:grid;grid-template-columns:1.4fr .7fr;gap:18px;background:linear-gradient(135deg,#071a3d,#073c61);color:#fff;border-radius:16px;padding:28px}.eyebrow{font-size:9px;font-weight:900;color:#36dad5}.eyebrow.dark{color:#078da8}.hero h1{font-size:34px;margin:8px 0}.hero p{font-size:11px;color:#dce8f2;line-height:1.6}.heroCard{background:#fff;color:#071a3d;border-radius:12px;padding:18px}.heroCard span{font-size:9px;color:#078da8;font-weight:900}.heroCard strong{display:block;font-size:18px;margin:8px 0}.heroCard p{font-size:9px;color:#617287}.summaryGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.summaryGrid article{background:#fff;border:1px solid #e1e7ed;border-radius:10px;padding:15px}.summaryGrid strong,.summaryGrid span{display:block}.summaryGrid strong{font-size:24px}.summaryGrid span{font-size:9px;color:#708095}.panel,.interviewAi{background:#fff;border:1px solid #e1e7ed;border-radius:13px;padding:18px;margin-bottom:14px}.sectionHead{display:flex;justify-content:space-between;gap:15px;margin-bottom:12px}.sectionHead h2{font-size:20px;margin:4px 0}.filters{display:flex;gap:8px}.filters input,.filters select{border:1px solid #dce3ea;border-radius:8px;padding:8px 10px}.applications{display:grid;gap:9px}.applications article{display:grid;grid-template-columns:46px 1.2fr 1fr .7fr auto;gap:11px;align-items:center;border:1px solid #e5eaf0;border-radius:11px;padding:13px}.candidateAvatar{width:42px;height:42px;border-radius:50%;background:#e7f5f8;color:#087e92;display:grid;place-items:center;font-weight:900}.candidateInfo h3{font-size:12px;margin:4px 0}.candidateInfo p,.candidateInfo small,.jobInfo span,.jobInfo small{display:block;font-size:8px;color:#68798d;margin:2px 0}.jobTag{display:inline-block;background:#edf8fa;color:#087f93;border-radius:999px;padding:4px 7px;font-size:7px;font-weight:900}.jobInfo b{font-size:9px}.statusControl label{display:block;font-size:7px;color:#728296}.statusControl select{border:1px solid #dce3ea;border-radius:7px;padding:7px}.actions{display:grid;gap:4px}.actions button{border:1px solid #dce3ea;background:#fff;border-radius:6px;padding:6px 8px;font-size:7px}.state{border:1px dashed #ccd7e1;border-radius:10px;background:#f8fbfd;padding:18px;display:grid;gap:6px;font-size:10px;color:#607185}.interviewAi{display:flex;justify-content:space-between;gap:18px;align-items:center;background:linear-gradient(135deg,#eefbfd,#f6f3ff)}.interviewAi h2{font-size:20px;margin:5px 0}.interviewAi p{font-size:9px;color:#5d6f83;max-width:760px}.interviewAi button{border:0;background:#071a3d;color:#fff;border-radius:8px;padding:10px 12px}.toast{position:fixed;right:20px;top:82px;z-index:100;background:#071a3d;color:#fff;border-radius:9px;padding:12px 17px}
+        .routeTransition{position:fixed;inset:0;z-index:9999;pointer-events:none;background:rgba(246,248,251,.22);backdrop-filter:blur(.8px);opacity:1;transition:opacity .12s ease}.page.isNavigating{cursor:progress}.page.isNavigating .main{opacity:.985;transition:opacity .12s ease}.sidebar{contain:paint}
         @media(max-width:900px){.applications article{grid-template-columns:42px 1fr}.jobInfo,.statusControl,.actions{grid-column:2}.summaryGrid{grid-template-columns:1fr 1fr}}
         @media(max-width:760px){.page{display:block}.sidebar{position:relative;width:100%;height:auto}.hero{grid-template-columns:1fr}.filters{flex-direction:column}.interviewAi{flex-direction:column;align-items:flex-start}}
       `}</style>
