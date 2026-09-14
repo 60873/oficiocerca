@@ -508,3 +508,62 @@ WorkCerca debe ofrecer una alternativa digital más amplia y adaptable:
 En alimentos refrigerados, disponibilidad no equivale por sí sola a seguridad. La ficha debe contemplar conservación, lote o fecha cuando corresponda, vigencia del dato y responsable de la información. Flor nunca debe asegurar frescura, cadena de frío ni existencia sin datos confirmados.
 
 La conclusión válida es acotada: **existe al menos un caso documentado en Córdoba de venta automatizada de carne durante las 24 horas**. Su adopción, resultados comerciales y utilidad en otros territorios deben evaluarse con más evidencia.
+
+
+## Ficha de respuesta completa: cantidad, preparación y stock
+
+La ficha que el comercio devuelve debe responder la necesidad concreta, no limitarse a indicar que el producto existe.
+
+### Ejemplo: “Necesito tres kilos de pulpa”
+
+Antes de buscar, Flor debe detectar qué información falta y preguntar solamente lo necesario. En este caso puede necesitar aclarar:
+
+- tipo o corte de pulpa;
+- preparación deseada: pieza entera, feteada, cortada en cubos o picada;
+- peso total;
+- si acepta paquetes que, sumados, completen la cantidad;
+- retiro o entrega;
+- momento en que lo necesita.
+
+Flor no debe asumir que “pulpa”, “picada” y “feteada” son equivalentes. Son datos diferentes: producto o corte, preparación y presentación.
+
+### Verificación contra el catálogo real
+
+Para responder, WorkCerca consulta la ficha y las variantes informadas por el comercio o punto automatizado:
+
+- producto y corte exacto;
+- preparación;
+- peso por envase;
+- cantidad de envases disponibles;
+- stock total calculable;
+- precio por kilo y precio por envase;
+- precio total;
+- lote o fecha cuando corresponda;
+- conservación declarada;
+- última actualización o confirmación;
+- medios de pago;
+- retiro o entrega;
+- horario o disponibilidad 24/7;
+- estado operativo del punto de retiro, si ese dato está conectado.
+
+Si el punto vende unidades estandarizadas de un kilo y existen tres envases confirmados, Flor puede informar que hay una combinación capaz de completar los tres kilos. Si hay solamente dos, debe responder “hay 2 kg confirmados” y ofrecer consultar otra variante o comercio. Nunca debe transformar stock incompleto en disponibilidad total.
+
+### Respuesta que recibe la persona
+
+La tarjeta debe mostrar en una sola vista:
+
+- **Coincidencia:** exacta, alternativa o pendiente de confirmación.
+- **Producto:** nombre, corte y preparación.
+- **Cantidad solicitada:** por ejemplo, 3 kg.
+- **Presentación disponible:** por ejemplo, 3 envases de 1 kg.
+- **Stock informado:** cantidad disponible.
+- **Última confirmación:** fecha y hora.
+- **Precio unitario y total.**
+- **Conservación o frescura:** solo cuando exista información respaldada.
+- **Pago habilitado.**
+- **Retiro o entrega.**
+- **Acción siguiente:** comprar, reservar, consultar o recibir aviso.
+
+Si el catálogo no contiene la preparación solicitada, Flor puede preguntar al comercio mediante la burbuja de confirmación. Hasta obtener respuesta debe mostrar “preparación pendiente de confirmación”, no completar el dato por deducción.
+
+Esta lógica se reutiliza en carnicerías, verdulerías, panaderías, pinturerías, indumentaria, repuestos, materiales, proveedores y demás actores. Cambian los atributos; se conserva la misma estructura de necesidad, precisión, stock, vigencia y resolución.
