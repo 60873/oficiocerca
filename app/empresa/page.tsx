@@ -252,6 +252,16 @@ export default function EmpresaPage() {
     router.push(path);
   };
 
+  if (loading) {
+    return (
+      <main
+        style={{ minHeight: "100vh", background: "#f6f8fb" }}
+        aria-busy="true"
+        aria-label="Comprobando acceso a Empresa"
+      />
+    );
+  }
+
   return (
     <main className={`companyPage ${navigating ? "isNavigating" : ""}`}>
       {navigating && <div className="routeTransition" aria-hidden="true" />}
