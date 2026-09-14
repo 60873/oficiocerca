@@ -38,6 +38,7 @@ export default function EmpresaSidebar({ active }: { active: EmpresaSection }) {
 
       <nav aria-label="Funciones de Mi Empresa">
         <p>EMPRESA</p>
+        <button onClick={() => go("/")}><span aria-hidden="true">⌂</span><span>Inicio WorkCerca</span></button>
         {item("inicio", "▦", "Mi Empresa", "/empresa")}
 
         <p>TALENTO Y EMPLEO</p>
