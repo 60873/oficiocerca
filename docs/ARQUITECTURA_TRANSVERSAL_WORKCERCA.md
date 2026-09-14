@@ -246,3 +246,27 @@ Regla de oro: **una observación inicia una pregunta; no se transforma automáti
 9. Implementar Modo Acompañado como capa de experiencia.
 10. Conectar Observatorio y Supervisor con datos diferenciados y auditables.
 11. Probar cada recorrido y pasar a verde únicamente con evidencia.
+
+
+## Regla de producto completo antes de ofrecer
+
+WorkCerca no debe presentar una herramienta incompleta ni decirle al actor “podrías hacer esto” cuando todavía falta parte del recorrido.
+
+Antes de ofrecer la función, WorkCerca debe disponer de una base nativa operativa que incluya:
+
+- carga de producto, servicio o capacidad;
+- precio y vigencia;
+- stock o disponibilidad;
+- última confirmación;
+- consulta entrante;
+- burbuja de respuesta para el actor;
+- elección de medios de pago habilitados;
+- retiro o entrega cuando corresponda;
+- estado de la consulta, reserva o pedido;
+- mensajes claros cuando un dato esté pendiente o vencido.
+
+El comercio, emprendimiento, profesional, empresa, institución, municipio o comuna decide libremente si activa y utiliza la herramienta. La decisión de uso es opcional; la herramienta ofrecida no debe estar incompleta.
+
+Si el actor ya utiliza un sistema propio, una integración podrá incorporarse como mejora. Sin integración, la herramienta nativa de WorkCerca debe permitir completar el recorrido igualmente.
+
+La entrada **“¿Qué necesitás hoy?”** es la puerta al ecosistema: interpreta la necesidad y conecta con herramientas reales ya disponibles. No debe conducir a botones vacíos, avisos de “próximamente” ni recorridos sin cierre.
