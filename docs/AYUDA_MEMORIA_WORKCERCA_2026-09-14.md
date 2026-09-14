@@ -194,3 +194,15 @@ Los puntos rojos no estaban confirmados como rotos. Significaban que la inspecci
 **Empresa/RRHH → Preview → Postulantes.**
 
 El arreglo del flash fue programado, guardado y desplegado. Falta observar el Preview y reunir evidencia visual. Solo entonces se convierte ese amarillo en verde.
+
+
+## Evidencia posterior al despliegue
+
+### Empresa — flash de ingreso: VERDE
+
+- Fecha de prueba visual: 14/09/2026.
+- Preview de Vercel: despliegue asociado al commit de documentación `748f4b2`, que incluye el arreglo `60b009d`.
+- Resultado informado por Adriana: **el flash desapareció**.
+- Conclusión: el estado de carga neutral evita mostrar temporalmente el panel Empresa antes de completar la comprobación de sesión.
+- Estado: **VERDE, verificado con evidencia visual**.
+- Próxima prueba: **Empresa → Postulantes**.
