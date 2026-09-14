@@ -408,3 +408,74 @@ Flor y el buscador deben interpretar producto, marca, medida, talle, color, peso
 - dato pendiente de confirmación.
 
 La ficha flexible agiliza la carga y permite reutilizar la misma información en búsqueda, Vidriera 24/7, proveedores, compras, retiro, entrega y Observatorio Territorial.
+
+
+## Precisión semántica de Flor
+
+Flor debe ser minuciosa con las diferencias del producto para reducir el esfuerzo de quien busca.
+
+### Regla general
+
+No agrupar como equivalentes palabras que pueden describir productos distintos. Separar siempre:
+
+- categoría;
+- nombre comercial;
+- marca;
+- código;
+- variedad;
+- origen;
+- tono;
+- terminación;
+- medida;
+- presentación;
+- estado o maduración.
+
+Si falta un dato decisivo, Flor hace una pregunta breve antes de buscar.
+
+### Pinturas y colores
+
+“Blanco hueso”, “blanco perla” y “blanco huevo” no deben tratarse automáticamente como el mismo color.
+
+Para una coincidencia precisa pueden ser necesarios:
+
+- marca;
+- nombre del tono;
+- código de la carta;
+- línea o sistema tintométrico;
+- mate, satinado o brillante;
+- interior o exterior;
+- tipo de superficie;
+- cantidad en litros.
+
+Los nombres y tonos pueden variar entre fabricantes. Flor debe priorizar el código y catálogo oficial de la marca, además de la confirmación de la pinturería. Una alternativa cercana debe mostrarse como alternativa, nunca como coincidencia exacta.
+
+### Frutas, verduras y alimentos frescos
+
+Expresiones como “mango brasilero” o “banana peruana” pueden señalar origen, variedad o una denominación utilizada por el comercio. La ficha debe diferenciar:
+
+- producto;
+- variedad cuando esté informada;
+- país, provincia o zona de origen;
+- grado de maduración;
+- calibre o tamaño;
+- calidad o categoría declarada;
+- peso;
+- unidad de venta;
+- presentación;
+- lote y fecha de recepción cuando corresponda;
+- última confirmación de frescura y disponibilidad.
+
+Flor no debe deducir la variedad solamente a partir del país. Si el comercio no informó la variedad, debe mostrar “variedad no informada”.
+
+### Relevamiento y fuentes
+
+Los diccionarios de productos no se inventan. Se construyen y actualizan con:
+
+- catálogos oficiales de fabricantes;
+- sistemas tintométricos y códigos de color;
+- información confirmada por comercios y proveedores;
+- fichas técnicas;
+- fuentes oficiales sectoriales;
+- observaciones locales corroboradas.
+
+Cada sinónimo o denominación regional debe conservar fuente, fecha, zona y nivel de confirmación.
