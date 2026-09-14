@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import EmpresaSidebar from "../EmpresaSidebar";
 import { createClient } from "@supabase/supabase-js";
-import logoHeader from "../../../workcerca-logo-header.png";
 
 type FormData = {
   puesto: string;
@@ -275,65 +275,7 @@ export default function PublicarEmpleoPage() {
     <main className="jobPublishPage">
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button
-          className="logo"
-          onClick={() => (window.location.href = "/")}
-        >
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <div className="profile">
-          <div className="avatar">E</div>
-          <div>
-            <strong>
-              {selectedBusiness?.nombre ||
-                "Mi Empresa WorkCerca"}
-            </strong>
-            <span>
-              {selectedBusiness
-                ? "Empresa vinculada a tu cuenta"
-                : "Seleccioná una empresa"}
-            </span>
-          </div>
-        </div>
-
-        <nav>
-          <button
-            onClick={() => (window.location.href = "/")}
-          >
-            ⌂ <span>Inicio</span>
-          </button>
-
-          <button
-            onClick={() =>
-              (window.location.href = "/mi-workcerca")
-            }
-          >
-            ▣ <span>Mi WorkCerca</span>
-          </button>
-
-          <button
-            onClick={() =>
-              (window.location.href = "/empresa")
-            }
-          >
-            ▦ <span>Mi Empresa</span>
-          </button>
-
-          <button className="active">
-            ＋ <span>Publicar empleo</span>
-          </button>
-
-          <button
-            onClick={() =>
-              (window.location.href = "/busco-trabajo")
-            }
-          >
-            💼 <span>Busco trabajo / CV</span>
-          </button>
-        </nav>
-      </aside>
+      <EmpresaSidebar active="publicar" />
 
       <section className="main">
         <header className="topbar">
