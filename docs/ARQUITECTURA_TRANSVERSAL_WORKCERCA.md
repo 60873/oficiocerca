@@ -479,3 +479,32 @@ Los diccionarios de productos no se inventan. Se construyen y actualizan con:
 - observaciones locales corroboradas.
 
 Cada sinónimo o denominación regional debe conservar fuente, fecha, zona y nivel de confirmación.
+
+
+## Antecedente corroborado: Dotería, Córdoba
+
+**Fuente consultada:** Puntal, publicada el 29 de agosto de 2026.  
+**Ubicación informada:** Villa Warcalde, ciudad de Córdoba.  
+**Estado:** antecedente real corroborado; no se generaliza automáticamente como tendencia territorial.
+
+Dotería instaló una máquina expendedora que permite comprar durante las 24 horas cortes de carne envasados al vacío y productos para picadas. Según la cobertura consultada, el cliente elige el producto, realiza el pago electrónico y lo retira en el momento. La propuesta fue desarrollada por Gabriel Pinto y Maximiliano Mure y busca resolver compras fuera del horario comercial habitual.
+
+**Fuente:** https://www.puntal.com.ar/carniceria/la-carniceria-carnicero-venden-carne-una-maquina-expendedora-las-24-horas-n263928/
+
+### Aprendizaje para WorkCerca
+
+Este antecedente demuestra que la continuidad comercial fuera del horario físico responde a una necesidad cotidiana real. No implica que WorkCerca deba copiar una máquina expendedora ni que todos los comercios deban automatizarse.
+
+WorkCerca debe ofrecer una alternativa digital más amplia y adaptable:
+
+- descubrir qué producto está disponible;
+- consultar precio, variante, cantidad, frescura y última confirmación;
+- pagar únicamente mediante medios habilitados;
+- elegir retiro, entrega o respuesta posterior;
+- conservar el contexto en un recorrido simple;
+- permitir que cada comercio decida qué funciones activar;
+- informar con claridad cuándo la operación es automática y cuándo depende de confirmación humana.
+
+En alimentos refrigerados, disponibilidad no equivale por sí sola a seguridad. La ficha debe contemplar conservación, lote o fecha cuando corresponda, vigencia del dato y responsable de la información. Flor nunca debe asegurar frescura, cadena de frío ni existencia sin datos confirmados.
+
+La conclusión válida es acotada: **existe al menos un caso documentado en Córdoba de venta automatizada de carne durante las 24 horas**. Su adopción, resultados comerciales y utilidad en otros territorios deben evaluarse con más evidencia.
