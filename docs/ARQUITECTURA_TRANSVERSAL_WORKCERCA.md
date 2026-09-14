@@ -288,3 +288,39 @@ La función debe resolverse dentro de un recorrido continuo y conservar siempre 
 - Si el recorrido debe continuar en otro servicio, explicar por qué y conservar un regreso claro a WorkCerca.
 
 El objetivo no es contar pantallas sino reducir esfuerzo, confusión y abandono.
+
+
+## Carga sencilla de productos, servicios y capacidades
+
+La facilidad debe existir también del lado de quien ofrece. La carga inicial debe pedir solamente lo indispensable:
+
+1. nombre del producto, servicio o capacidad;
+2. precio o modalidad de presupuesto;
+3. disponibilidad actual.
+
+El resto puede completarse después o con acompañamiento:
+
+- foto;
+- descripción;
+- stock exacto;
+- variantes;
+- formas de pago;
+- retiro;
+- entrega;
+- zona de cobertura;
+- tiempo estimado de respuesta;
+- vigencia de la confirmación.
+
+### Formas de carga
+
+- ficha rápida;
+- foto con extracción asistida;
+- voz;
+- código de barras cuando corresponda;
+- duplicar un producto parecido;
+- carga masiva por planilla;
+- integración con un catálogo o sistema existente.
+
+La automatización propone; el responsable confirma antes de publicar. WorkCerca debe mostrar qué interpretó y nunca completar precio, stock o condiciones inventadas.
+
+Debe permitirse guardar borradores, pausar publicaciones, actualizar varios productos juntos y responder consultas sin abandonar el panel.
