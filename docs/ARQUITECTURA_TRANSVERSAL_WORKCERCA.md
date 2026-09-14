@@ -324,3 +324,87 @@ El resto puede completarse después o con acompañamiento:
 La automatización propone; el responsable confirma antes de publicar. WorkCerca debe mostrar qué interpretó y nunca completar precio, stock o condiciones inventadas.
 
 Debe permitirse guardar borradores, pausar publicaciones, actualizar varios productos juntos y responder consultas sin abandonar el panel.
+
+
+## Ficha flexible: variantes, unidades y características
+
+La misma base de catálogo debe servir a comercios, emprendedores, empresas y proveedores. No se crearán formularios aislados para cada rubro.
+
+### Datos comunes
+
+- nombre;
+- marca;
+- categoría y subcategoría;
+- descripción;
+- imagen;
+- código interno o código de barras;
+- precio;
+- moneda;
+- disponibilidad;
+- stock;
+- última confirmación.
+
+### Características según categoría
+
+WorkCerca mostrará campos dinámicos únicamente cuando correspondan:
+
+- talle o número;
+- color;
+- modelo;
+- medida;
+- dimensiones;
+- peso;
+- volumen;
+- capacidad;
+- material;
+- compatibilidad;
+- presentación;
+- vencimiento o lote cuando corresponda.
+
+### Variantes
+
+Un mismo producto puede tener combinaciones diferentes con su propio precio y stock. Ejemplos:
+
+- zapatilla: marca + modelo + número + color;
+- ropa: prenda + talle + color;
+- neumático de moto: marca + medida + rodado + modelo compatible;
+- batería: marca + voltaje + amperaje/capacidad + dimensiones + compatibilidad.
+
+No se debe afirmar compatibilidad sin datos confirmados. Si falta información, WorkCerca pide marca, modelo, año, medida u otro dato mínimo necesario.
+
+### Unidades y formas de venta
+
+La cantidad debe admitir:
+
+- unidad;
+- kilo o fracción;
+- gramo;
+- litro o mililitro;
+- metro;
+- docena;
+- paquete;
+- pack;
+- caja;
+- bolsa;
+- bandeja;
+- otra unidad definida por el actor.
+
+Ejemplos:
+
+- manzanas, pan o carne por peso;
+- tres cajas de leche;
+- un pack con cantidad informada;
+- una batería por unidad;
+- neumáticos por unidad o juego.
+
+Cuando exista envase o agrupación, debe diferenciarse la cantidad solicitada de las unidades contenidas. Por ejemplo: **3 cajas × 12 unidades**.
+
+### Búsqueda y respuesta
+
+Flor y el buscador deben interpretar producto, marca, medida, talle, color, peso, cantidad, unidad y compatibilidad. Los resultados deben distinguir:
+
+- coincidencia exacta;
+- alternativa disponible;
+- dato pendiente de confirmación.
+
+La ficha flexible agiliza la carga y permite reutilizar la misma información en búsqueda, Vidriera 24/7, proveedores, compras, retiro, entrega y Observatorio Territorial.
