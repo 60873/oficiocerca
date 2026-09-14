@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import logoHeader from "../../../workcerca-logo-header.png";
+import EmpresaSidebar from "../EmpresaSidebar";
 
 type Interview = {
   id: string;
@@ -101,26 +101,7 @@ export default function EmpresaEntrevistasPage() {
     <main className="page">
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => (window.location.href = "/")}>
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <nav>
-          <button onClick={() => (window.location.href = "/empresa")}>▦ Mi Empresa</button>
-          <button onClick={() => (window.location.href = "/empresa/candidatos")}>⌕ Buscar candidatos</button>
-          <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ Postulantes</button>
-          <button onClick={() => (window.location.href = "/mensajes")}>▱ Mensajes</button>
-          <button onClick={() => (window.location.href = "/agenda")}>□ Agenda</button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>▣ Videollamadas</button>
-          <button className="active">🎙 Entrevistas</button>
-        </nav>
-
-        <div className="trustBox">
-          <strong>🛡 Entrevistas con contexto</strong>
-          <p>La entrevista debe estar vinculada a una persona, un puesto y una empresa identificables.</p>
-        </div>
-      </aside>
+      <EmpresaSidebar active="entrevistas" />
 
       <section className="main">
         <header className="topbar">
