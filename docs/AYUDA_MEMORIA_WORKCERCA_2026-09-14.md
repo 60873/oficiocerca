@@ -143,3 +143,54 @@ Una vez cerrada la prueba de Empresa/Postulantes:
 - La búsqueda cotidiana de profesionales debe poder comenzar sin registro.
 - La experiencia debe ser sencilla para cualquier edad y nivel de experiencia digital.
 - No crear módulos duplicados ni convertir cada idea en una pantalla nueva.
+
+
+## Semáforo recuperado de la auditoría
+
+### Verdes confirmados
+
+- Inicio: funcionando.
+- Búsqueda: funcionando.
+- Perfiles demo: funcionando.
+- Contacto: funcionando.
+- Registro: funcionando.
+- Oportunidades: funcionando.
+- Profesionales: 10/10 en la auditoría.
+
+### Amarillos: completar o volver a probar
+
+- **Emprendedores:** funcional; quedaban detalles del menú lateral pequeño e INP aproximado de 224 ms.
+- **Mi WorkCerca / Mi CV:** volver a probar la versión alineada y comprobar que no haya flash ni transición extraña.
+- **Hablar con IA:** el acceso existía, pero todavía era un aviso; falta conversación real.
+- **Accesos y roles:** cerrar la matriz completa de lo que puede ver y hacer Persona, Profesional, Empresa, Institución, Municipio y los demás actores.
+- **Empresa / RRHH:** prioridad. Terminar las conexiones Empresa ↔ vacante ↔ postulantes/CV ↔ Persona y realizar una prueba real en Preview.
+- **Vidriera 24/7:** probar necesidad → producto/comercio → consulta → disponibilidad y precio → compra → retiro o entrega.
+- **Buscar/Subir con foto:** localizar primero lo existente, probarlo y corregir solamente si la evidencia lo exige.
+
+### Rojos de revisión
+
+Los puntos rojos no estaban confirmados como rotos. Significaban que la inspección había quedado pendiente. Deben revisarse antes de modificar código.
+
+## Orden operativo del 14/09
+
+1. **Empresa/RRHH:** cerrar la prueba de Empresa y Postulantes en Preview.
+2. Usar como caso de análisis la búsqueda real de mantenimiento de espacios verdes de Reconquista/Avellaneda, sin inventar necesidades ni generalizar desde un solo aviso.
+3. Comprobar el circuito: empresa expresa necesidad → publica → Flor acompaña → motor localiza perfiles compatibles → persona encuentra la oportunidad → se postula → empresa utiliza las funciones de RRHH habilitadas.
+4. **Vidriera 24/7 y compra simple:** mantener separados los recorridos de comercio, profesionales y emergencias, aunque “¿Qué necesitás hoy?” sea transversal.
+5. Localizar y probar **Buscar con foto** antes de cambiarlo.
+6. Incorporar ordenadamente:
+   - Calendario Territorial de Grandes Eventos/Turismo conectado con Vidriera y territorio.
+   - Historias con miradas propias, narradas por protagonistas sin moraleja ni épica artificial.
+   - Autonomía Cotidiana / Modo Acompañado como experiencia transversal, no como módulo segregado.
+7. Revisar el cerebro interno:
+   - Flor acompaña.
+   - Observatorio analiza información agregada.
+   - Supervisor comprueba que las conclusiones estén justificadas.
+   - Dato, fuente, fecha y estado deben permanecer diferenciados.
+8. Mantener el **Plan de Contingencia** como línea paralela al código funcional: energía, conectividad, modo degradado, colas, reintentos, mensajes claros, automatización e intervención humana.
+
+## Punto exacto de reanudación
+
+**Empresa/RRHH → Preview → Postulantes.**
+
+El arreglo del flash fue programado, guardado y desplegado. Falta observar el Preview y reunir evidencia visual. Solo entonces se convierte ese amarillo en verde.
