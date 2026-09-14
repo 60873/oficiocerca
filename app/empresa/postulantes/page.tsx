@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import EmpresaSidebar from "../EmpresaSidebar";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import logoHeader from "../../../workcerca-logo-header.png";
 
 type ApplicationRow = {
   id: string;
@@ -144,61 +144,7 @@ export default function EmpresaPostulantesPage() {
       {navigating && <div className="routeTransition" aria-hidden="true" />}
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => go("/")}>
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <div className="profile">
-          <div className="avatar">E</div>
-          <div>
-            <strong>Mi Empresa WorkCerca</strong>
-            <span>Panel Empresa</span>
-          </div>
-        </div>
-
-        <nav>
-          <div className="navGroup">
-            <span className="navLabel">EMPRESA</span>
-            <button onClick={() => go("/")}>⌂ <span>Inicio WorkCerca</span></button>
-            <button onClick={() => go("/empresa")}>▦ <span>Mi Empresa</span></button>
-          </div>
-
-          <div className="navGroup">
-            <span className="navLabel">TALENTO Y EMPLEO</span>
-            <button onClick={() => go("/empresa/publicar-empleo")}>＋ <span>Publicar empleo</span></button>
-            <button className="active">◫ <span>Postulantes</span>{applications.length > 0 && <b>{applications.length}</b>}</button>
-            <button onClick={() => go("/empresa/candidatos")}>⌕ <span>Buscar candidatos</span></button>
-            <button onClick={() => go("/empresa/entrevistas")}>◈ <span>Entrevistas</span></button>
-          </div>
-
-          <div className="navGroup">
-            <span className="navLabel">COMUNICACIÓN</span>
-            <button onClick={() => go("/mensajes")}>▱ <span>Mensajes</span></button>
-            <button onClick={() => go("/agenda")}>□ <span>Agenda</span></button>
-            <button onClick={() => go("/videollamadas")}>▣ <span>Videollamadas</span></button>
-          </div>
-
-          <div className="navGroup">
-            <span className="navLabel">NEGOCIO</span>
-            <button onClick={() => go("/empresa/productos-servicios")}>▤ <span>Productos / Servicios</span></button>
-            <button onClick={() => go("/empresa/promociones")}>★ <span>Promociones</span></button>
-            <button onClick={() => go("/empresa/proveedores")}>⌘ <span>Proveedores</span></button>
-            <button onClick={() => go("/empresa/publicidad")}>◎ <span>Publicidad</span></button>
-          </div>
-
-          <div className="navGroup">
-            <span className="navLabel">GESTIÓN</span>
-            <button onClick={() => go("/empresa/estadisticas")}>◉ <span>Estadísticas</span></button>
-            <button onClick={() => go("/empresa/configuracion")}>⚙ <span>Configuración</span></button>
-          </div>
-        </nav>
-
-        <div className="trust">
-          <strong>WorkCerca Confianza</strong>
-          <p>La visibilidad puede promocionarse; la confianza, la verificación y los datos reales no se compran.</p>
-        </div>
-      </aside>
+      <EmpresaSidebar active="postulantes" />
 
       <section className="main">
         <header className="topbar">
