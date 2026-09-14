@@ -259,3 +259,10 @@ Se inspeccionó el árbol completo de la rama `workcerca-preview-empresa`.
 5. Revisar Emprendedores e INP.
 6. Continuar con accesos y roles, Vidriera 24/7, Buscar con foto y Hablar con IA.
 7. Tratar `/emergencias` solamente cuando su recorrido esté definido.
+
+
+## Descubrimiento visual: Flor ya tiene entrada
+
+Durante el recorrido del 14/09 se identificó en pantalla el acceso **“La IA te acompaña / Decime qué necesitás”**. Esa presencia ya corresponde a la puerta de entrada de Flor.
+
+Estado correcto: **amarillo**. Flor no está ausente, pero falta localizar la implementación existente, probar si permite conversación real y verificar sus conexiones con GPS, búsquedas, productos, servicios, Empresa y los demás módulos. No crear otra Flor ni duplicar el acceso.
