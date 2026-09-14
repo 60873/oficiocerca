@@ -270,3 +270,21 @@ El comercio, emprendimiento, profesional, empresa, institución, municipio o com
 Si el actor ya utiliza un sistema propio, una integración podrá incorporarse como mejora. Sin integración, la herramienta nativa de WorkCerca debe permitir completar el recorrido igualmente.
 
 La entrada **“¿Qué necesitás hoy?”** es la puerta al ecosistema: interpreta la necesidad y conecta con herramientas reales ya disponibles. No debe conducir a botones vacíos, avisos de “próximamente” ni recorridos sin cierre.
+
+
+## Regla de experiencia: un recorrido, no un laberinto
+
+La función debe resolverse dentro de un recorrido continuo y conservar siempre el contexto de la persona.
+
+- Una pregunta por vez.
+- Mostrar primero pocas opciones relevantes, con posibilidad de ver más.
+- No enviar a otra pantalla cuando la acción pueda resolverse en el mismo panel o burbuja.
+- No pedir nuevamente información que la persona ya brindó.
+- No exigir registro para explorar o iniciar una búsqueda; solicitarlo solo cuando una acción concreta requiera identidad, seguridad o seguimiento.
+- Permitir volver atrás sin perder la búsqueda, selección o datos cargados.
+- Mantener el panel del módulo de origen y destacar la sección actual.
+- Usar lenguaje claro, botones visibles, voz y Modo Acompañado cuando la persona lo elija.
+- Confirmar antes de pagar, reservar, publicar o compartir información.
+- Si el recorrido debe continuar en otro servicio, explicar por qué y conservar un regreso claro a WorkCerca.
+
+El objetivo no es contar pantallas sino reducir esfuerzo, confusión y abandono.
