@@ -206,3 +206,56 @@ El arreglo del flash fue programado, guardado y desplegado. Falta observar el Pr
 - Conclusión: el estado de carga neutral evita mostrar temporalmente el panel Empresa antes de completar la comprobación de sesión.
 - Estado: **VERDE, verificado con evidencia visual**.
 - Próxima prueba: **Empresa → Postulantes**.
+
+
+## Relevamiento técnico ampliado de módulos
+
+Se inspeccionó el árbol completo de la rama `workcerca-preview-empresa`.
+
+- Total de pantallas `page.tsx` localizadas: **27**.
+- Todas las rutas principales auditadas existen salvo `/emergencias`.
+- Solo existe un `layout` general en `app/layout.tsx`; los módulos dibujan sus laterales dentro de cada página. Esto explica que un panel pueda cambiar al entrar en una pantalla interna.
+- No se concluye que una función esté rota solo porque cambie el lateral.
+
+### Empresa
+
+- `/empresa`: verde; carga sin flash, verificada visualmente.
+- `/empresa/postulantes`: se corrigió para conservar el panel completo de Empresa, con Postulantes activo y navegación interna. Commit `3e97f9b`; falta confirmación visual final.
+- Requieren alineación de panel/navegación:
+  - `/empresa/publicar-empleo`
+  - `/empresa/candidatos`
+  - `/empresa/candidatos/[id]`
+  - `/empresa/entrevistas`
+  - `/empresa/productos-servicios`
+  - `/empresa/promociones`
+  - `/empresa/proveedores`
+  - `/empresa/publicidad`
+  - `/empresa/estadisticas`
+  - `/empresa/configuracion`
+- Estas rutas existen; el amarillo corresponde a continuidad visual y recargas completas, no a ausencia de pantalla.
+
+### Otros módulos
+
+- Profesional, Emprendedores, Instituciones, Municipios, Feria de Carreras, Capacitaciones y Oportunidades tienen panel/pantalla propia.
+- Profesional conserva el verde anterior 10/10 hasta que una nueva prueba aporte evidencia contraria.
+- Emprendedores continúa amarillo por el menú lateral pequeño y el INP aproximado de 224 ms.
+- Mi WorkCerca / Mi CV continúa amarillo: necesita prueba de alineación y transición.
+- Agenda, Mensajes, Videollamadas y Solicitudes son pantallas transversales que deben revisarse para que el usuario no pierda el contexto del módulo de origen.
+- Hablar con IA continúa amarillo: existe el acceso, pero falta conversación real.
+- Accesos y roles continúa amarillo hasta cerrar la matriz completa.
+- Vidriera 24/7 y Buscar/Subir con foto continúan amarillos hasta probar sus recorridos completos.
+
+### Pendiente real localizado
+
+- `/emergencias`: hay un acceso que apunta a esa dirección, pero la ruta no está construida en la rama actual.
+- Estado: **rojo de revisión**, no corregir por suposición. Definir su recorrido antes de implementarlo.
+
+### Orden recomendado después de Postulantes
+
+1. Confirmar visualmente Postulantes.
+2. Alinear, una por una, las restantes pantallas internas de Empresa.
+3. Revisar pantallas transversales y retorno al módulo de origen.
+4. Probar Mi WorkCerca / Mi CV.
+5. Revisar Emprendedores e INP.
+6. Continuar con accesos y roles, Vidriera 24/7, Buscar con foto y Hablar con IA.
+7. Tratar `/emergencias` solamente cuando su recorrido esté definido.
