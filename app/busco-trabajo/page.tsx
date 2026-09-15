@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import logoHeader from "../../workcerca-logo-header.png";
 
 type CvData = {
@@ -44,18 +45,13 @@ const training = [
 ];
 
 export default function BuscoTrabajoPage() {
+  const router = useRouter();
   const [mode, setMode] = useState<"start" | "create" | "upload">("start");
   const [step, setStep] = useState(1);
   const [notice, setNotice] = useState("");
   const [cv, setCv] = useState<CvData>(initialCv);
   const [profilePhoto, setProfilePhoto] = useState("");
   const [showExampleCv, setShowExampleCv] = useState(false);
-  const [pageReady, setPageReady] = useState(false);
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setPageReady(true));
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   const notify = (text: string) => {
     setNotice(text);
@@ -71,11 +67,11 @@ export default function BuscoTrabajoPage() {
     setCv((prev) => ({ ...prev, [key]: value }));
 
   return (
-    <main className="jobPage" style={{opacity:pageReady?1:0,visibility:pageReady?"visible":"hidden",transition:"opacity 220ms ease-out"}}>
+    <main className="jobPage">
       {notice && <div className="jobToast">{notice}</div>}
 
       <aside className="mwcSidebar">
-        <button className="mwcSideLogo" onClick={() => window.location.href = "/"}>
+        <button className="mwcSideLogo" onClick={() => router.push("/")}>
           <img src={logoHeader.src} alt="WorkCerca" />
         </button>
 
@@ -90,26 +86,36 @@ export default function BuscoTrabajoPage() {
           </div>
         </div>
 
-        <nav className="mwcSideNav">
-          <button onClick={() => window.location.href = "/"}>⌂ <span>Inicio WorkCerca</span></button>
-          <button onClick={() => window.location.href = "/mi-workcerca"}>▣ <span>Mi WorkCerca</span></button>
-          <button onClick={() => window.location.href = "/solicitudes"}>▤ <span>Solicitudes</span><b>2</b></button>
-          <button className="active">💼 <span>Busco trabajo / Mi CV</span></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#presupuestos"}>▧ <span>Presupuestos</span><b>4</b></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#mensajes"}>▱ <span>Mensajes</span><b>3</b></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#videollamadas"}>▣ <span>Videollamadas</span><b>3</b></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#agenda"}>□ <span>Agenda</span></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#proyectos"}>▣ <span>Proyectos</span><b>1</b></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#favoritos"}>♡ <span>Favoritos</span></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#resenas"}>☆ <span>Mis reseñas</span></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#pagos"}>$ <span>Pagos y facturas</span></button>
-          <button onClick={() => window.location.href = "/mi-workcerca#configuracion"}>⚙ <span>Configuración</span></button>
+        <nav className="mwcSideNav" aria-label="Funciones de Persona">
+          <p>PERSONA</p>
+          <button onClick={() => router.push("/")}>⌂ <span>Inicio WorkCerca</span></button>
+          <button onClick={() => router.push("/mi-workcerca")}>▣ <span>Mi WorkCerca</span></button>
+          <button className="active">▤ <span>Mi CV</span></button>
+          <button onClick={() => router.push("/oportunidades")}>💼 <span>Oportunidades</span></button>
+          <button onClick={() => router.push("/mi-workcerca#postulaciones")}>✓ <span>Mis postulaciones</span></button>
+
+          <p>NECESITO Y OFREZCO</p>
+          <button onClick={() => router.push("/mi-workcerca#vidriera")}>◫ <span>Vidriera 24/7</span></button>
+          <button onClick={() => router.push("/solicitudes")}>＋ <span>Mis solicitudes</span><b>2</b></button>
+          <button onClick={() => router.push("/mi-workcerca#presupuestos")}>▧ <span>Presupuestos</span><b>4</b></button>
+
+          <p>COMUNICACIÓN</p>
+          <button onClick={() => router.push("/mi-workcerca#mensajes")}>▱ <span>Mensajes</span><b>3</b></button>
+          <button onClick={() => router.push("/mi-workcerca#videollamadas")}>▣ <span>Videollamadas</span></button>
+          <button onClick={() => router.push("/mi-workcerca#agenda")}>□ <span>Agenda</span></button>
+
+          <p>MI ORGANIZACIÓN</p>
+          <button onClick={() => router.push("/capacitaciones")}>◇ <span>Capacitaciones</span></button>
+          <button onClick={() => router.push("/mi-workcerca#proyectos")}>▣ <span>Proyectos</span></button>
+          <button onClick={() => router.push("/mi-workcerca#favoritos")}>♡ <span>Favoritos</span></button>
+          <button onClick={() => router.push("/mi-workcerca#resenas")}>☆ <span>Mis reseñas</span></button>
+          <button onClick={() => router.push("/mi-workcerca#configuracion")}>⚙ <span>Configuración</span></button>
         </nav>
 
         <div className="mwcInvite">
-          <strong>✦ IA WorkCerca</strong>
-          <p>Decime qué necesitás y te guío por la plataforma.</p>
-          <button onClick={() => notify("IA WorkCerca lista para orientarte.")}>Hablar con IA</button>
+          <strong>✦ Flor · WorkCerca</strong>
+          <p>¿En qué te puedo ayudar?</p>
+          <button onClick={() => router.push("/mi-workcerca#flor")}>Hablar con Flor</button>
         </div>
 
         <div className="mwcHelp">
@@ -126,9 +132,9 @@ export default function BuscoTrabajoPage() {
             <span>Creá tu perfil laboral y conectalo con oportunidades reales.</span>
           </div>
           <div className="jobTopActions">
-            <button onClick={() => (window.location.href = "/")}>Inicio</button>
-            <button onClick={() => (window.location.href = "/mi-workcerca")}>Mi WorkCerca</button>
-            <button onClick={() => (window.location.href = "/solicitudes")}>Solicitudes</button>
+            <button onClick={() => (router.push("/"))}>Inicio</button>
+            <button onClick={() => (router.push("/mi-workcerca"))}>Mi WorkCerca</button>
+            <button onClick={() => (router.push("/solicitudes"))}>Solicitudes</button>
             <button onClick={() => notify("Notificaciones")}>🔔</button>
             <button onClick={() => notify("Videollamadas")}>📹</button>
             <button onClick={() => notify("Mensajes")}>💬</button>
@@ -433,7 +439,7 @@ export default function BuscoTrabajoPage() {
       )}
 
       <style jsx>{`
-        .mwcSidebar{width:285px;min-height:100vh;height:100vh;overflow:auto;position:sticky;top:0;background:linear-gradient(180deg,#071b35,#082742);color:#fff;padding:20px 14px;flex:none}
+        .mwcSidebar{width:240px;min-width:240px;min-height:100vh;height:100vh;overflow:auto;position:sticky;top:0;background:linear-gradient(180deg,#071b35,#082742);color:#fff;padding:20px 14px;flex:none}
         .mwcSideLogo{border:0;background:transparent;padding:0 8px 18px;cursor:pointer}
         .mwcSideLogo img{width:205px;height:auto;display:block}
         .mwcUser{display:flex;gap:10px;align-items:center;padding:8px 6px 22px}
@@ -441,7 +447,7 @@ export default function BuscoTrabajoPage() {
         .mwcUser strong,.mwcUser span{display:block}
         .mwcUser strong{font-size:13px;color:#fff}
         .mwcUser span{font-size:11px;color:#19d5cf;margin-top:3px}
-        .mwcSideNav{display:grid;gap:4px}
+        .mwcSideNav{display:grid;gap:4px}.mwcSideNav p{margin:14px 10px 4px;font-size:8px;letter-spacing:.13em;color:#7fa2bd;font-weight:900}
         .mwcSideNav button{border:0;background:transparent;color:#eef5ff;border-radius:8px;padding:11px 10px;text-align:left;cursor:pointer;font-size:10px;display:grid;grid-template-columns:24px 1fr auto;gap:7px;align-items:center;width:100%}
         .mwcSideNav button b{font-size:7px;background:#0f7bef;border-radius:99px;padding:4px 7px}
         .mwcSideNav button.active,.mwcSideNav button:hover{background:linear-gradient(90deg,#0874ea,#16b5cf)}
