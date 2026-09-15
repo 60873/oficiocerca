@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import logoHeader from "../../../workcerca-logo-header.png";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../EmpresaSidebar";
 
 type SettingsState = {
   companyName: string;
@@ -21,6 +22,8 @@ type SettingsState = {
 };
 
 export default function EmpresaConfiguracionPage() {
+  const router = useRouter();
+  const go = (path: string) => router.push(path);
   const [notice, setNotice] = useState("");
   const [settings, setSettings] = useState<SettingsState>({
     companyName: "Empresa Demo WorkCerca",
@@ -52,32 +55,7 @@ export default function EmpresaConfiguracionPage() {
     <main className="page">
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => (window.location.href = "/")}>
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <nav>
-          <button onClick={() => (window.location.href = "/empresa")}>▦ Mi Empresa</button>
-          <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ Publicar empleo</button>
-          <button onClick={() => (window.location.href = "/empresa/candidatos")}>⌕ Buscar candidatos</button>
-          <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ Postulantes</button>
-          <button onClick={() => (window.location.href = "/mensajes")}>▱ Mensajes</button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>▣ Videollamadas</button>
-          <button onClick={() => (window.location.href = "/agenda")}>□ Agenda</button>
-          <button onClick={() => (window.location.href = "/empresa/proveedores")}>⌘ Proveedores</button>
-          <button onClick={() => (window.location.href = "/empresa/productos-servicios")}>▤ Productos / Servicios</button>
-          <button onClick={() => (window.location.href = "/empresa/promociones")}>★ Promociones</button>
-          <button onClick={() => (window.location.href = "/empresa/publicidad")}>◎ Publicidad</button>
-          <button onClick={() => (window.location.href = "/empresa/estadisticas")}>◉ Estadísticas</button>
-          <button className="active">⚙ Configuración</button>
-        </nav>
-
-        <div className="trustBox">
-          <strong>🛡 Configuración segura</strong>
-          <p>Los datos sensibles nunca deben mostrarse por defecto ni utilizarse fuera del propósito informado.</p>
-        </div>
-      </aside>
+      <EmpresaSidebar active="configuracion" />
 
       <section className="main">
         <header className="topbar">
@@ -85,7 +63,7 @@ export default function EmpresaConfiguracionPage() {
             <strong>Configuración de Empresa</strong>
             <span>Administrá perfil, privacidad, notificaciones y seguridad.</span>
           </div>
-          <button onClick={() => (window.location.href = "/empresa")}>
+          <button onClick={() => go("/empresa")}>
             Volver a Mi Empresa
           </button>
         </header>
@@ -340,7 +318,7 @@ export default function EmpresaConfiguracionPage() {
           </section>
 
           <div className="saveBar">
-            <button onClick={() => (window.location.href = "/empresa")}>Cancelar</button>
+            <button onClick={() => go("/empresa")}>Cancelar</button>
             <button className="primary" onClick={saveSettings}>
               Guardar configuración
             </button>
