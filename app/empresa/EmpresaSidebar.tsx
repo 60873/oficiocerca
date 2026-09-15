@@ -48,7 +48,7 @@ export default function EmpresaSidebar({ active }: { active: EmpresaSection }) {
         {item("entrevistas", "🎙", "Entrevistas", "/empresa/entrevistas")}
 
         <p>NEGOCIO Y VIDRIERA 24/7</p>
-        {item("productos", "▤", "Productos, stock y servicios", "/empresa/productos-servicios")}
+        {item("productos", "▤", "Vidriera 24/7", "/empresa/productos-servicios")}
         {item("promociones", "％", "Promociones", "/empresa/promociones")}
         {item("proveedores", "◇", "Proveedores y profesionales", "/empresa/proveedores")}
         {item("publicidad", "◉", "Publicidad", "/empresa/publicidad")}
