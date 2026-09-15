@@ -68,7 +68,8 @@ export default function EmpresaSidebar({ active }: { active: EmpresaSection }) {
       </button>
 
       <style jsx>{`
-        .empresaSidebar{width:240px;min-width:240px;min-height:100vh;background:linear-gradient(180deg,#03142e,#00254b);color:#fff;padding:22px 16px;font-family:Inter,Arial,sans-serif;box-sizing:border-box}
+        .empresaSidebar{width:240px;min-width:240px;height:100vh;position:sticky;top:0;align-self:flex-start;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;background:linear-gradient(180deg,#03142e,#00254b);color:#fff;padding:22px 12px 22px 16px;font-family:Inter,Arial,sans-serif;box-sizing:border-box}
+        .empresaSidebar::-webkit-scrollbar{width:7px}.empresaSidebar::-webkit-scrollbar-track{background:#052342}.empresaSidebar::-webkit-scrollbar-thumb{background:#168da1;border-radius:999px;border:1px solid #052342}.empresaSidebar{scrollbar-width:thin;scrollbar-color:#168da1 #052342}
         .logo{border:0;background:transparent;cursor:pointer;padding:0 4px}.logo img{width:185px;max-width:100%}
         .profile{display:flex;gap:10px;align-items:center;margin:20px 0 14px;padding:12px 8px;border-top:1px solid #294764;border-bottom:1px solid #294764}
         .avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#e7f5f8;color:#087e92;font-weight:900}
@@ -76,7 +77,7 @@ export default function EmpresaSidebar({ active }: { active: EmpresaSection }) {
         nav{display:grid;gap:3px}nav p{margin:13px 9px 4px;font-size:7px;letter-spacing:.13em;color:#7fa2bd;font-weight:900}
         nav button{border:0;background:transparent;color:#fff;padding:9px 10px;border-radius:8px;text-align:left;font-size:10px;cursor:pointer;display:flex;align-items:center;gap:8px;width:100%}
         nav button:hover,nav button.active{background:#087f99}.contextSwitch{width:100%;margin-top:18px;border:1px solid #3b6684;background:transparent;color:#d9e8f2;border-radius:8px;padding:10px;font-size:9px;cursor:pointer}
-        @media(max-width:700px){.empresaSidebar{width:100%;min-width:0;min-height:0}.profile{margin-bottom:8px}nav{grid-template-columns:1fr 1fr}nav p{grid-column:1/-1}}
+        @media(max-width:700px){.empresaSidebar{width:100%;min-width:0;height:auto;max-height:none;position:relative;top:auto;overflow:visible;padding:18px 16px}.profile{margin-bottom:8px}nav{grid-template-columns:1fr 1fr}nav p{grid-column:1/-1}}
       `}</style>
     </aside>
   );
