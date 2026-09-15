@@ -92,7 +92,7 @@ export default function MiWorkCerca() {
           <button className={activeScreen==="agenda" ? "active" : ""} onClick={() => openScreen("agenda")}>□ <span>Agenda</span></button>
 
           <p>MI ORGANIZACIÓN</p>
-          <button onClick={() => go("/capacitaciones")}>◇ <span>Capacitaciones</span></button>
+          <button className={activeScreen==="capacitaciones" ? "active" : ""} onClick={() => openScreen("capacitaciones")}>◇ <span>Capacitaciones</span></button>
           <button className={activeScreen==="proyectos" ? "active" : ""} onClick={() => openScreen("proyectos")}>▣ <span>Proyectos</span></button>
           <button className={activeScreen==="favoritos" ? "active" : ""} onClick={() => openScreen("favoritos")}>♡ <span>Favoritos</span></button>
           <button className={activeScreen==="resenas" ? "active" : ""} onClick={() => openScreen("resenas")}>☆ <span>Mis reseñas</span></button>
@@ -159,6 +159,7 @@ export default function MiWorkCerca() {
                   activeScreen==="mensajes" ? "Mensajes" :
                   activeScreen==="videollamadas" ? "Videollamadas" :
                   activeScreen==="agenda" ? "Agenda" :
+                  activeScreen==="capacitaciones" ? "Capacitaciones" :
                   activeScreen==="proyectos" ? "Proyectos" :
                   activeScreen==="favoritos" ? "Favoritos" :
                   activeScreen==="resenas" ? "Mis reseñas" :
@@ -213,6 +214,12 @@ export default function MiWorkCerca() {
               {activeScreen==="agenda" && <>
                 <article><img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Tu agenda</h3><p>Entrevistas, turnos, reuniones y recordatorios.</p><button onClick={() => go("/agenda")}>Abrir agenda completa</button></article>
                 <article><h3>Próximo evento</h3><p>Organizá tus actividades sin perder el contexto de WorkCerca.</p><button onClick={() => act("Nuevo evento")}>Agregar evento</button></article>
+              </>}
+              {activeScreen==="capacitaciones" && <>
+                <article><img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=700&q=80" alt="Personas capacitándose"/><h3>Explorar capacitaciones</h3><p>Cursos, talleres y trayectos formativos presenciales, online y cercanos.</p><button onClick={() => act("Explorador de capacitaciones.")}>Explorar</button></article>
+                <article><h3>Mis capacitaciones</h3><p>Inscripciones, cursado, fechas y certificados organizados en el mismo panel.</p><button onClick={() => act("Tus capacitaciones.")}>Ver mi recorrido</button></article>
+                <article><h3>Orientación con Flor</h3><p>Flor escucha tus intereses y disponibilidad antes de acercarte opciones.</p><button onClick={() => openScreen("flor")}>Hablar con Flor</button></article>
+                <article><h3>Relacionadas con oportunidades</h3><p>Si una oportunidad requiere una habilidad, podés ver formación relacionada sin salir del panel.</p><button onClick={() => openScreen("oportunidades")}>Ver oportunidades</button></article>
               </>}
               {activeScreen==="proyectos" && <>
                 <article><img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Mis proyectos</h3><p>Ideas, trabajos y proyectos que estás siguiendo dentro de WorkCerca.</p><button onClick={() => act("Abrir proyecto")}>Ver proyectos</button></article>
