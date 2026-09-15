@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import logoHeader from "../../workcerca-logo-header.png";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../empresa/EmpresaSidebar";
 
 type Conversation = {
   id: string;
@@ -17,6 +18,7 @@ const initialConversations: Conversation[] = [
 ];
 
 export default function MensajesPage() {
+  const router = useRouter();
   const [candidate, setCandidate] = useState("");
   const [job, setJob] = useState("");
   const [selected, setSelected] = useState("1");
@@ -54,7 +56,9 @@ export default function MensajesPage() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#071a3d" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#071a3d", display: "flex" }}>
+      <EmpresaSidebar active="inicio" />
+      <div style={{ flex: 1, minWidth: 0 }}>
       {notice ? (
         <div style={{ position: "fixed", right: 20, top: 20, background: "#071a3d", color: "#fff", padding: 12, borderRadius: 8, zIndex: 20 }}>
           {notice}
@@ -62,15 +66,13 @@ export default function MensajesPage() {
       ) : null}
 
       <header style={{ background: "#fff", padding: 20, borderBottom: "1px solid #e1e7ed", display: "flex", justifyContent: "space-between", gap: 16 }}>
-        <button onClick={() => (window.location.href = "/")} style={{ border: 0, background: "transparent" }}>
-          <img src={logoHeader.src} alt="WorkCerca" style={{ width: 180 }} />
-        </button>
+        <strong>Mensajes de Empresa</strong>
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <button onClick={() => (window.location.href = "/empresa")}>Mi Empresa</button>
-          <button onClick={() => (window.location.href = "/empresa/postulantes")}>Postulantes</button>
-          <button onClick={() => (window.location.href = "/agenda")}>Agenda</button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>Videollamadas</button>
+          <button onClick={() => router.push("/empresa")}>Mi Empresa</button>
+          <button onClick={() => router.push("/empresa/postulantes")}>Postulantes</button>
+          <button onClick={() => router.push("/agenda?origen=empresa")}>Agenda</button>
+          <button onClick={() => router.push("/videollamadas?origen=empresa")}>Videollamadas</button>
         </div>
       </header>
 
@@ -100,8 +102,8 @@ export default function MensajesPage() {
                 <div style={{ fontSize: 12, color: "#718096", marginTop: 3 }}>{current.role}</div>
               </div>
               <div style={{ display: "flex", gap: 8 }}>
-                <button onClick={() => (window.location.href = `/agenda?nuevo=entrevista&candidato=${encodeURIComponent(current.name)}&empleo=${encodeURIComponent(job)}`)}>Agendar</button>
-                <button onClick={() => (window.location.href = `/videollamadas?candidato=${encodeURIComponent(current.name)}&empleo=${encodeURIComponent(job)}`)}>Videollamada</button>
+                <button onClick={() => router.push(`/agenda?origen=empresa&nuevo=entrevista&candidato=${encodeURIComponent(current.name)}&empleo=${encodeURIComponent(job)}`)}>Agendar</button>
+                <button onClick={() => router.push(`/videollamadas?origen=empresa&candidato=${encodeURIComponent(current.name)}&empleo=${encodeURIComponent(job)}`)}>Videollamada</button>
               </div>
             </header>
 
@@ -119,6 +121,7 @@ export default function MensajesPage() {
           </section>
         </div>
       </section>
+      </div>
     </main>
   );
 }
