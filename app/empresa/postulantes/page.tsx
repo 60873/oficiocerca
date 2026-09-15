@@ -34,7 +34,6 @@ const STATUS_OPTIONS = ["enviada", "vista", "preseleccionado", "entrevista", "de
 
 export default function EmpresaPostulantesPage() {
   const router = useRouter();
-  const [navigating, setNavigating] = useState(false);
   const [applications, setApplications] = useState<ApplicationRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
@@ -134,14 +133,11 @@ export default function EmpresaPostulantesPage() {
   }, [router]);
 
   const go = (path: string) => {
-    if (navigating) return;
-    setNavigating(true);
     router.push(path);
   };
 
   return (
-    <main className={`page ${navigating ? "isNavigating" : ""}`}>
-      {navigating && <div className="routeTransition" aria-hidden="true" />}
+    <main className="page">
       {notice && <div className="toast">{notice}</div>}
 
       <EmpresaSidebar active="postulantes" />
