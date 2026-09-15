@@ -128,7 +128,7 @@ export default function BuscoTrabajoPage() {
       <section className="jobMain">
         <header className="jobTop">
           <div>
-            <strong>Busco trabajo / Mi CV</strong>
+            <strong>Mi CV</strong>
             <span>Creá tu perfil laboral y conectalo con oportunidades reales.</span>
           </div>
           <div className="jobTopActions">
