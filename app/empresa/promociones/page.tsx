@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import logoHeader from "../../../workcerca-logo-header.png";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../EmpresaSidebar";
 
 type Promotion = {
   id: string;
@@ -52,6 +53,8 @@ const initialPromotions: Promotion[] = [
 ];
 
 export default function EmpresaPromocionesPage() {
+  const router = useRouter();
+  const go = (path: string) => router.push(path);
   const [promotions, setPromotions] = useState<Promotion[]>(initialPromotions);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("Todas");
@@ -116,29 +119,7 @@ export default function EmpresaPromocionesPage() {
     <main className="page">
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => (window.location.href = "/")}>
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <nav>
-          <button onClick={() => (window.location.href = "/empresa")}>▦ Mi Empresa</button>
-          <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ Publicar empleo</button>
-          <button onClick={() => (window.location.href = "/empresa/candidatos")}>⌕ Buscar candidatos</button>
-          <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ Postulantes</button>
-          <button onClick={() => (window.location.href = "/mensajes")}>▱ Mensajes</button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>▣ Videollamadas</button>
-          <button onClick={() => (window.location.href = "/agenda")}>□ Agenda</button>
-          <button onClick={() => (window.location.href = "/empresa/proveedores")}>⌘ Proveedores</button>
-          <button onClick={() => (window.location.href = "/empresa/productos-servicios")}>▤ Productos / Servicios</button>
-          <button className="active">★ Promociones</button>
-        </nav>
-
-        <div className="trustBox">
-          <strong>🛡 Confianza WorkCerca</strong>
-          <p>Una promoción puede pagar por visibilidad, pero nunca por confianza o verificación.</p>
-        </div>
-      </aside>
+      <EmpresaSidebar active="promociones" />
 
       <section className="main">
         <header className="topbar">
@@ -146,7 +127,7 @@ export default function EmpresaPromocionesPage() {
             <strong>Promociones</strong>
             <span>Creá ofertas claras, útiles y verificables para llegar a las personas correctas.</span>
           </div>
-          <button onClick={() => (window.location.href = "/empresa")}>
+          <button onClick={() => go("/empresa")}>
             Volver a Mi Empresa
           </button>
         </header>
