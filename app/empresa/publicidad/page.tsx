@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import logoHeader from "../../../workcerca-logo-header.png";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../EmpresaSidebar";
 
 type Campaign = {
   id: string;
@@ -41,6 +42,8 @@ const initialCampaigns: Campaign[] = [
 ];
 
 export default function EmpresaPublicidadPage() {
+  const router = useRouter();
+  const go = (path: string) => router.push(path);
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("Todas");
@@ -105,30 +108,7 @@ export default function EmpresaPublicidadPage() {
     <main className="page">
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => (window.location.href = "/")}>
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <nav>
-          <button onClick={() => (window.location.href = "/empresa")}>▦ Mi Empresa</button>
-          <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ Publicar empleo</button>
-          <button onClick={() => (window.location.href = "/empresa/candidatos")}>⌕ Buscar candidatos</button>
-          <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ Postulantes</button>
-          <button onClick={() => (window.location.href = "/mensajes")}>▱ Mensajes</button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>▣ Videollamadas</button>
-          <button onClick={() => (window.location.href = "/agenda")}>□ Agenda</button>
-          <button onClick={() => (window.location.href = "/empresa/proveedores")}>⌘ Proveedores</button>
-          <button onClick={() => (window.location.href = "/empresa/productos-servicios")}>▤ Productos / Servicios</button>
-          <button onClick={() => (window.location.href = "/empresa/promociones")}>★ Promociones</button>
-          <button className="active">◎ Publicidad</button>
-        </nav>
-
-        <div className="trustBox">
-          <strong>🛡 Regla WorkCerca</strong>
-          <p>La publicidad compra alcance, no confianza. Una campaña patrocinada nunca debe parecer verificada si no lo está.</p>
-        </div>
-      </aside>
+      <EmpresaSidebar active="publicidad" />
 
       <section className="main">
         <header className="topbar">
@@ -136,7 +116,7 @@ export default function EmpresaPublicidadPage() {
             <strong>Publicidad</strong>
             <span>Impulsá publicaciones sin alterar la confianza ni engañar a la comunidad.</span>
           </div>
-          <button onClick={() => (window.location.href = "/empresa")}>
+          <button onClick={() => go("/empresa")}>
             Volver a Mi Empresa
           </button>
         </header>
