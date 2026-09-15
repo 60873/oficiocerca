@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../empresa/EmpresaSidebar";
 
 type AgendaItem = {
   id: string;
@@ -13,6 +15,7 @@ type AgendaItem = {
 };
 
 export default function AgendaPage() {
+  const router = useRouter();
   const [notice, setNotice] = useState("");
   const [items, setItems] = useState<AgendaItem[]>([]);
   const [form, setForm] = useState({
@@ -65,7 +68,9 @@ export default function AgendaPage() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#071a3d" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#071a3d", display: "flex" }}>
+      <EmpresaSidebar active="inicio" />
+      <div style={{ flex: 1, minWidth: 0 }}>
       {notice ? (
         <div style={{ position: "fixed", right: 20, top: 20, background: "#071a3d", color: "#fff", padding: 12, borderRadius: 8, zIndex: 10 }}>
           {notice}
@@ -80,7 +85,7 @@ export default function AgendaPage() {
           </div>
         </div>
 
-        <button onClick={() => (window.location.href = "/empresa")}>
+        <button onClick={() => router.push("/empresa")}>
           Volver a Empresa
         </button>
       </header>
@@ -189,6 +194,7 @@ export default function AgendaPage() {
           </section>
         </div>
       </section>
+      </div>
     </main>
   );
 }
