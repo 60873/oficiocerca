@@ -199,10 +199,6 @@ export default function MiWorkCerca() {
                 <article><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Mis reseñas</h3><p>Opiniones vinculadas a experiencias reales dentro de WorkCerca.</p><button onClick={() => act("Ver reseñas")}>Ver reseñas</button></article>
                 <article><h3>Reputación y confianza</h3><p>Las calificaciones ayudan a elegir mejor, pero no reemplazan la verificación.</p><button onClick={() => act("Ver reputación")}>Ver reputación</button></article>
               </>}
-              {activeScreen==="pagos" && <>
-                <article><img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Pagos y facturas</h3><p>Historial, comprobantes y operaciones relacionadas con servicios.</p><button onClick={() => act("Ver movimientos")}>Ver movimientos</button></article>
-                <article><h3>Seguridad</h3><p>Información clara de cada operación y comprobantes disponibles.</p><button onClick={() => act("Centro de seguridad")}>Ver seguridad</button></article>
-              </>}
               {activeScreen==="configuracion" && <>
                 <article><h3>Privacidad</h3><p>Elegí qué información puede mostrarse y a quién.</p><button onClick={() => act("Preferencias de privacidad")}>Configurar</button></article>
                 <article><h3>Accesibilidad</h3><p>Preferencias de lectura, ayudas y futura integración de lengua de señas.</p><button onClick={() => act("Preferencias de accesibilidad")}>Configurar</button></article>
