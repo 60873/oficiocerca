@@ -41,22 +41,22 @@ export default function EmpresaSidebar({ active }: { active: EmpresaSection }) {
         <button onClick={() => go("/")}><span aria-hidden="true">⌂</span><span>Inicio WorkCerca</span></button>
         {item("inicio", "▦", "Mi Empresa", "/empresa")}
 
-        <p>TALENTO Y EMPLEO</p>
+        <p>PERSONAS Y TALENTO</p>
         {item("publicar", "＋", "Publicar empleo", "/empresa/publicar-empleo")}
         {item("postulantes", "◫", "Postulantes", "/empresa/postulantes")}
         {item("candidatos", "⌕", "Buscar candidatos", "/empresa/candidatos")}
         {item("entrevistas", "🎙", "Entrevistas", "/empresa/entrevistas")}
 
+        <p>NEGOCIO Y VIDRIERA 24/7</p>
+        {item("productos", "▤", "Productos, stock y servicios", "/empresa/productos-servicios")}
+        {item("promociones", "％", "Promociones", "/empresa/promociones")}
+        {item("proveedores", "◇", "Proveedores y profesionales", "/empresa/proveedores")}
+        {item("publicidad", "◉", "Publicidad", "/empresa/publicidad")}
+
         <p>COMUNICACIÓN</p>
         <button onClick={() => go("/mensajes?origen=empresa")}><span>▱</span><span>Mensajes</span></button>
         <button onClick={() => go("/agenda?origen=empresa")}><span>□</span><span>Agenda</span></button>
         <button onClick={() => go("/videollamadas?origen=empresa")}><span>▣</span><span>Videollamadas</span></button>
-
-        <p>NEGOCIO</p>
-        {item("productos", "▤", "Productos / Servicios", "/empresa/productos-servicios")}
-        {item("promociones", "％", "Promociones", "/empresa/promociones")}
-        {item("proveedores", "◇", "Proveedores", "/empresa/proveedores")}
-        {item("publicidad", "◉", "Publicidad", "/empresa/publicidad")}
 
         <p>GESTIÓN</p>
         {item("estadisticas", "▥", "Estadísticas", "/empresa/estadisticas")}
