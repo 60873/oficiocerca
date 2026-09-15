@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import logoHeader from "../../../workcerca-logo-header.png";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../EmpresaSidebar";
 
 type Provider = {
   id: string;
@@ -20,6 +21,8 @@ const providers: Provider[] = [
 ];
 
 export default function EmpresaProveedoresPage() {
+  const router = useRouter();
+  const go = (path: string) => router.push(path);
   const [search,setSearch] = useState("");
   const [category,setCategory] = useState("todas");
   const [notice,setNotice] = useState("");
@@ -41,30 +44,12 @@ export default function EmpresaProveedoresPage() {
     <main className="page">
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => window.location.href="/"}>
-          <img src={logoHeader.src} alt="WorkCerca"/>
-        </button>
-        <nav>
-          <button onClick={() => window.location.href="/empresa"}>▦ Mi Empresa</button>
-          <button onClick={() => window.location.href="/empresa/publicar-empleo"}>＋ Publicar empleo</button>
-          <button onClick={() => window.location.href="/empresa/candidatos"}>⌕ Buscar candidatos</button>
-          <button onClick={() => window.location.href="/empresa/postulantes"}>◫ Postulantes</button>
-          <button onClick={() => window.location.href="/mensajes"}>▱ Mensajes</button>
-          <button onClick={() => window.location.href="/videollamadas"}>▣ Videollamadas</button>
-          <button onClick={() => window.location.href="/agenda"}>□ Agenda</button>
-          <button className="active">⌘ Proveedores</button>
-        </nav>
-        <div className="trust">
-          <strong>🛡 WorkCerca Confianza</strong>
-          <p>La identidad y la confianza no se compran. Las verificaciones deben estar respaldadas por controles reales.</p>
-        </div>
-      </aside>
+      <EmpresaSidebar active="proveedores" />
 
       <section className="main">
         <header className="top">
           <div><strong>Proveedores y profesionales</strong><span>Encontrá soluciones para las necesidades reales de tu empresa.</span></div>
-          <button onClick={() => window.location.href="/empresa"}>Volver a Mi Empresa</button>
+          <button onClick={() => go("/empresa")}>Volver a Mi Empresa</button>
         </header>
 
         <div className="content">
@@ -114,8 +99,8 @@ export default function EmpresaProveedoresPage() {
                   <div className="tags">{provider.services.map(service => <span key={service}>{service}</span>)}</div>
                   <div className="actions">
                     <button onClick={() => notify(`Perfil de ${provider.name}: se conectará al crear perfiles de proveedores.`)}>Ver perfil</button>
-                    <button onClick={() => window.location.href=`/mensajes?candidato=${encodeURIComponent(provider.name)}`}>Mensaje</button>
-                    <button onClick={() => window.location.href=`/agenda?candidato=${encodeURIComponent(provider.name)}&nuevo=reunion`}>Agendar</button>
+                    <button onClick={() => go(`/mensajes?candidato=${encodeURIComponent(provider.name)}`)}>Mensaje</button>
+                    <button onClick={() => go(`/agenda?candidato=${encodeURIComponent(provider.name)}&nuevo=reunion`)}>Agendar</button>
                   </div>
                 </article>
               ))}
