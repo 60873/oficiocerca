@@ -299,7 +299,7 @@ export default function EmpresaPage() {
               <section className="companyQuick">
                 <button onClick={() => go("/empresa/publicar-empleo")}><span>＋</span><strong>Publicar empleo</strong><small>Publicación o borrador persistente</small></button>
                 <button onClick={() => go("/empresa/postulantes")}><span>◫</span><strong>Postulantes</strong><small>Seguimiento por estado</small></button>
-                <button onClick={() => go("/empresa/productos-servicios")}><span>▤</span><strong>Productos / Servicios</strong><small>Precio, stock y frescura</small></button>
+                <button onClick={() => go("/empresa/productos-servicios")}><span>▤</span><strong>Vidriera 24/7</strong><small>Necesito, ofrezco, stock y frescura</small></button>
                 <button onClick={() => go("/empresa/promociones")}><span>★</span><strong>Promociones</strong><small>Vigencia automática</small></button>
                 <button onClick={() => go("/empresa/proveedores")}><span>⌘</span><strong>Proveedores</strong><small>Conexiones para tu empresa</small></button>
                 <button onClick={() => go("/empresa/estadisticas")}><span>◉</span><strong>Estadísticas</strong><small>Solo sobre datos reales</small></button>
@@ -322,7 +322,7 @@ export default function EmpresaPage() {
               <section className="companyKpis">
                 <article><span>▣</span><strong>{activeJobs}</strong><b>Empleos activos</b><small>{jobs.length - activeJobs} en borrador, pausa o cierre</small></article>
                 <article><span>◫</span><strong>{applicationCount}</strong><b>Postulaciones</b><small>De búsquedas de esta empresa</small></article>
-                <article><span>▤</span><strong>{productCount}</strong><b>Productos cargados</b><small>{freshProductCount} con datos frescos confirmados</small></article>
+                <article><span>▤</span><strong>{productCount}</strong><b>Fichas de Vidriera</b><small>{freshProductCount} con datos frescos confirmados</small></article>
                 <article><span>★</span><strong>{activePromotions.length}</strong><b>Promociones vigentes</b><small>{promotions.length} cargadas en total</small></article>
                 <article><span>✦</span><strong>—</strong><b>Candidatos sugeridos</b><small>No mostramos coincidencias sin motor certificado</small></article>
               </section>
