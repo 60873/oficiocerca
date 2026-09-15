@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import logoHeader from "../../../workcerca-logo-header.png";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../EmpresaSidebar";
 
 type Listing = {
   id: string;
@@ -52,15 +53,25 @@ const initialListings: Listing[] = [
 ];
 
 export default function EmpresaProductosServiciosPage() {
+  const router = useRouter();
+  const go = (path: string) => router.push(path);
   const [listings, setListings] = useState<Listing[]>(initialListings);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("Todos");
   const [notice, setNotice] = useState("");
   const [form, setForm] = useState({
+    action: "Ofrezco",
     type: "Producto",
     title: "",
     category: "",
+    brandModel: "",
+    variant: "",
+    unit: "Unidad",
+    quantity: "",
     price: "",
+    availability: "",
+    payment: "",
+    delivery: "",
     location: "",
     description: "",
   });
@@ -96,15 +107,32 @@ export default function EmpresaProductosServiciosPage() {
       location: form.location.trim() || "Ubicación no informada",
       status: "Borrador",
       trust: "En revisión",
-      description: form.description.trim() || "Descripción pendiente de completar.",
+      description: [
+        form.action,
+        form.brandModel && `Marca/modelo: ${form.brandModel}`,
+        form.variant && `Variante: ${form.variant}`,
+        form.quantity && `Cantidad: ${form.quantity} ${form.unit}`,
+        form.availability && `Disponibilidad: ${form.availability}`,
+        form.payment && `Pago: ${form.payment}`,
+        form.delivery && `Entrega: ${form.delivery}`,
+        form.description.trim(),
+      ].filter(Boolean).join(" · ") || "Descripción pendiente de completar.",
     };
 
     setListings((prev) => [newListing, ...prev]);
     setForm({
+      action: "Ofrezco",
       type: "Producto",
       title: "",
       category: "",
+      brandModel: "",
+      variant: "",
+      unit: "Unidad",
+      quantity: "",
       price: "",
+      availability: "",
+      payment: "",
+      delivery: "",
       location: "",
       description: "",
     });
@@ -115,36 +143,15 @@ export default function EmpresaProductosServiciosPage() {
     <main className="page">
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => (window.location.href = "/")}>
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <nav>
-          <button onClick={() => (window.location.href = "/empresa")}>▦ Mi Empresa</button>
-          <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ Publicar empleo</button>
-          <button onClick={() => (window.location.href = "/empresa/candidatos")}>⌕ Buscar candidatos</button>
-          <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ Postulantes</button>
-          <button onClick={() => (window.location.href = "/mensajes")}>▱ Mensajes</button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>▣ Videollamadas</button>
-          <button onClick={() => (window.location.href = "/agenda")}>□ Agenda</button>
-          <button onClick={() => (window.location.href = "/empresa/proveedores")}>⌘ Proveedores</button>
-          <button className="active">▤ Productos / Servicios</button>
-        </nav>
-
-        <div className="trustBox">
-          <strong>🛡 Confianza WorkCerca</strong>
-          <p>Una publicación paga puede ganar visibilidad, pero nunca comprar verificación o confianza.</p>
-        </div>
-      </aside>
+      <EmpresaSidebar active="productos" />
 
       <section className="main">
         <header className="topbar">
           <div>
-            <strong>Productos y servicios</strong>
-            <span>Mostrá lo que tu empresa ofrece dentro del ecosistema WorkCerca.</span>
+            <strong>Vidriera 24/7</strong>
+            <span>Publicá lo que ofrecés o buscá lo que tu empresa necesita, desde la misma ficha.</span>
           </div>
-          <button onClick={() => (window.location.href = "/empresa")}>
+          <button onClick={() => go("/empresa")}>
             Volver a Mi Empresa
           </button>
         </header>
@@ -152,11 +159,11 @@ export default function EmpresaProductosServiciosPage() {
         <div className="content">
           <section className="hero">
             <div>
-              <span className="eyebrow">EMPRESA · VIDRIERA WORKCERCA</span>
-              <h1>Publicá mejor para que las personas encuentren lo que realmente necesitan.</h1>
+              <span className="eyebrow">EMPRESA · VIDRIERA 24/7</span>
+              <h1>Necesito ↔ Lo tengo, con información completa y fácil de encontrar.</h1>
               <p>
-                WorkCerca no quiere limitar una publicación a una foto y un precio.
-                La IA ayudará a completar información útil sin inventar características.
+                La misma ficha sirve para comprar, vender, contratar o buscar proveedores.
+                Flor solicita una foto cuando ayuda y nunca inventa características, compatibilidad ni stock.
               </p>
             </div>
 
@@ -172,11 +179,22 @@ export default function EmpresaProductosServiciosPage() {
 
           <section className="builder">
             <div>
-              <span className="eyebrow dark">NUEVA PUBLICACIÓN</span>
-              <h2>Crear producto o servicio</h2>
+              <span className="eyebrow dark">FICHA INTELIGENTE</span>
+              <h2>¿Qué necesitás o qué ofrecés?</h2>
             </div>
 
             <div className="formGrid">
+              <label>
+                Acción
+                <select
+                  value={form.action}
+                  onChange={(e) => setForm((prev) => ({ ...prev, action: e.target.value }))}
+                >
+                  <option>Ofrezco</option>
+                  <option>Necesito</option>
+                </select>
+              </label>
+
               <label>
                 Tipo
                 <select
@@ -207,12 +225,49 @@ export default function EmpresaProductosServiciosPage() {
               </label>
 
               <label>
+                Marca o modelo
+                <input value={form.brandModel} onChange={(e) => setForm((prev) => ({ ...prev, brandModel: e.target.value }))} placeholder="Marca, modelo o código" />
+              </label>
+
+              <label>
+                Variante
+                <input value={form.variant} onChange={(e) => setForm((prev) => ({ ...prev, variant: e.target.value }))} placeholder="Talle, color, medida, sabor, corte…" />
+              </label>
+
+              <label>
+                Unidad
+                <select value={form.unit} onChange={(e) => setForm((prev) => ({ ...prev, unit: e.target.value }))}>
+                  <option>Unidad</option><option>Metro</option><option>Kilo</option><option>Litro</option><option>Caja</option><option>Docena</option><option>Hora</option>
+                </select>
+              </label>
+
+              <label>
+                Cantidad
+                <input value={form.quantity} onChange={(e) => setForm((prev) => ({ ...prev, quantity: e.target.value }))} placeholder="Ej.: 3 cajas, 5 metros, 2 kilos" />
+              </label>
+
+              <label>
                 Precio
                 <input
                   value={form.price}
                   onChange={(e) => setForm((prev) => ({ ...prev, price: e.target.value }))}
                   placeholder="Ej.: $ 89.000 o Consultar"
                 />
+              </label>
+
+              <label>
+                Disponibilidad
+                <input value={form.availability} onChange={(e) => setForm((prev) => ({ ...prev, availability: e.target.value }))} placeholder="Stock, capacidad, fecha u horario" />
+              </label>
+
+              <label>
+                Formas de pago informadas
+                <input value={form.payment} onChange={(e) => setForm((prev) => ({ ...prev, payment: e.target.value }))} placeholder="Transferencia, efectivo, cuotas…" />
+              </label>
+
+              <label>
+                Retiro o entrega
+                <input value={form.delivery} onChange={(e) => setForm((prev) => ({ ...prev, delivery: e.target.value }))} placeholder="Retiro, envío, zona y demora" />
               </label>
 
               <label>
@@ -229,14 +284,14 @@ export default function EmpresaProductosServiciosPage() {
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
-                  placeholder="Contá qué ofrecés. Más adelante la IA te ayudará a completar lo que falte."
+                  placeholder="Contá lo necesario. Flor preguntará solamente los datos indispensables y podrá pedir una foto."
                 />
               </label>
             </div>
 
             <div className="builderActions">
-              <button onClick={() => notify("Asistente IA para mejorar publicaciones: se conectará en la etapa IA.")}>
-                ✦ Mejorar con IA
+              <button onClick={() => notify("Flor revisará esta ficha sin inventar datos y señalará qué falta confirmar.")}>
+                ✦ Completar con Flor
               </button>
               <button className="primary" onClick={addDraft}>Guardar borrador</button>
             </div>
@@ -310,7 +365,7 @@ export default function EmpresaProductosServiciosPage() {
       </section>
 
       <style jsx>{`
-        .page{min-height:100vh;background:#f6f8fb;color:#071a3d;font-family:Inter,Arial,sans-serif;display:flex}.page *{box-sizing:border-box}.page button,.page input,.page select,.page textarea{font:inherit}.sidebar{width:240px;min-height:100vh;background:linear-gradient(180deg,#03142e,#00254b);color:#fff;padding:22px 16px}.logo{border:0;background:transparent;cursor:pointer}.logo img{width:185px}.sidebar nav{display:grid;gap:5px;margin-top:22px}.sidebar nav button{border:0;background:transparent;color:#fff;padding:11px;border-radius:8px;text-align:left;font-size:11px;cursor:pointer}.sidebar nav button:hover,.sidebar nav button.active{background:#087f99}.trustBox{margin-top:22px;border:1px solid #2e5876;border-radius:11px;padding:13px}.trustBox strong{font-size:10px;color:#38d8d3}.trustBox p{font-size:8px;line-height:1.5;color:#d6e2eb}.main{flex:1;min-width:0}.topbar{min-height:68px;background:#fff;border-bottom:1px solid #e2e8ef;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}.topbar strong,.topbar span{display:block}.topbar span{font-size:10px;color:#718096;margin-top:4px}.topbar button{border:1px solid #dce3ea;background:#fff;border-radius:8px;padding:8px 10px;cursor:pointer}.content{max-width:1160px;margin:auto;padding:28px}.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;background:linear-gradient(135deg,#071a3d,#073c61);color:#fff;border-radius:16px;padding:28px}.eyebrow{font-size:9px;letter-spacing:.11em;font-weight:900;color:#38d8d3}.eyebrow.dark{color:#078da8}.hero h1{font-size:34px;line-height:1.08;margin:8px 0}.hero p{font-size:11px;color:#dce8f2;line-height:1.6}.aiCard{background:#fff;color:#071a3d;border-radius:12px;padding:18px}.aiCard>span{font-size:9px;color:#078da8;font-weight:900}.aiCard strong{display:block;font-size:14px;margin:8px 0}.aiCard p{font-size:9px;color:#617287}.builder,.panel{background:#fff;border:1px solid #e1e7ed;border-radius:13px;padding:18px;margin-top:16px}.builder h2,.panelHead h2{font-size:20px;margin:4px 0 14px}.formGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.formGrid label{font-size:9px;font-weight:700}.formGrid input,.formGrid select,.formGrid textarea{width:100%;border:1px solid #dce3ea;border-radius:8px;padding:10px;margin-top:5px}.formGrid textarea{min-height:90px}.formGrid .full{grid-column:1/-1}.builderActions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.builderActions button{border:1px solid #dce3ea;background:#fff;border-radius:8px;padding:9px 11px;cursor:pointer}.builderActions .primary{border:0;background:#071a3d;color:#fff}.toolbar{display:grid;grid-template-columns:1fr 220px;gap:10px;margin:16px 0}.toolbar input,.toolbar select{border:1px solid #dce3ea;background:#fff;border-radius:9px;padding:11px}.panelHead{display:flex;justify-content:space-between;align-items:end;gap:12px}.panelHead small{font-size:8px;color:#8290a0;margin-bottom:14px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.cards article{border:1px solid #e2e8ee;border-radius:11px;padding:15px}.cardTop{display:flex;justify-content:space-between;gap:8px}.type,.state{font-size:7px;font-weight:900;border-radius:999px;padding:5px 7px}.type{background:#eef7fb;color:#087f93}.type.service{background:#f2eefb;color:#655096}.state{background:#fff6df;color:#8b6500}.state.published{background:#e7f7f0;color:#16735a}.cards h3{font-size:12px;margin:11px 0 4px}.category{font-size:8px;color:#718096}.price{display:block;font-size:14px;margin:10px 0}.description{font-size:9px;color:#53677b;line-height:1.5}.trust{display:inline-block;background:#eefafd;color:#087f93;border-radius:999px;padding:5px 8px;font-size:7px;font-weight:900;margin:7px 0}.actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.actions button{border:1px solid #dce3ea;background:#fff;border-radius:6px;padding:6px 8px;font-size:7px;cursor:pointer}.example{margin-top:14px;background:#eefafd;border:1px solid #cde8ec;border-radius:11px;padding:14px}.example strong{font-size:11px;color:#087f93}.example p{font-size:9px;color:#53677b;line-height:1.5;margin-bottom:0}.toast{position:fixed;right:20px;top:82px;z-index:100;background:#071a3d;color:#fff;border-radius:9px;padding:12px 17px;font-size:10px}@media(max-width:900px){.hero{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}@media(max-width:700px){.page{display:block}.sidebar{width:100%;min-height:0}.formGrid,.toolbar,.cards{grid-template-columns:1fr}.formGrid .full{grid-column:auto}.content{padding:14px}}
+        .page{min-height:100vh;background:#f6f8fb;color:#071a3d;font-family:Inter,Arial,sans-serif;display:flex}.page *{box-sizing:border-box}.page button,.page input,.page select,.page textarea{font:inherit}.main{flex:1;min-width:0}.topbar{min-height:68px;background:#fff;border-bottom:1px solid #e2e8ef;padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}.topbar strong,.topbar span{display:block}.topbar span{font-size:10px;color:#718096;margin-top:4px}.topbar button{border:1px solid #dce3ea;background:#fff;border-radius:8px;padding:8px 10px;cursor:pointer}.content{max-width:1160px;margin:auto;padding:28px}.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;background:linear-gradient(135deg,#071a3d,#073c61);color:#fff;border-radius:16px;padding:28px}.eyebrow{font-size:9px;letter-spacing:.11em;font-weight:900;color:#38d8d3}.eyebrow.dark{color:#078da8}.hero h1{font-size:34px;line-height:1.08;margin:8px 0}.hero p{font-size:11px;color:#dce8f2;line-height:1.6}.aiCard{background:#fff;color:#071a3d;border-radius:12px;padding:18px}.aiCard>span{font-size:9px;color:#078da8;font-weight:900}.aiCard strong{display:block;font-size:14px;margin:8px 0}.aiCard p{font-size:9px;color:#617287}.builder,.panel{background:#fff;border:1px solid #e1e7ed;border-radius:13px;padding:18px;margin-top:16px}.builder h2,.panelHead h2{font-size:20px;margin:4px 0 14px}.formGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.formGrid label{font-size:9px;font-weight:700}.formGrid input,.formGrid select,.formGrid textarea{width:100%;border:1px solid #dce3ea;border-radius:8px;padding:10px;margin-top:5px}.formGrid textarea{min-height:90px}.formGrid .full{grid-column:1/-1}.builderActions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.builderActions button{border:1px solid #dce3ea;background:#fff;border-radius:8px;padding:9px 11px;cursor:pointer}.builderActions .primary{border:0;background:#071a3d;color:#fff}.toolbar{display:grid;grid-template-columns:1fr 220px;gap:10px;margin:16px 0}.toolbar input,.toolbar select{border:1px solid #dce3ea;background:#fff;border-radius:9px;padding:11px}.panelHead{display:flex;justify-content:space-between;align-items:end;gap:12px}.panelHead small{font-size:8px;color:#8290a0;margin-bottom:14px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.cards article{border:1px solid #e2e8ee;border-radius:11px;padding:15px}.cardTop{display:flex;justify-content:space-between;gap:8px}.type,.state{font-size:7px;font-weight:900;border-radius:999px;padding:5px 7px}.type{background:#eef7fb;color:#087f93}.type.service{background:#f2eefb;color:#655096}.state{background:#fff6df;color:#8b6500}.state.published{background:#e7f7f0;color:#16735a}.cards h3{font-size:12px;margin:11px 0 4px}.category{font-size:8px;color:#718096}.price{display:block;font-size:14px;margin:10px 0}.description{font-size:9px;color:#53677b;line-height:1.5}.trust{display:inline-block;background:#eefafd;color:#087f93;border-radius:999px;padding:5px 8px;font-size:7px;font-weight:900;margin:7px 0}.actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.actions button{border:1px solid #dce3ea;background:#fff;border-radius:6px;padding:6px 8px;font-size:7px;cursor:pointer}.example{margin-top:14px;background:#eefafd;border:1px solid #cde8ec;border-radius:11px;padding:14px}.example strong{font-size:11px;color:#087f93}.example p{font-size:9px;color:#53677b;line-height:1.5;margin-bottom:0}.toast{position:fixed;right:20px;top:82px;z-index:100;background:#071a3d;color:#fff;border-radius:9px;padding:12px 17px;font-size:10px}@media(max-width:900px){.hero{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}@media(max-width:700px){.page{display:block}.formGrid,.toolbar,.cards{grid-template-columns:1fr}.formGrid .full{grid-column:auto}.content{padding:14px}}
       `}</style>
     </main>
   );
