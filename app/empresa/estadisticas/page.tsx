@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import logoHeader from "../../../workcerca-logo-header.png";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../EmpresaSidebar";
 
 type StatCard = {
   label: string;
@@ -34,6 +35,8 @@ const performanceRows: PerformanceRow[] = [
 ];
 
 export default function EmpresaEstadisticasPage() {
+  const router = useRouter();
+  const go = (path: string) => router.push(path);
   const [period, setPeriod] = useState("30 días");
   const [filter, setFilter] = useState("Todos");
   const [notice, setNotice] = useState("");
@@ -63,31 +66,7 @@ export default function EmpresaEstadisticasPage() {
     <main className="page">
       {notice && <div className="toast">{notice}</div>}
 
-      <aside className="sidebar">
-        <button className="logo" onClick={() => (window.location.href = "/")}>
-          <img src={logoHeader.src} alt="WorkCerca" />
-        </button>
-
-        <nav>
-          <button onClick={() => (window.location.href = "/empresa")}>▦ Mi Empresa</button>
-          <button onClick={() => (window.location.href = "/empresa/publicar-empleo")}>＋ Publicar empleo</button>
-          <button onClick={() => (window.location.href = "/empresa/candidatos")}>⌕ Buscar candidatos</button>
-          <button onClick={() => (window.location.href = "/empresa/postulantes")}>◫ Postulantes</button>
-          <button onClick={() => (window.location.href = "/mensajes")}>▱ Mensajes</button>
-          <button onClick={() => (window.location.href = "/videollamadas")}>▣ Videollamadas</button>
-          <button onClick={() => (window.location.href = "/agenda")}>□ Agenda</button>
-          <button onClick={() => (window.location.href = "/empresa/proveedores")}>⌘ Proveedores</button>
-          <button onClick={() => (window.location.href = "/empresa/productos-servicios")}>▤ Productos / Servicios</button>
-          <button onClick={() => (window.location.href = "/empresa/promociones")}>★ Promociones</button>
-          <button onClick={() => (window.location.href = "/empresa/publicidad")}>◎ Publicidad</button>
-          <button className="active">◉ Estadísticas</button>
-        </nav>
-
-        <div className="trustBox">
-          <strong>🛡 Métricas con propósito</strong>
-          <p>WorkCerca no debe medir solo clics. También debe mostrar acciones útiles, oportunidades y resultados reales.</p>
-        </div>
-      </aside>
+      <EmpresaSidebar active="estadisticas" />
 
       <section className="main">
         <header className="topbar">
@@ -95,7 +74,7 @@ export default function EmpresaEstadisticasPage() {
             <strong>Estadísticas</strong>
             <span>Entendé qué funciona y qué valor real está generando tu empresa en WorkCerca.</span>
           </div>
-          <button onClick={() => (window.location.href = "/empresa")}>
+          <button onClick={() => go("/empresa")}>
             Volver a Mi Empresa
           </button>
         </header>
