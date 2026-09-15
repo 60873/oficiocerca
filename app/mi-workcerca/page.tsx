@@ -44,14 +44,22 @@ export default function MiWorkCerca() {
   const [activeScreen, setActiveScreen] = useState("panel");
 
   useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    if (hash) setActiveScreen(hash);
-
+    const syncScreen = () => {
+      const hash = window.location.hash.replace("#", "");
+      setActiveScreen(hash || "panel");
+    };
+    syncScreen();
+    window.addEventListener("hashchange", syncScreen);
+    window.addEventListener("popstate", syncScreen);
+    return () => {
+      window.removeEventListener("hashchange", syncScreen);
+      window.removeEventListener("popstate", syncScreen);
+    };
   }, []);
 
   const openScreen = (key: string) => {
     setActiveScreen(key);
-    window.history.replaceState(null, "", key === "panel" ? "/mi-workcerca" : `/mi-workcerca#${key}`);
+    window.history.pushState(null, "", key === "panel" ? "/mi-workcerca" : `/mi-workcerca#${key}`);
     document.querySelector(".mwcMain")?.scrollTo({ top: 0, behavior: "smooth" });
   };
   const act = (text: string) => { setNotice(text); window.setTimeout(() => setNotice(""), 2600); };
@@ -69,8 +77,8 @@ export default function MiWorkCerca() {
           <p>PERSONA</p>
           <button onClick={() => go("/")}>⌂ <span>Inicio WorkCerca</span></button>
           <button className={activeScreen==="panel" ? "active" : ""} onClick={() => openScreen("panel")}>▣ <span>Mi WorkCerca</span></button>
-          <button onClick={() => go("/busco-trabajo")}>▤ <span>Mi CV</span></button>
-          <button onClick={() => go("/oportunidades")}>💼 <span>Oportunidades</span></button>
+          <button className={activeScreen==="cv" ? "active" : ""} onClick={() => openScreen("cv")}>▤ <span>Mi CV</span></button>
+          <button className={activeScreen==="oportunidades" ? "active" : ""} onClick={() => openScreen("oportunidades")}>💼 <span>Oportunidades</span></button>
           <button className={activeScreen==="postulaciones" ? "active" : ""} onClick={() => openScreen("postulaciones")}>✓ <span>Mis postulaciones</span></button>
 
           <p>NECESITO Y OFREZCO</p>
@@ -141,6 +149,8 @@ export default function MiWorkCerca() {
               <div>
                 <span>MI WORKCERCA · {activeScreen.toUpperCase()}</span>
                 <h1>{
+                  activeScreen==="cv" ? "Mi CV" :
+                  activeScreen==="oportunidades" ? "Oportunidades" :
                   activeScreen==="postulaciones" ? "Mis postulaciones" :
                   activeScreen==="vidriera" ? "Vidriera 24/7" :
                   activeScreen==="flor" ? "Flor" :
@@ -159,9 +169,19 @@ export default function MiWorkCerca() {
             </section>
 
             <div className="mwcInternalGrid">
+              {activeScreen==="cv" && <>
+                <article><h3>Crear mi CV con WorkCerca</h3><p>Armá o actualizá tu perfil laboral paso a paso, sin abandonar el panel Persona.</p><button onClick={() => go("/busco-trabajo")}>Editar mi CV</button></article>
+                <article><h3>Mi CV actual</h3><p>Revisá tus datos, formación, experiencia y disponibilidad antes de postularte.</p><button onClick={() => act("Vista previa de tu CV.")}>Ver vista previa</button></article>
+                <article><h3>Mis postulaciones</h3><p>Consultá dónde usaste tu CV y el estado de cada postulación.</p><button onClick={() => openScreen("postulaciones")}>Ver postulaciones</button></article>
+                <article><h3>Oportunidades relacionadas</h3><p>Explorá propuestas compatibles sin perder el panel de Persona.</p><button onClick={() => openScreen("oportunidades")}>Ver oportunidades</button></article>
+              </>}
+              {activeScreen==="oportunidades" && <>
+                <article><h3>Explorar oportunidades</h3><p>Buscá empleos y propuestas cercanas relacionadas con tu perfil.</p><button onClick={() => act("Buscador de oportunidades.")}>Explorar</button></article>
+                <article><h3>Preparar mi postulación</h3><p>Revisá primero tu CV y después decidí si querés postularte.</p><button onClick={() => openScreen("cv")}>Revisar Mi CV</button></article>
+              </>}
               {activeScreen==="postulaciones" && <>
-                <article><h3>Mis postulaciones</h3><p>Seguí cada oportunidad desde el mismo panel: enviada, vista, entrevista o finalizada.</p><button onClick={() => go("/oportunidades")}>Buscar oportunidades</button></article>
-                <article><h3>Mi CV relacionado</h3><p>Revisá qué versión de tu CV acompaña cada postulación antes de enviarla.</p><button onClick={() => go("/busco-trabajo")}>Abrir Mi CV</button></article>
+                <article><h3>Mis postulaciones</h3><p>Seguí cada oportunidad desde el mismo panel: enviada, vista, entrevista o finalizada.</p><button onClick={() => openScreen("oportunidades")}>Buscar oportunidades</button></article>
+                <article><h3>Mi CV relacionado</h3><p>Revisá qué versión de tu CV acompaña cada postulación antes de enviarla.</p><button onClick={() => openScreen("cv")}>Abrir Mi CV</button></article>
               </>}
               {activeScreen==="vidriera" && <>
                 <article><h3>¿Qué necesitás?</h3><p>Buscá productos, servicios o proveedores por descripción, ubicación o una foto.</p><button onClick={() => openScreen("flor")}>Preguntarle a Flor</button></article>
