@@ -83,7 +83,7 @@ export default function MiWorkCerca() {
 
           <p>NECESITO Y OFREZCO</p>
           <button className={activeScreen==="vidriera" ? "active" : ""} onClick={() => openScreen("vidriera")}>◫ <span>Vidriera 24/7</span></button>
-          <button onClick={() => go("/solicitudes")}>＋ <span>Mis solicitudes</span><b>2</b></button>
+          <button className={activeScreen==="solicitudes" ? "active" : ""} onClick={() => openScreen("solicitudes")}>＋ <span>Mis solicitudes</span><b>2</b></button>
           <button className={activeScreen==="presupuestos" ? "active" : ""} onClick={() => openScreen("presupuestos")}>▧ <span>Presupuestos</span><b>4</b></button>
 
           <p>COMUNICACIÓN</p>
@@ -152,6 +152,7 @@ export default function MiWorkCerca() {
                   activeScreen==="cv" ? "Mi CV" :
                   activeScreen==="oportunidades" ? "Oportunidades" :
                   activeScreen==="postulaciones" ? "Mis postulaciones" :
+                  activeScreen==="solicitudes" ? "Mis solicitudes" :
                   activeScreen==="vidriera" ? "Vidriera 24/7" :
                   activeScreen==="flor" ? "Flor" :
                   activeScreen==="presupuestos" ? "Presupuestos" :
@@ -183,9 +184,15 @@ export default function MiWorkCerca() {
                 <article><h3>Mis postulaciones</h3><p>Seguí cada oportunidad desde el mismo panel: enviada, vista, entrevista o finalizada.</p><button onClick={() => openScreen("oportunidades")}>Buscar oportunidades</button></article>
                 <article><h3>Mi CV relacionado</h3><p>Revisá qué versión de tu CV acompaña cada postulación antes de enviarla.</p><button onClick={() => openScreen("cv")}>Abrir Mi CV</button></article>
               </>}
+              {activeScreen==="solicitudes" && <>
+                <article><h3>Mis solicitudes</h3><p>Consultá en un solo lugar lo que pediste, su estado y las respuestas recibidas.</p><button onClick={() => act("Detalle de tus solicitudes.")}>Ver solicitudes activas</button></article>
+                <article><h3>Nueva solicitud</h3><p>Contá qué necesitás y Flor te ayuda a completar solamente los datos necesarios.</p><button onClick={() => openScreen("flor")}>Crear con Flor</button></article>
+                <article><h3>Presupuestos relacionados</h3><p>Revisá las propuestas vinculadas con cada solicitud sin abandonar tu panel.</p><button onClick={() => openScreen("presupuestos")}>Ver presupuestos</button></article>
+                <article><h3>Vidriera 24/7</h3><p>También podés buscar productos, servicios o proveedores por descripción o foto.</p><button onClick={() => openScreen("vidriera")}>Abrir Vidriera 24/7</button></article>
+              </>}
               {activeScreen==="vidriera" && <>
                 <article><h3>¿Qué necesitás?</h3><p>Buscá productos, servicios o proveedores por descripción, ubicación o una foto.</p><button onClick={() => openScreen("flor")}>Preguntarle a Flor</button></article>
-                <article><h3>¿Qué ofrecés?</h3><p>La misma ficha permite publicar una oferta sin cambiar de identidad ni salir del panel.</p><button onClick={() => go("/solicitudes")}>Crear una ficha</button></article>
+                <article><h3>¿Qué ofrecés?</h3><p>La misma ficha permite publicar una oferta sin cambiar de identidad ni salir del panel.</p><button onClick={() => openScreen("solicitudes")}>Crear una ficha</button></article>
               </>}
               {activeScreen==="flor" && <>
                 <article><h3>¿En qué te puedo ayudar?</h3><p>Escribí con tus propias palabras. Flor preguntará solamente lo necesario y puede pedirte una foto cuando ayude a identificar algo.</p><button onClick={() => act("Flor está preparada para recibir tu consulta.")}>Empezar consulta</button></article>
@@ -193,7 +200,7 @@ export default function MiWorkCerca() {
               </>}
               {activeScreen==="presupuestos" && <>
                 <article><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Presupuestos recibidos</h3><p>Compará propuestas, precios, disponibilidad y reputación antes de decidir.</p><button onClick={() => act("Abrir presupuesto recibido")}>Ver recibidos</button></article>
-                <article><h3>Solicitar presupuesto</h3><p>Contá qué necesitás y WorkCerca te ayuda a encontrar opciones.</p><button onClick={() => go("/solicitudes")}>Nueva solicitud</button></article>
+                <article><h3>Solicitar presupuesto</h3><p>Contá qué necesitás y WorkCerca te ayuda a encontrar opciones.</p><button onClick={() => openScreen("solicitudes")}>Nueva solicitud</button></article>
               </>}
               {activeScreen==="mensajes" && <>
                 <article><img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=700&q=80" alt=""/><h3>Conversaciones recientes</h3><p>Profesionales, empresas, instituciones y contactos de WorkCerca en un solo lugar.</p><button onClick={() => go("/mensajes")}>Abrir mensajes</button></article>
