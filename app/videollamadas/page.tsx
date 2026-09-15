@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import logoHeader from "../../workcerca-logo-header.png";
+import { useRouter } from "next/navigation";
+import EmpresaSidebar from "../empresa/EmpresaSidebar";
 
 export default function VideollamadasPage() {
+  const router = useRouter();
   const [candidate, setCandidate] = useState("Postulante WorkCerca");
   const [job, setJob] = useState("Proceso laboral");
   const [notice, setNotice] = useState("");
@@ -22,7 +24,9 @@ export default function VideollamadasPage() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#071a3d" }}>
+    <main style={{ minHeight: "100vh", background: "#f5f7fb", color: "#071a3d", display: "flex" }}>
+      <EmpresaSidebar active="inicio" />
+      <div style={{ flex: 1, minWidth: 0 }}>
       {notice ? (
         <div style={{ position: "fixed", right: 20, top: 20, background: "#071a3d", color: "#fff", padding: 12, borderRadius: 8, zIndex: 20 }}>
           {notice}
@@ -30,10 +34,8 @@ export default function VideollamadasPage() {
       ) : null}
 
       <header style={{ background: "#fff", padding: 20, borderBottom: "1px solid #e1e7ed", display: "flex", justifyContent: "space-between", gap: 16 }}>
-        <button onClick={() => (window.location.href = "/")} style={{ border: 0, background: "transparent" }}>
-          <img src={logoHeader.src} alt="WorkCerca" style={{ width: 180 }} />
-        </button>
-        <button onClick={() => (window.location.href = "/empresa")}>Volver a Empresa</button>
+        <strong>Videollamadas de Empresa</strong>
+        <button onClick={() => router.push("/empresa")}>Volver a Empresa</button>
       </header>
 
       <section style={{ maxWidth: 1050, margin: "0 auto", padding: 28 }}>
@@ -66,10 +68,10 @@ export default function VideollamadasPage() {
         </div>
 
         <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
-          <button onClick={() => (window.location.href = `/agenda?nuevo=entrevista&candidato=${encodeURIComponent(candidate)}&empleo=${encodeURIComponent(job)}`)}>
+          <button onClick={() => router.push(`/agenda?origen=empresa&nuevo=entrevista&candidato=${encodeURIComponent(candidate)}&empleo=${encodeURIComponent(job)}`)}>
             Agendar esta entrevista
           </button>
-          <button onClick={() => (window.location.href = `/mensajes?candidato=${encodeURIComponent(candidate)}&empleo=${encodeURIComponent(job)}`)}>
+          <button onClick={() => router.push(`/mensajes?origen=empresa&candidato=${encodeURIComponent(candidate)}&empleo=${encodeURIComponent(job)}`)}>
             Enviar mensaje
           </button>
           <button onClick={() => notify("Entrenador de entrevistas IA: próximo módulo.")}>
@@ -77,6 +79,7 @@ export default function VideollamadasPage() {
           </button>
         </div>
       </section>
+      </div>
     </main>
   );
 }
