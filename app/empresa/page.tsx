@@ -92,8 +92,11 @@ export default function EmpresaPage() {
           return;
         }
 
-        const { data: authData } = await supabase.auth.getUser();
-        const userId = authData.user?.id || "";
+        // Read the persisted browser session first. getUser() performs a network
+        // round-trip and briefly reported no user while moving between routes,
+        // which made the Empresa panel jump to the login state.
+        const { data: authData } = await supabase.auth.getSession();
+        const userId = authData.session?.user?.id || "";
         if (!userId) {
           if (alive) setSignedIn(false);
           return;
